@@ -1,0 +1,69 @@
+[editor]
+line_wrapping=false
+line_break_column=72
+auto_continue_multiline=true
+
+[file_prefs]
+final_new_line=true
+ensure_convert_new_lines=true
+strip_trailing_spaces=true
+replace_tabs=true
+
+[indentation]
+indent_width=4
+indent_type=0
+indent_hard_tab_width=8
+detect_indent=false
+detect_indent_width=false
+indent_mode=2
+
+[project]
+name=PaGS
+base_path=/home/stephen/Documents/UAV_code/PaGS/
+description=
+file_patterns=
+
+[long line marker]
+long_line_behaviour=1
+long_line_column=80
+
+[files]
+current_page=2
+FILE_NAME_0=235;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FUAV_code%2FPaGS%2FPaGS%2Fmanagers%2FconnectionManager.py;0;4
+FILE_NAME_1=10339;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FUAV_code%2FPaGS%2FPaGS%2Fvehicle%2Fvehicle.py;0;4
+FILE_NAME_2=11427;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FUAV_code%2FPaGS%2Ftests%2Fmodules%2Ftest_paramModule.py;0;4
+FILE_NAME_3=5448;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FUAV_code%2FPaGS%2Ftests%2Fmanagers%2Ftest_modulemanager.py;0;4
+FILE_NAME_4=4305;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FUAV_code%2FPaGS%2FPaGS%2Fmodules%2FparamModule%2F__init__.py;0;4
+FILE_NAME_5=2699;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FUAV_code%2FPaGS%2FPaGS%2Fmanagers%2FmoduleManager.py;0;4
+FILE_NAME_6=711;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FUAV_code%2FPaGS%2FPaGS%2Fmodules%2FinternalPrinterModule.py;0;4
+FILE_NAME_7=4443;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FUAV_code%2FPaGS%2FPaGS%2Fpags.py;0;4
+
+[build-menu]
+EX_00_LB=_Execute
+EX_00_CM=python3 "%f"
+EX_00_WD=
+PythonFT_01_LB=Pylint
+PythonFT_01_CM=pylint3 "%f"
+PythonFT_01_WD=
+filetypes=Python;
+NF_00_LB=_Make
+NF_00_CM=make
+NF_00_WD=
+PythonFT_00_LB=_Build and pytest
+PythonFT_00_CM=cd "%p"; python3 setup.py build install --user; python3 -m pytest --log-level DEBUG
+PythonFT_00_WD=
+PythonFT_02_LB=_Pep8
+PythonFT_02_CM=pycodestyle --max-line-length=80 "%f"
+PythonFT_02_WD=
+NF_03_LB=AutoPep
+NF_03_CM=autopep8 --in-place "%f"
+NF_03_WD=
+NF_01_LB=Make Custom _Target...
+NF_01_CM=make 
+NF_01_WD=
+EX_01_LB=Coverage
+EX_01_CM=cd "%p"; python3 -m pytest --cov-report term-missing --cov=PaGS --log-level DEBUG
+EX_01_WD=
+
+[VTE]
+last_dir=/home/stephen
