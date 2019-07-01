@@ -160,16 +160,16 @@ class VehicleTest(asynctest.TestCase):
         self.veh.txcallback = self.newpacketcallback
 
         await self.veh.setHearbeatRate(0.001)
-        await asyncio.sleep(0.01)
+        await asyncio.sleep(0.1)
 
         # stop for a while - no extra hb emitted
         await self.veh.setHearbeatRate(0)
         await asyncio.sleep(0.01)
 
         # due to timer jitter, can only test for approx rate
-        # Expecting between 4 and 10 hb packets
+        # Expecting between 4 and 100 hb packets
         assert len(self.txpackets) > 4
-        assert len(self.txpackets) < 10
+        assert len(self.txpackets) < 100
 
     async def test_noheartbeat(self):
         """Test no hb task ever"""
