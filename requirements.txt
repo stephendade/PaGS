@@ -1,0 +1,3 @@
+pymavlink
+prompt-toolkit
+pyserial-asyncio
