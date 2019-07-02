@@ -1,34 +1,54 @@
-image:
-- Visual Studio 2017
-
 environment:
   matrix:
-    - PYTHON: C:\Python37
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      PYTHON: C:\Python37
       PYTHON_VERSION: 3.7
       PYTHON_ARCH: 32
 
-    - PYTHON: C:\Python36
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      PYTHON: C:\Python36
       PYTHON_VERSION: 3.6
       PYTHON_ARCH: 32
 
-    - PYTHON: C:\Python35
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      PYTHON: C:\Python35
       PYTHON_VERSION: 3.5
       PYTHON_ARCH: 32
 
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1604
+      PYTHON_VERSION: "3.5"
+      PYTHONPATH: "$HOME/.local/lib/python3.5/site-packages/"
+
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1604
+      PYTHON_VERSION: "3.6"
+      PYTHONPATH: "$HOME/.local/lib/python3.6/site-packages/"
+
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1604
+      PYTHON_VERSION: "3.7"
+      PYTHONPATH: "$HOME/.local/lib/python3.7/site-packages/"
+
+stack: python %PYTHON_VERSION%
+
 init:
-  - ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%
-  - ECHO \"%APPVEYOR_SCHEDULED_BUILD%\"
+  - echo %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%
+  - echo \"%APPVEYOR_SCHEDULED_BUILD%\"
 
 cache:
   # Cache downloaded pip packages and built wheels.
   - '%LOCALAPPDATA%\pip\Cache\http'
   - '%LOCALAPPDATA%\pip\Cache\wheels'
+  
+  # Linux
+  - '$HOME/.pip/wheels'
 
 install:
   # Prepend newly installed Python to the PATH of this build (this cannot be
   # done from inside the powershell script as it would require to restart
   # the parent CMD process).
-  - SET PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
+  - cmd: SET PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
+  
+  #Using pip install wxpython on Linux takes waaay too long, so downloading precompiled version instead
+  - sh: pip install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04 wxPython
 
   # Check that we have the expected version and architecture for Python
   - python --version
