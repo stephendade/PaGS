@@ -57,7 +57,7 @@ class VehicleManagerTest(asynctest.TestCase):
             for veh in self.manager.get_vehiclelist():
                 await self.manager.remove_vehicle(veh)
 
-    def linkaddcallback(self, vehname, target_system, strconnection):
+    async def linkaddcallback(self, vehname, target_system, strconnection):
         """Callback for link add"""
         self.callbacks['linkadd'] = (vehname, target_system, strconnection)
 
@@ -65,7 +65,7 @@ class VehicleManagerTest(asynctest.TestCase):
         """Callback for link add"""
         self.callbacks['linkremove'] = (vehname)
 
-    def vehicleaddcallback(self, vehname):
+    async def vehicleaddcallback(self, vehname):
         """Callback for link add"""
         self.callbacks['vehicleadd'] = (vehname)
 
@@ -87,18 +87,18 @@ class VehicleManagerTest(asynctest.TestCase):
         """Add and remove vehicles, plus callbacks"""
         self.manager = vehicleManager.VehicleManager(self.loop)
         # Add callbacks
-        self.manager.onLinkAddAttach(self.linkaddcallback)
-        self.manager.onLinkRemoveAttach(self.linkremovecallback)
+        await self.manager.onLinkAddAttach(self.linkaddcallback)
+        await self.manager.onLinkRemoveAttach(self.linkremovecallback)
         self.manager.onAddVehicleAttach(self.vehicleaddcallback)
         self.manager.onRemoveVehicleAttach(self.vehicleremovecallback)
 
-        self.manager.add_vehicle(
+        await self.manager.add_vehicle(
             "VehA", 255, 0, 4, 0, self.dialect, self.version, 'tcpclient:127.0.0.1:15001')
         assert self.callbacks['linkadd'] == (
             "VehA", 4, 'tcpclient:127.0.0.1:15001')
         assert self.callbacks['vehicleadd'] == ("VehA")
 
-        self.manager.add_vehicle(
+        await self.manager.add_vehicle(
             "VehB", 254, 0, 3, 0, self.dialect, self.version, 'tcpserver:127.0.0.1:15020')
         assert self.callbacks['linkadd'] == (
             "VehB", 3, 'tcpserver:127.0.0.1:15020')
@@ -118,14 +118,14 @@ class VehicleManagerTest(asynctest.TestCase):
         assert self.callbacks['linkremove'] == ("VehA")
         assert self.callbacks['vehicleremove'] == ("VehA")
 
-    def test_addvehiclemultilink(self):
+    async def test_addvehiclemultilink(self):
         """Add multiple links for a vehicle, plus callbacks"""
         self.manager = vehicleManager.VehicleManager(self.loop)
         # Add callbacks
-        self.manager.onLinkAddAttach(self.linkaddcallback)
-        self.manager.onAddVehicleAttach(self.vehicleaddcallback)
+        await self.manager.onLinkAddAttach(self.linkaddcallback)
+        await self.manager.onAddVehicleAttach(self.vehicleaddcallback)
 
-        self.manager.add_vehicle(
+        await self.manager.add_vehicle(
             "VehA", 255, 0, 4, 0, self.dialect, self.version, 'tcpclient:127.0.0.1:15001')
         assert self.callbacks['linkadd'] == (
             "VehA", 4, 'tcpclient:127.0.0.1:15001')
@@ -141,11 +141,11 @@ class VehicleManagerTest(asynctest.TestCase):
         """try removing a vehicle that does not exist"""
         self.manager = vehicleManager.VehicleManager(self.loop)
         # Add callbacks
-        self.manager.onLinkAddAttach(self.linkaddcallback)
+        await self.manager.onLinkAddAttach(self.linkaddcallback)
         self.manager.onAddVehicleAttach(self.vehicleaddcallback)
         self.manager.onRemoveVehicleAttach(self.vehicleremovecallback)
 
-        self.manager.add_vehicle(
+        await self.manager.add_vehicle(
             "VehA", 255, 0, 4, 0, self.dialect, self.version, 'tcpclient:127.0.0.1:15001')
         self.callbacks = {}
 
@@ -155,14 +155,14 @@ class VehicleManagerTest(asynctest.TestCase):
         assert 'No vehicle with that name' in str(context.exception)
         assert self.callbacks == {}
 
-    def test_addlinkerror(self):
+    async def test_addlinkerror(self):
         """add a link to a vehicle that does not exist"""
         self.manager = vehicleManager.VehicleManager(self.loop)
         # Add callbacks
-        self.manager.onLinkAddAttach(self.linkaddcallback)
+        await self.manager.onLinkAddAttach(self.linkaddcallback)
         self.manager.onAddVehicleAttach(self.vehicleaddcallback)
 
-        self.manager.add_vehicle(
+        await self.manager.add_vehicle(
             "VehA", 255, 0, 4, 0, self.dialect, self.version, 'tcpclient:127.0.0.1:15001')
         self.callbacks = {}
 
@@ -172,12 +172,12 @@ class VehicleManagerTest(asynctest.TestCase):
         assert 'No vehicle with that name' in str(context.exception)
         assert self.callbacks == {}
 
-    def test_packetRx(self):
+    async def test_packetRx(self):
         """Packet passing from connection manager -> vehiclemanager"""
         self.manager = vehicleManager.VehicleManager(self.loop)
-        self.manager.add_vehicle(
+        await self.manager.add_vehicle(
             "VehA", 255, 0, 4, 0, self.dialect, self.version, 'tcpclient:127.0.0.1:15001')
-        self.manager.add_vehicle(
+        await self.manager.add_vehicle(
             "VehB", 255, 0, 5, 0, self.dialect, self.version, 'tcpclient:127.0.0.1:15021')
 
         pkt = self.mod.MAVLink_heartbeat_message(
@@ -189,13 +189,13 @@ class VehicleManagerTest(asynctest.TestCase):
 
         assert len(self.manager.get_vehicle("VehB").latestPacketDict) == 0
 
-    def test_packetTx(self):
+    async def test_packetTx(self):
         """Packet passing from vehicle to connectionManager"""
         self.manager = vehicleManager.VehicleManager(self.loop)
         self.manager.onPacketBufTxAttach(self.pktbuffertxcallback)
-        self.manager.add_vehicle(
+        await self.manager.add_vehicle(
             "VehA", 255, 0, 4, 0, self.dialect, self.version, 'tcpclient:127.0.0.1:15001')
-        self.manager.add_vehicle(
+        await self.manager.add_vehicle(
             "VehB", 255, 0, 5, 0, self.dialect, self.version, 'tcpclient:127.0.0.1:15021')
 
         # Send a packet from GCS to Veh
@@ -210,13 +210,13 @@ class VehicleManagerTest(asynctest.TestCase):
         assert self.callbacks['pktbuffertx'][0] == "VehA"
         assert self.callbacks['pktbuffertx'][1] is not None
 
-    def test_getVehicle(self):
+    async def test_getVehicle(self):
         """Test getting a vehicle from the manager"""
         self.manager = vehicleManager.VehicleManager(self.loop)
         self.manager.onPacketBufTxAttach(self.pktbuffertxcallback)
-        self.manager.add_vehicle(
+        await self.manager.add_vehicle(
             "VehA", 255, 0, 4, 0, self.dialect, self.version, 'tcpclient:127.0.0.1:15001')
-        self.manager.add_vehicle(
+        await self.manager.add_vehicle(
             "VehB", 255, 0, 5, 0, self.dialect, self.version, 'tcpclient:127.0.0.1:15021')
 
         with self.assertRaises(Exception) as context:

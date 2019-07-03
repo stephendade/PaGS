@@ -92,8 +92,8 @@ class IntegratedTest(asynctest.TestCase):
 
         # event links from vehicle manager -> connmatrix
         self.allvehicles.onPacketBufTxAttach(self.connmtrx.outgoingPacket)
-        self.allvehicles.onLinkAddAttach(self.connmtrx.addVehicleLink)
-        self.allvehicles.onLinkRemoveAttach(self.connmtrx.removeLink)
+        await self.allvehicles.onLinkAddAttach(self.connmtrx.addVehicleLink)
+        await self.allvehicles.onLinkRemoveAttach(self.connmtrx.removeLink)
 
         # event links from module manager -> vehicle manager
         self.allModules.onPktTxAttach(self.allvehicles.send_message)
@@ -139,7 +139,7 @@ class IntegratedTest(asynctest.TestCase):
         await self.doEventLinkages()
 
         #add a link
-        self.allvehicles.add_vehicle("VehA", 255, 0, 4, 0,
+        await self.allvehicles.add_vehicle("VehA", 255, 0, 4, 0,
                                     self.dialect, self.version, 'tcpserver:127.0.0.1:15000')
 
         # Start a remote connection (TCP)
@@ -148,7 +148,7 @@ class IntegratedTest(asynctest.TestCase):
                                srcsystem=0, srccomp=0,
                                server=False, name=self.cname)
 
-        await asyncio.sleep(0.02)
+        await asyncio.sleep(0.3)
 
         await self.loop.create_connection(lambda: self.remoteClient, self.ip, self.port)
 

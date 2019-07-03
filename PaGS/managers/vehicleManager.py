@@ -68,14 +68,14 @@ class VehicleManager():
         """
         self.incoming_packet_callback = func
 
-    def onLinkAddAttach(self, func):
+    async def onLinkAddAttach(self, func):
         """
         Attach a callback to add a link
         Args are (vehiclename, strconnection)
         """
         self.add_link = func
 
-    def onLinkRemoveAttach(self, func):
+    async def onLinkRemoveAttach(self, func):
         """
         Attach a callback to remove a link
         Args are (vehiclename)
@@ -89,7 +89,7 @@ class VehicleManager():
         """
         self.outgoingPacketBuffer = func
 
-    def add_vehicle(self, name: str, source_system: int, source_component: int,
+    async def add_vehicle(self, name: str, source_system: int, source_component: int,
                     target_system: int, target_component: int, dialect: str, mavversion: float, strconnection: str):
         """ Add a new vehicle"""
         if name in self.veh_list:
