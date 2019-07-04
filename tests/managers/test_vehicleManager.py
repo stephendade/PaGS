@@ -27,6 +27,7 @@ Can't add vehicle with same name
 
 '''
 import asynctest
+import asyncio
 
 from PaGS.managers import vehicleManager
 from PaGS.mavlink.pymavutil import getpymavlinkpackage
@@ -61,16 +62,16 @@ class VehicleManagerTest(asynctest.TestCase):
         """Callback for link add"""
         self.callbacks['linkadd'] = (vehname, target_system, strconnection)
 
-    def linkremovecallback(self, vehname):
-        """Callback for link add"""
+    async def linkremovecallback(self, vehname):
+        """Callback for link remove"""
         self.callbacks['linkremove'] = (vehname)
 
-    async def vehicleaddcallback(self, vehname):
-        """Callback for link add"""
+    def vehicleaddcallback(self, vehname):
+        """Callback for module vehicle add"""
         self.callbacks['vehicleadd'] = (vehname)
 
     def vehicleremovecallback(self, vehname):
-        """Callback for link add"""
+        """Callback for module vehicle remove"""
         self.callbacks['vehicleremove'] = (vehname)
 
     def pktbuffertxcallback(self, buf, vehname):
@@ -123,16 +124,17 @@ class VehicleManagerTest(asynctest.TestCase):
         self.manager = vehicleManager.VehicleManager(self.loop)
         # Add callbacks
         await self.manager.onLinkAddAttach(self.linkaddcallback)
-        await self.manager.onAddVehicleAttach(self.vehicleaddcallback)
+        self.manager.onAddVehicleAttach(self.vehicleaddcallback)
 
         await self.manager.add_vehicle(
             "VehA", 255, 0, 4, 0, self.dialect, self.version, 'tcpclient:127.0.0.1:15001')
+        await asyncio.sleep(0.5)
         assert self.callbacks['linkadd'] == (
             "VehA", 4, 'tcpclient:127.0.0.1:15001')
         assert self.callbacks['vehicleadd'] == ("VehA")
         self.callbacks = {}
 
-        self.manager.add_extraLink("VehA", 'tcpserver:127.0.0.1:15021')
+        await self.manager.add_extraLink("VehA", 'tcpserver:127.0.0.1:15021')
         assert self.callbacks['linkadd'] == (
             "VehA", 4, 'tcpserver:127.0.0.1:15021')
         assert 'vehicleadd' not in self.callbacks
@@ -167,7 +169,7 @@ class VehicleManagerTest(asynctest.TestCase):
         self.callbacks = {}
 
         with self.assertRaises(Exception) as context:
-            self.manager.add_extraLink("VehX", 'tcpclient:127.0.0.1:15021')
+            await self.manager.add_extraLink("VehX", 'tcpclient:127.0.0.1:15021')
 
         assert 'No vehicle with that name' in str(context.exception)
         assert self.callbacks == {}

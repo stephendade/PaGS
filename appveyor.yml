@@ -46,6 +46,11 @@ install:
   # done from inside the powershell script as it would require to restart
   # the parent CMD process).
   - cmd: SET PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
+
+  # Configure headless CI for Linux. From https://electronjs.org/docs/tutorial/testing-on-headless-ci
+  - sh: sudo apt-get install xvfb
+  - sh: export DISPLAY=':99.0'
+  - sh: Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
   
   #Using pip install wxpython on Linux takes waaay too long, so downloading precompiled version instead
   - sh: pip install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04 wxPython

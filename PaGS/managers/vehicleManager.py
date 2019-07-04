@@ -110,9 +110,9 @@ class VehicleManager():
             # matrix.addVehicleLink(self.VehA.name, self.VehA.target_system, self.linkC)
             if self.add_link:
                 #self.add_link(name, target_system, strconnection)
-                self.loop.create_task(self.add_link(name, target_system, strconnection))
+                await self.add_link(name, target_system, strconnection)
 
-    def add_extraLink(self, name: str, strconnection: str):
+    async def add_extraLink(self, name: str, strconnection: str):
         """
         Add an extra link to an existing vehicle
         """
@@ -120,7 +120,7 @@ class VehicleManager():
             raise ValueError('No vehicle with that name')
         else:
             if self.add_link:
-                self.add_link(
+                await self.add_link(
                     name, self.veh_list[name].target_system, strconnection)
 
     async def remove_vehicle(self, name):
@@ -138,7 +138,7 @@ class VehicleManager():
             # remove the link(s)
             if self.remove_link:
                 #await self.remove_link(name)
-                self.loop.create_task(self.remove_link(name))
+                await self.remove_link(name)
                 #await t1
                 #asyncio.ensure_future(self.remove_link(name), loop=self.loop)
 

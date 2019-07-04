@@ -196,7 +196,7 @@ class VehicleTest(asynctest.TestCase):
         await asyncio.sleep(0.02)
         assert self.veh.isConnected == True
 
-        await asyncio.sleep(0.05)
+        await asyncio.sleep(0.10)
         assert self.veh.isConnected == False
 
     async def test_norxheartbeat(self):

@@ -159,8 +159,9 @@ class ModuleManagerTest(asynctest.TestCase):
 
         # get several params
         self.manager.onModuleCommandCallback("VehA", "param show RC*")
-        assert self.getOutText("VehA", 5) == "RC1_MIN          1000"
-        assert self.getOutText("VehA", 6) == "RC2_MAX          2000"
+        allstr = self.getOutText("VehA", 5) + ", " + self.getOutText("VehA", 6)
+        assert "RC1_MIN          1000" in allstr 
+        assert "RC2_MAX          2000" in allstr
 
         # get not existing param
         self.manager.onModuleCommandCallback("VehA", "param show RC5_MAX")
@@ -228,7 +229,8 @@ class ModuleManagerTest(asynctest.TestCase):
         assert os.path.isfile("temp.parm")
         with open('temp.parm', 'r') as myfile:
             data = myfile.read()
-        assert data == "RC1_MIN          1000\nRC2_MAX          2000\n"
+        assert "RC1_MIN          1000\n" in data
+        assert "RC2_MAX          2000\n" in data
 
         # test with space in filename
         self.manager.onModuleCommandCallback("VehA", "param save \"temp 1.parm\"")
@@ -237,7 +239,8 @@ class ModuleManagerTest(asynctest.TestCase):
         assert os.path.isfile("temp 1.parm")
         with open('temp 1.parm', 'r') as myfile:
             data = myfile.read()
-        assert data == "RC1_MIN          1000\nRC2_MAX          2000\n"
+        assert "RC1_MIN          1000\n" in data
+        assert "RC2_MAX          2000\n" in data
 
         # and clean up files
         os.remove("temp.parm")

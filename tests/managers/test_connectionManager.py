@@ -168,7 +168,7 @@ class ConnectionMatrixTest(asynctest.TestCase):
 
 
         # now wait for a bit
-        await asyncio.sleep(0.02)
+        await asyncio.sleep(0.10)
 
         # now connect the other sides
         tcpserver = TCPConnection(rxcallback=self.newpacketcallbackLnk,
@@ -183,7 +183,7 @@ class ConnectionMatrixTest(asynctest.TestCase):
         await self.loop.create_connection(lambda: tcpclient, self.ip, 15020)
 
         # send packets on each link and wait
-        await asyncio.sleep(0.05)
+        await asyncio.sleep(0.10)
 
         pkt = self.mod.MAVLink_heartbeat_message(
             5, 4, 0, 0, 0, int(self.version))
@@ -192,7 +192,7 @@ class ConnectionMatrixTest(asynctest.TestCase):
         tcpserver.send_data(pktbytes)
         tcpclient.send_data(pktbytesone)
 
-        await asyncio.sleep(0.02)
+        await asyncio.sleep(0.10)
 
         await matrix.stoploop()
 
@@ -370,7 +370,7 @@ class ConnectionMatrixTest(asynctest.TestCase):
         await matrix.addVehicleLink(self.VehC.name, self.VehC.target_system, self.linkC)
 
         # now wait for a bit
-        await asyncio.sleep(0.02)
+        await asyncio.sleep(0.10)
 
         # now connect the other sides
         tcpserver = TCPConnection(rxcallback=self.newpacketcallbackLnk,
@@ -391,7 +391,7 @@ class ConnectionMatrixTest(asynctest.TestCase):
                                                  local_addr=(self.ip, 15002))
 
         # send packets on each link and wait
-        await asyncio.sleep(0.05)
+        await asyncio.sleep(0.10)
 
         # send packet from the GCS of VehA, VehB and VehC
         pktbytesA = self.VehA.sendPacket(self.mod.MAVLINK_MSG_ID_HEARTBEAT,
@@ -419,7 +419,7 @@ class ConnectionMatrixTest(asynctest.TestCase):
                                    mavlink_version=int(self.VehC.mavversion))
 
         # wait for packets to send
-        await asyncio.sleep(0.02)
+        await asyncio.sleep(0.10)
 
         # and close everything
         await matrix.stoploop()

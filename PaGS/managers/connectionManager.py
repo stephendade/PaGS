@@ -241,7 +241,7 @@ class ConnectionManager():
             # close link - if running link
             if self.linkdict[link] is not None:
                 #await self.linkdict[link].close()
-                self.loop.create_task(self.linkdict[link].close())
+                self.linkdict[link].close()
             del self.linkdict[link]
             return True
         else:
@@ -267,7 +267,7 @@ class ConnectionManager():
             # close any empty links
             for strconnection, vehdict in self.matrix.items():
                 if not vehdict:
-                    self.removeLink(strconnection)
+                    await self.removeLink(strconnection)
             return True
 
         return False
