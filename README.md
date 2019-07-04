@@ -1,5 +1,6 @@
 # PaGS
 
+
 ## Build Status
 
 ### Windows
@@ -22,9 +23,15 @@
 [build6]: https://appveyor-matrix-badges.herokuapp.com/repos/stephendade/PaGS/branch/master/6
 [build-link]: https://ci.appveyor.com/project/stephendade/PaGS
 
+[![Documentation Status](https://readthedocs.org/projects/pags/badge/?version=latest)](https://pags.readthedocs.io/en/latest/?badge=latest)
+
 ## Introduction
 
 The Python-async Ground Station. A modular multi-vehicle ground station for mavlink-based vehicles
+
+## Introduction
+
+https://PaGS.readthedocs.io/
 
 ## Installing
 
