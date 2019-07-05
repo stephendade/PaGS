@@ -1,6 +1,5 @@
 # PaGS
 
-
 ## Build Status
 
 ### Windows
@@ -27,14 +26,7 @@
 
 ## Introduction
 
-The Python-async Ground Station. A modular multi-vehicle ground station for mavlink-based vehicles
+The Python-async Ground Station. A modular multi-vehicle ground station for mavlink-based vehicles.
 
-## Introduction
+Documentation is at https://PaGS.readthedocs.io/
 
-https://PaGS.readthedocs.io/
-
-## Installing
-
-## Using
-
-## Developing

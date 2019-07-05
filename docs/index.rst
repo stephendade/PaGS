@@ -2,21 +2,14 @@
 Contents
 ========
 
+The Python-async Ground Station. A modular multi-vehicle ground station for mavlink-based vehicles
+
 .. toctree::
    :maxdepth: 2
 
-   readme
    installation
    usage
-   reference/index
    contributing
    authors
    changelog
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
+   reference/index
