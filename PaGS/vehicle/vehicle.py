@@ -106,10 +106,10 @@ class Vehicle():
 
         # Heartbeats (tx and rx)
         self.hbTimeout = 1  # Seconds with no hb packet = no connection
-        self.TimeoutTask = self.loop.create_task(self.waitrxtimeout())
+        self.TimeoutTask = asyncio.ensure_future(self.waitrxtimeout())
         self.timeoflasthb = 0  # time of last rx'd hb
         self.hbInterval = 1  # Seconds between hb sending
-        self.hbTxTask = self.loop.create_task(self.sendHeartbeat())
+        self.hbTxTask = asyncio.ensure_future(self.sendHeartbeat())
 
         # Event linkages for modulemanager
         #self.onPacketRxCallback = None
@@ -308,7 +308,7 @@ class Vehicle():
         if interval > 0:  # restart loop
             await self.stopheartbeat()
             self.hbInterval = interval
-            self.hbTxTask = self.loop.create_task(self.sendHeartbeat())
+            self.hbTxTask = asyncio.ensure_future(self.sendHeartbeat())
         else:
             # disable heartbeat
             await self.stopheartbeat()
@@ -319,7 +319,7 @@ class Vehicle():
         if interval > 0:  # restart loop
             await self.stoprxtimeout()
             self.hbTimeout = interval
-            self.TimeoutTask = self.loop.create_task(self.waitrxtimeout())
+            self.TimeoutTask = asyncio.ensure_future(self.waitrxtimeout())
         else:
             # disable loop
             await self.stoprxtimeout()

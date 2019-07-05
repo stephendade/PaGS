@@ -65,7 +65,7 @@ class Module():
             self.paramframe = ParamGUIFrame()
             self.paramframe.Show()
             app.SetTopWindow(self.paramframe)
-            self.loop.create_task(app.MainLoop())
+            asyncio.ensure_future(app.MainLoop())
 
     def show(self, veh: str, parmname: str):
         """Show a parameter value"""
@@ -99,7 +99,7 @@ class Module():
         elif parmname.upper() not in self.vehObjCallback(veh).params:
             self.printer(veh, "No param with that name")
         else:
-            self.loop.create_task(self.vehObjCallback(
+            asyncio.ensure_future(self.vehObjCallback(
                 veh).setParam(parmname.upper(), parmval))
 
     def save(self, veh: str, filename: str):
@@ -138,7 +138,7 @@ class Module():
 
     def startDownParam(self, veh: str):
         """Download the parameters from the vehicle"""
-        self.loop.create_task(self.vehObjCallback(veh).downloadParams())
+        asyncio.ensure_future(self.vehObjCallback(veh).downloadParams())
 
     def parmStatus(self, veh: str):
         """Download the parameters from the vehicle"""
@@ -161,7 +161,7 @@ class Module():
             self.paramframe.nb.AddPage(self.vehTabs[vehname], vehname)
 
             # add task to load GUI when full param set available
-            self.loop.create_task(self.loadGUI(vehname))
+            asyncio.ensure_future(self.loadGUI(vehname))
 
     def incomingPacket(self, vehname: str, pkt):
         if pkt.get_type() == "PARAM_VALUE" and self.isGUI:

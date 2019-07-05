@@ -95,12 +95,18 @@ class VehicleManagerTest(asynctest.TestCase):
 
         await self.manager.add_vehicle(
             "VehA", 255, 0, 4, 0, self.dialect, self.version, 'tcpclient:127.0.0.1:15001')
+            
+        await asyncio.sleep(0.20)
+        
         assert self.callbacks['linkadd'] == (
             "VehA", 4, 'tcpclient:127.0.0.1:15001')
         assert self.callbacks['vehicleadd'] == ("VehA")
 
         await self.manager.add_vehicle(
             "VehB", 254, 0, 3, 0, self.dialect, self.version, 'tcpserver:127.0.0.1:15020')
+            
+        await asyncio.sleep(0.20)
+        
         assert self.callbacks['linkadd'] == (
             "VehB", 3, 'tcpserver:127.0.0.1:15020')
         assert self.callbacks['vehicleadd'] == ("VehB")
@@ -108,12 +114,14 @@ class VehicleManagerTest(asynctest.TestCase):
         assert len(self.manager.get_vehiclelist()) == 2
 
         await self.manager.remove_vehicle("VehB")
+        await asyncio.sleep(0.20)
 
         assert self.callbacks['linkremove'] == ("VehB")
         assert self.callbacks['vehicleremove'] == ("VehB")
         assert self.manager.get_vehiclelist() == ["VehA"]
 
         await self.manager.remove_vehicle("VehA")
+        await asyncio.sleep(0.20)
 
         assert len(self.manager.get_vehiclelist()) == 0
         assert self.callbacks['linkremove'] == ("VehA")

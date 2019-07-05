@@ -23,6 +23,7 @@ from __future__ import unicode_literals
 import asyncio
 import argparse
 import sys
+import logging
 
 from concurrent.futures import ThreadPoolExecutor
 
@@ -71,6 +72,8 @@ if __name__ == '__main__':
     # Start asyncio
     loop = asyncio.get_event_loop()
     loop.set_default_executor(ThreadPoolExecutor(1000))
+    
+    # logging.basicConfig(level=logging.DEBUG)
 
     # Start the connection maxtrix
     connmtrx = ConnectionManager(loop, args.dialect, args.mav, args.source_system, args.source_component)
@@ -86,8 +89,8 @@ if __name__ == '__main__':
 
     # event links from vehicle manager -> connmatrix
     allvehicles.onPacketBufTxAttach(connmtrx.outgoingPacket)
-    allvehicles.onLinkAddAttach(connmtrx.addVehicleLink)
-    allvehicles.onLinkRemoveAttach(connmtrx.removeLink)
+    asyncio.ensure_future(allvehicles.onLinkAddAttach(connmtrx.addVehicleLink))
+    asyncio.ensure_future(allvehicles.onLinkRemoveAttach(connmtrx.removeLink))
 
     # event links from module manager -> vehicle manager
     modules.onPktTxAttach(allvehicles.send_message)
@@ -119,9 +122,9 @@ if __name__ == '__main__':
             Vehname = "Veh_" + str(connection.split(':')[3])
             cn = connection.split(
                 ':')[0]+":"+connection.split(':')[1]+":"+connection.split(':')[2]
-            allvehicles.add_vehicle(Vehname, args.source_system, args.source_component,
+            asyncio.ensure_future(allvehicles.add_vehicle(Vehname, args.source_system, args.source_component,
                                     connection.split(':')[3], connection.split(':')[4],
-                                    args.dialect, args.mav, cn)
+                                    args.dialect, args.mav, cn))
 
     # Enter the asyncio event loop and wait for a
     # ctrl+c to exit

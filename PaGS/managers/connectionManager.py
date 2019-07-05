@@ -75,7 +75,7 @@ class ConnectionManager():
 
         # create a function to try reconnecting all non-connected links
         # once per n seconds
-        self.looptask = self.loop.create_task(self.reconnectLinks())
+        self.looptask = asyncio.ensure_future(self.reconnectLinks())
 
     def onPacketAttach(self, func):
         """

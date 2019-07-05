@@ -110,7 +110,7 @@ class VehicleManager():
             # matrix.addVehicleLink(self.VehA.name, self.VehA.target_system, self.linkC)
             if self.add_link:
                 #self.add_link(name, target_system, strconnection)
-                await self.add_link(name, target_system, strconnection)
+                asyncio.ensure_future(self.add_link(name, target_system, strconnection))
 
     async def add_extraLink(self, name: str, strconnection: str):
         """
