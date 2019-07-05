@@ -1,3 +1,3 @@
-pytest
-asynctest
-pytest-cov
+pytest == 4.0.2
+asynctest == 0.12.2
+pytest-cov == 2.7.1

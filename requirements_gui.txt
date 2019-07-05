@@ -1,2 +1,2 @@
-wxPython > 4
-wxasync
+wxPython == 4.0.4
+wxasync == 0.4
