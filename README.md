@@ -19,6 +19,7 @@ Linux | [![build4][]][build-link] | [![build5][]][build-link] | [![build6][]][bu
 
 [![Documentation Status](https://readthedocs.org/projects/pags/badge/?version=latest)](https://pags.readthedocs.io/en/latest/?badge=latest)
 [![Requirements Status](https://requires.io/github/stephendade/PaGS/requirements.svg?branch=master)](https://requires.io/github/stephendade/PaGS/requirements/?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/stephendade/PaGS/badge.svg?branch=master)](https://coveralls.io/github/stephendade/PaGS?branch=master)
 
 ## Introduction
 
