@@ -1,4 +1,6 @@
 environment:
+  COVERALLS_REPO_TOKEN:
+    secure: nawPdszJTzIQ4ZSOlJIUcg8VdWOT+da4eB/VKuF6eUTK502B6dNIw+R2DA4OJxWc
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       PYTHON: C:\Python37
@@ -66,13 +68,21 @@ install:
   # Install the PyInstaller test dependencies.
   - pip install -U -r requirements.txt -r requirements_gui.txt -r ./tests/requirements_test.txt
 
+  # For CI - Coveralls.io
+  - pip install -U coveralls
+
+
+
 build_script:
   # Build and install PaGS
   - python setup.py build install --user
 
 test_script:
   # Run pytest
-  - python -m pytest --log-level DEBUG --junitxml=out_report.xml
+  - python -m pytest --log-level DEBUG --junitxml=out_report.xml --cov=PaGS
+
+  # Upload coverage to coveralls
+  - coveralls
 
 on_finish:
 # upload test results to AppVeyor
