@@ -61,7 +61,7 @@ def mode_mapping(pktIn, mavlink, inv: bool):
     mav_type = pktIn.type
     mav_autopilot = pktIn.autopilot
     if mav_autopilot == mavlink.MAV_AUTOPILOT_PX4:
-        return px4_map
+        return mainstate_mapping_px4
     if mav_type is None:
         return None
     map = None
