@@ -363,6 +363,10 @@ class ConnectionMatrixTest(asynctest.TestCase):
         self.VehA.onPacketTxAttach(matrix.outgoingPacket)
         self.VehB.onPacketTxAttach(matrix.outgoingPacket)
         self.VehC.onPacketTxAttach(matrix.outgoingPacket)
+        
+        await self.VehA.setHearbeatRate(0)
+        await self.VehB.setHearbeatRate(0)
+        await self.VehC.setHearbeatRate(0)
 
         await matrix.addVehicleLink(self.VehA.name, self.VehA.target_system, self.linkA)
         await matrix.addVehicleLink(self.VehA.name, self.VehA.target_system, self.linkB)

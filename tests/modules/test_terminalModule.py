@@ -26,7 +26,7 @@ import asyncio
 import asynctest
 import logging
 import pytest
-import io
+import platform
 
 from PaGS.managers import moduleManager
 from PaGS.vehicle.vehicle import Vehicle
@@ -79,10 +79,15 @@ class TerminalModuleTest(asynctest.TestCase):
         self.manager.onVehGetAttach(self.getVehicleCallback)
 
         # won't load in pytest, instead we just watch for the correct exception
-        with pytest.raises(io.UnsupportedOperation) as excinfo:
+        with pytest.raises(Exception) as excinfo:
             self.manager.addModule("PaGS.modules.terminalModule")
 
-        assert "Stdin is not a terminal" in str(excinfo.value)
+        # Appveyor doesn't have a console to display on
+        if excinfo:
+            if platform.system() == "Linux":
+                assert "Stdin is not a terminal" in str(excinfo.value)
+            elif platform.system() == "Windows":
+                assert "No Windows console found" in str(excinfo.value)        
 
     def test_incoming(self):
         """Test incoming packets"""
