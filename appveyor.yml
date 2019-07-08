@@ -54,6 +54,15 @@ install:
   - sh: export DISPLAY=':99.0'
   - sh: Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
   
+  # COM to TCP for serial port testing
+  - ps: |
+      if ($isLinux) {
+        Write-Host "This is Linux!"
+      } else {
+        Start-FileDownload https://github.com/Apollon77/SupportingFiles/raw/master/appveyor/serial/com2tcp.exe
+      }
+  - sh: sudo apt install socat
+  
   #Using pip install wxpython on Linux takes waaay too long, so downloading precompiled version instead
   - sh: pip install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04 wxPython
 
