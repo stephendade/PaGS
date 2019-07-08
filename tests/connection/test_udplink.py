@@ -83,11 +83,11 @@ class UDPLinkTest(asynctest.TestCase):
         client.send_data(pkt.pack(self.mav, force_mavlink1=False))
 
         # need to wait for server to get the packet and establish the transport
-        await asyncio.sleep(0.02)
+        await asyncio.sleep(0.10)
         server.send_data(pkt.pack(self.mav, force_mavlink1=False))
 
-        # wait for 0.02 sec
-        await asyncio.sleep(0.02)
+        # wait for 0.10 sec
+        await asyncio.sleep(0.10)
 
         client.close()
         server.close()
@@ -110,8 +110,8 @@ class UDPLinkTest(asynctest.TestCase):
             5, 4, 0, 0, 0, int(self.version))
         server.send_data(pkt.pack(self.mav, force_mavlink1=False))
 
-        # wait for 0.02 sec
-        await asyncio.sleep(0.02)
+        # wait for 0.10 sec
+        await asyncio.sleep(0.10)
 
         server.close()
 
@@ -135,8 +135,8 @@ class UDPLinkTest(asynctest.TestCase):
             5, 4, 0, 0, 0, int(self.version))
         client.send_data(pkt.pack(self.mav, force_mavlink1=False))
 
-        # wait for 0.02 sec
-        await asyncio.sleep(0.02)
+        # wait for 0.10 sec
+        await asyncio.sleep(0.10)
 
         client.close()
 
@@ -158,8 +158,8 @@ class UDPLinkTest(asynctest.TestCase):
         await self.loop.create_datagram_endpoint(lambda: client,
                                                  remote_addr=(self.ip, self.port))
 
-        # wait for 0.02 sec
-        await asyncio.sleep(0.02)
+        # wait for 0.10 sec
+        await asyncio.sleep(0.10)
 
         # send a mavlink packet each way:
         pkt = self.mod.MAVLink_heartbeat_message(
@@ -170,8 +170,8 @@ class UDPLinkTest(asynctest.TestCase):
         await asyncio.sleep(0.0001)
         server.send_data(corruptdata + packeddata)
 
-        # wait for 0.02 sec
-        await asyncio.sleep(0.02)
+        # wait for 0.10 sec
+        await asyncio.sleep(0.10)
 
         client.close()
         server.close()

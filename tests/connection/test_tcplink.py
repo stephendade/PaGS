@@ -27,7 +27,6 @@ If a link fails (disconnected) the link should not crash.
 '''
 import asyncio
 import asynctest
-
 from PaGS.connection.tcplink import TCPConnection
 from PaGS.mavlink.pymavutil import getpymavlinkpackage
 
@@ -80,8 +79,8 @@ class TCPLinkTest(asynctest.TestCase):
         client.send_data(pkt.pack(self.mav, force_mavlink1=False))
         server.send_data(pkt.pack(self.mav, force_mavlink1=False))
 
-        # wait for 0.02 sec
-        await asyncio.sleep(0.02)
+        # wait for 0.10 sec
+        await asyncio.sleep(0.10)
 
         client.close()
         server.close()
@@ -106,8 +105,8 @@ class TCPLinkTest(asynctest.TestCase):
             5, 4, 0, 0, 0, int(self.version))
         server.send_data(pkt.pack(self.mav, force_mavlink1=False))
 
-        # wait for 0.02 sec
-        await asyncio.sleep(0.02)
+        # wait for 0.10 sec
+        await asyncio.sleep(0.10)
 
         server.close()
 
@@ -132,8 +131,8 @@ class TCPLinkTest(asynctest.TestCase):
             5, 4, 0, 0, 0, int(self.version))
         client.send_data(pkt.pack(self.mav, force_mavlink1=False))
 
-        # wait for 0.02 sec
-        await asyncio.sleep(0.02)
+        # wait for 0.10 sec
+        await asyncio.sleep(0.10)
 
         client.close()
 
@@ -153,8 +152,8 @@ class TCPLinkTest(asynctest.TestCase):
         await self.loop.create_server(lambda: server, self.ip, self.port)
         await self.loop.create_connection(lambda: client, self.ip, self.port)
 
-        # wait for 0.02 sec
-        await asyncio.sleep(0.02)
+        # wait for 0.10 sec
+        await asyncio.sleep(0.10)
 
         # send a mavlink packet each way:
         pkt = self.mod.MAVLink_heartbeat_message(
@@ -164,8 +163,8 @@ class TCPLinkTest(asynctest.TestCase):
         client.send_data(packeddata + corruptdata)
         server.send_data(corruptdata + packeddata)
 
-        # wait for 0.02 sec
-        await asyncio.sleep(0.02)
+        # wait for 0.10 sec
+        await asyncio.sleep(0.10)
 
         client.close()
         server.close()
