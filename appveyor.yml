@@ -64,8 +64,8 @@ install:
       } else {
         Start-FileDownload https://github.com/Apollon77/SupportingFiles/raw/master/appveyor/serial/com2tcp.exe
         Start-FileDownload https://github.com/Apollon77/SupportingFiles/raw/master/appveyor/serial/com0com.cer
-        C:\"Program Files (x86)"\"Windows Kits"\10\bin\certmgr.exe /add com0com.cer /s /r localMachine root
-        C:\"Program Files (x86)"\"Windows Kits"\10\bin\certmgr.exe /add com0com.cer /s /r localMachine trustedpublisher
+        C:\"Program Files (x86)"\"Windows Kits"\10\bin\x64\certmgr.exe /add com0com.cer /s /r localMachine root
+        C:\"Program Files (x86)"\"Windows Kits"\10\bin\x64\certmgr.exe /add com0com.cer /s /r localMachine trustedpublisher
         Start-FileDownload https://github.com/Apollon77/SupportingFiles/raw/master/appveyor/serial/setup_com0com_W7_x64_signed.exe
         $env:CNC_INSTALL_CNCA0_CNCB0_PORTS="YES"
         .\setup_com0com_W7_x64_signed.exe /S
