@@ -89,8 +89,8 @@ class SerialLinkTest(asynctest.TestCase):
                                dialect=self.dialect, mavversion=self.version,
                                srcsystem=0, srccomp=0, server=False, name=self.cname)
         
-        await serial_asyncio.create_serial_connection(self.loop, lambda: server, self.sPort, self.baud)
         await self.loop.create_connection(lambda: client, self.ip, self.port)
+        await serial_asyncio.create_serial_connection(self.loop, lambda: server, self.sPort, self.baud)
         
         # send a mavlink packet each way:
         pkt = self.mod.MAVLink_heartbeat_message(
