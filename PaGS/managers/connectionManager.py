@@ -27,6 +27,8 @@ import asyncio
 import logging
 from contextlib import suppress
 
+import serial_asyncio
+
 from PaGS.connection.udplink import UDPConnection
 from PaGS.connection.tcplink import TCPConnection
 from PaGS.connection.seriallink import SerialConnection
