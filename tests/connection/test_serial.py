@@ -47,11 +47,11 @@ class SerialLinkTest(asynctest.TestCase):
         
         # the serial <-> tcp server process. Will vary depending on OS
         self.serialServer = None
-        if platform.system() == "Linux":
-            self.serialServer = subprocess.Popen('com2tcp.exe', '--ignore-dsr', '--baud', '115200', '--parity', 'e', '\\.\CNCA0', '127.0.0.1', '15001')
+        if platform.system() == "Windows":
+            self.serialServer = subprocess.Popen(['com2tcp.exe', '--ignore-dsr', '--baud', '115200', '--parity', 'e', '\\.\CNCA0', '127.0.0.1', '15001'])
             self.sname = 'serial:CNCA0:115200'
-        elif platform.system() == "Windows":
-            self.serialServer = subprocess.Popen('socat', '-Dxs', 'pty,link=/tmp/virtualcom0,ispeed=115200,ospeed=115200,raw', 'tcp:127.0.0.1:15001')
+        elif platform.system() == "Linux":
+            self.serialServer = subprocess.Popen(['socat', '-Dxs', 'pty,link=/tmp/virtualcom0,ispeed=115200,ospeed=115200,raw', 'tcp:127.0.0.1:15001'])
             self.sname = 'serial:/tmp/virtualcom0:115200'
 
         self.mod = getpymavlinkpackage(self.dialect, self.version)
