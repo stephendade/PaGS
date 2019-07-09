@@ -55,7 +55,7 @@ class SerialLinkTest(asynctest.TestCase):
             self.sname = 'serial:CNCA0:115200'
             self.sPort = 'CNCA0'
         elif platform.system() == "Linux":
-            self.serialServer = subprocess.Popen(['socat', '-Dxs', 'pty,link=/tmp/virtualcom0,ispeed=115200,ospeed=115200,raw', 'tcp:127.0.0.1:15001'])
+            self.serialServer = subprocess.Popen(['socat', '-Dxs', 'pty,link=/tmp/virtualcom0,ispeed=115200,ospeed=115200,raw,waitslave', 'tcp:127.0.0.1:15001'])
             self.sname = 'serial:/tmp/virtualcom0:115200'
             self.sPort = '/tmp/virtualcom0'
 
