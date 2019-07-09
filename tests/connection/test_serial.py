@@ -38,7 +38,7 @@ class SerialLinkTest(asynctest.TestCase):
     Requires a specifc serial virtual port (socat for Linux, com2tcp for Windows)
     """
 
-    def setUp(self):
+    async def setUp(self):
         """Set up some data that is reused in many tests"""
         self.dialect = 'ardupilotmega'
         self.version = 2.0
