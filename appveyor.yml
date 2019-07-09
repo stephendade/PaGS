@@ -55,6 +55,10 @@ install:
   - sh: Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
   
   # COM to TCP for serial port testing
+  - cmd: dir "C:\Program Files (x86)"
+  - cmd: dir "C:\Program Files (x86)\Windows Kits"
+  - cmd: dir "C:\Program Files (x86)\Windows Kits\10"
+  - cmd: dir "C:\Program Files (x86)\Windows Kits\10\bin"
   - ps: |
       if ($isLinux) {
         Write-Host "This is Linux!"
