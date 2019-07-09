@@ -60,6 +60,13 @@ install:
         Write-Host "This is Linux!"
       } else {
         Start-FileDownload https://github.com/Apollon77/SupportingFiles/raw/master/appveyor/serial/com2tcp.exe
+        Start-FileDownload https://github.com/Apollon77/SupportingFiles/raw/master/appveyor/serial/com0com.cer
+        C:\"Program Files (x86)"\"Microsoft SDKs"\Windows\v7.1\Bin\CertMgr.exe /add com0com.cer /s /r localMachine root
+        C:\"Program Files (x86)"\"Microsoft SDKs"\Windows\v7.1\Bin\CertMgr.exe /add com0com.cer /s /r localMachine trustedpublisher
+        Start-FileDownload https://github.com/Apollon77/SupportingFiles/raw/master/appveyor/serial/setup_com0com_W7_x64_signed.exe
+        $env:CNC_INSTALL_CNCA0_CNCB0_PORTS="YES"
+        .\setup_com0com_W7_x64_signed.exe /S
+        sleep 10
       }
   - sh: sudo apt install socat
   
