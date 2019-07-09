@@ -40,7 +40,8 @@ class SerialLinkTest(asynctest.TestCase):
         """Set up some data that is reused in many tests"""
         self.dialect = 'ardupilotmega'
         self.version = 2.0
-        self.port = '127.0.0.1'
+        self.ip = '127.0.0.1'
+        self.port = 15001
         self.baud = 115200
         self.cname = 'tcpclient:127.0.0.1:15001'
         self.sname = None
@@ -50,9 +51,11 @@ class SerialLinkTest(asynctest.TestCase):
         if platform.system() == "Windows":
             self.serialServer = subprocess.Popen(['com2tcp.exe', '--ignore-dsr', '--baud', '115200', '--parity', 'e', '\\.\CNCA0', '127.0.0.1', '15001'])
             self.sname = 'serial:CNCA0:115200'
+            self.sPort = 'CNCA0'
         elif platform.system() == "Linux":
             self.serialServer = subprocess.Popen(['socat', '-Dxs', 'pty,link=/tmp/virtualcom0,ispeed=115200,ospeed=115200,raw', 'tcp:127.0.0.1:15001'])
             self.sname = 'serial:/tmp/virtualcom0:115200'
+            self.sPort = '/tmp/virtualcom0'
 
         self.mod = getpymavlinkpackage(self.dialect, self.version)
         self.mav = self.mod.MAVLink(
@@ -85,22 +88,23 @@ class SerialLinkTest(asynctest.TestCase):
                                srcsystem=0, srccomp=0, server=False, name=self.cname)
 
         await self.loop.create_connection(lambda: client, self.ip, self.port)
+        await self.loop.create_serial_connection(lambda: server, self.sPort, self.baud)
 
         # send a mavlink packet each way:
         pkt = self.mod.MAVLink_heartbeat_message(
             5, 4, 0, 0, 0, int(self.version))
         client.send_data(pkt.pack(self.mav, force_mavlink1=False))
-        #server.send_data(pkt.pack(self.mav, force_mavlink1=False))
+        server.send_data(pkt.pack(self.mav, force_mavlink1=False))
 
         # wait for 0.10 sec
         await asyncio.sleep(0.10)
 
         client.close()
-        #server.close()
+        server.close()
 
         # Assert the packets were sent
-        #assert self.cnum == 1
-        #assert self.snum == 1
+        assert self.cnum == 1
+        assert self.snum == 1
 
 
 if __name__ == '__main__':
