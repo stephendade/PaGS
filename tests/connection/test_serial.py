@@ -89,7 +89,7 @@ class SerialLinkTest(asynctest.TestCase):
                                dialect=self.dialect, mavversion=self.version,
                                srcsystem=0, srccomp=0, server=True, name=self.cname)
         
-        stdout = serialServer.communicate()[0]
+        stdout = self.serialServer.communicate()[0]
         print(stdout)
         
         await self.loop.create_server(lambda: client, self.ip, self.port)
