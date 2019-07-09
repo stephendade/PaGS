@@ -24,6 +24,8 @@ import asynctest
 import platform
 import subprocess
 
+import serial_asyncio
+
 from PaGS.connection.seriallink import SerialConnection
 from PaGS.connection.tcplink import TCPConnection
 from PaGS.mavlink.pymavutil import getpymavlinkpackage
