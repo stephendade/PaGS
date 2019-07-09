@@ -73,12 +73,12 @@ class SerialLinkTest(asynctest.TestCase):
             elif strconnection == self.sname:
                 self.snum += 1
 
-    async def test_link_tcp(self):
+    async def test_link_serial(self):
         """Test passing data between two tcplink connections"""
         # server = SerialConnection
         server = SerialConnection(rxcallback=self.newpacketcallback,
                                dialect=self.dialect, mavversion=self.version,
-                               srcsystem=0, srccomp=0, server=False, name=self.sname)
+                               srcsystem=0, srccomp=0, name=self.sname)
                                
         client = TCPConnection(rxcallback=self.newpacketcallback,
                                dialect=self.dialect, mavversion=self.version,
