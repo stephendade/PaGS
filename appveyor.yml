@@ -63,10 +63,10 @@ install:
       if ($isLinux) {
         Write-Host "This is Linux!"
       } else {
-        C:\"Program Files (x86)"\"Windows Kits"\10\bin\x64\certmgr.exe /add ".\tests\test support\com0com.cer" /s /r localMachine root
-        C:\"Program Files (x86)"\"Windows Kits"\10\bin\x64\certmgr.exe /add ".\tests\test support\com0com.cer" /s /r localMachine trustedpublisher
+        C:\"Program Files (x86)"\"Windows Kits"\10\bin\x64\certmgr.exe /add .\tests\support\com0com.cer /s /r localMachine root
+        C:\"Program Files (x86)"\"Windows Kits"\10\bin\x64\certmgr.exe /add .\tests\support\com0com.cer /s /r localMachine trustedpublisher
         $env:CNC_INSTALL_CNCA0_CNCB0_PORTS="YES"
-        ".\tests\test support\setup_com0com_W7_x64_signed.exe" /S
+        .\tests\support\setup_com0com_W7_x64_signed.exe /S
         sleep 10
       }
   - sh: sudo apt install socat
