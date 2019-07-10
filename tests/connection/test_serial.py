@@ -49,7 +49,7 @@ class SerialLinkTest(asynctest.TestCase):
         self.sname = None
 
         # For subprocess support under Windows
-        asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+        # asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
         
         # the serial <-> tcp server process. Will vary depending on OS
         self.serialServer = None
