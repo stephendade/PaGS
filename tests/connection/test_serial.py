@@ -66,8 +66,8 @@ class SerialLinkTest(asynctest.TestCase):
         """Close down the test"""
         if self.serialServer:
             self.serialServer.terminate()
-        line = await self.SerialServer.stdout.readline()
-        print('SerialServer: {!r}'.format(line))
+        line = await self.serialServer.stdout.readline()
+        print('serialServer: {!r}'.format(line))
         
     def newpacketcallback(self, pkt, strconnection):
         """Callback when a link has a new packet"""
@@ -84,14 +84,14 @@ class SerialLinkTest(asynctest.TestCase):
             # self.serialServer = subprocess.Popen(['com2tcp.exe', '--ignore-dsr', '--baud', '115200', '--parity', 'e', '\\.\CNCA0', '127.0.0.1', '15001'], stdout=subprocess.PIPE)
             self.serialServer = await asyncio.create_subprocess_shell('com2tcp.exe --ignore-dsr --baud 115200 --parity e \\.\CNCA0 127.0.0.1 15001', stdout=asyncio.subprocess.PIPE)
             print('process started {}'.format(self.serialServer.pid))
-            self.sname = 'serial:CNCB0:115200'
+            self.sname = 'serial:\\.\CNCA0:115200'
             self.sPort = 'CNCB0'
         elif platform.system() == "Linux":
             # self.serialServer = subprocess.Popen(['socat', '-Dxs', 'pty,link=/tmp/virtualcom0,ispeed=115200,ospeed=115200,raw,waitslave', 'tcp:127.0.0.1:15001'], stdout=subprocess.PIPE)
-            self.serialServer = await asyncio.create_subprocess_shell('socat -Dxs pty,link=/tmp/virtualcom0,ispeed=115200,ospeed=115200,raw,waitslave tcp:127.0.0.1:15001', stdout=asyncio.subprocess.PIPE)
+            self.serialServer = await asyncio.create_subprocess_shell('socat -Dxs pty,link=/home/appveyor/projects/virtualcom0,ispeed=115200,ospeed=115200,raw,waitslave tcp:127.0.0.1:15001', stdout=asyncio.subprocess.PIPE)
             print('process started {}'.format(self.serialServer.pid))
-            self.sname = 'serial:/tmp/virtualcom0:115200'
-            self.sPort = '/tmp/virtualcom0'
+            self.sname = 'serial:/home/appveyor/projects/virtualcom0:115200'
+            self.sPort = '/home/appveyor/projects/virtualcom0'
             
         # server = SerialConnection
         server = SerialConnection(rxcallback=self.newpacketcallback,
