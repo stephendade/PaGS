@@ -47,7 +47,7 @@ class SerialLinkTest(asynctest.TestCase):
         self.baud = 115200
         self.cname = 'tcpclient:127.0.0.1:15001'
         self.sname = None
-        
+
         # the serial <-> tcp server process. Will vary depending on OS
         # Based on https://github.com/Apollon77/SupportingFiles/blob/master/README_SERIAL_TESTING.md
         self.serialServer = None
@@ -57,8 +57,8 @@ class SerialLinkTest(asynctest.TestCase):
             self.sPort = '\\\\.\\CNCB0'
         elif platform.system() == "Linux":
             self.serialServer = subprocess.Popen(['socat', '-Dxs', 'pty,link=/tmp/virtualcom0,ispeed=115200,ospeed=115200,raw,waitslave', 'tcp:127.0.0.1:15001'], stdout=subprocess.PIPE)
-            self.sname = 'serial:/home/appveyor/projects/virtualcom0:115200'
-            self.sPort = '/home/appveyor/projects/virtualcom0'
+            self.sname = 'serial:/tmp/virtualcom0:115200'
+            self.sPort = '/tmp/virtualcom0'
 
         self.mod = getpymavlinkpackage(self.dialect, self.version)
         self.mav = self.mod.MAVLink(
@@ -70,7 +70,7 @@ class SerialLinkTest(asynctest.TestCase):
         """Close down the test"""
         if self.serialServer:
             self.serialServer.terminate()
-        
+
     def newpacketcallback(self, pkt, strconnection):
         """Callback when a link has a new packet"""
         if pkt.get_type() == 'HEARTBEAT':
@@ -81,22 +81,24 @@ class SerialLinkTest(asynctest.TestCase):
 
     async def test_link_serial(self):
         """Test passing data between two tcplink connections"""
-            
+
         # server = SerialConnection
         server = SerialConnection(rxcallback=self.newpacketcallback,
                                dialect=self.dialect, mavversion=self.version,
                                srcsystem=0, srccomp=0, name=self.sname)
-                               
+
         client = TCPConnection(rxcallback=self.newpacketcallback,
                                dialect=self.dialect, mavversion=self.version,
                                srcsystem=0, srccomp=0, server=True, name=self.cname)
-        
-        await self.loop.create_server(lambda: client, self.ip, self.port)
-        await serial_asyncio.create_serial_connection(self.loop, lambda: server, self.sPort, self.baud)
 
-        # wait for 0.30 sec
-        await asyncio.sleep(0.30)
-        
+        await asyncio.sleep(0.01)
+
+        await serial_asyncio.create_serial_connection(self.loop, lambda: server, self.sPort, self.baud)
+        await self.loop.create_server(lambda: client, self.ip, self.port)
+
+        # wait for 1.00 sec
+        await asyncio.sleep(1.0)
+
         # send a mavlink packet each way:
         pkt = self.mod.MAVLink_heartbeat_message(
             5, 4, 0, 0, 0, int(self.version))
