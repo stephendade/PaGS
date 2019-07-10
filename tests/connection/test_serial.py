@@ -38,7 +38,7 @@ class SerialLinkTest(asynctest.TestCase):
     Requires a specifc serial virtual port (socat for Linux, com2tcp for Windows)
     """
 
-    async def setUp(self):
+    def setUp(self):
         """Set up some data that is reused in many tests"""
         self.dialect = 'ardupilotmega'
         self.version = 2.0
@@ -55,6 +55,31 @@ class SerialLinkTest(asynctest.TestCase):
         
         # the serial <-> tcp server process. Will vary depending on OS
         self.serialServer = None
+
+        self.mod = getpymavlinkpackage(self.dialect, self.version)
+        self.mav = self.mod.MAVLink(
+            self, srcSystem=0, srcComponent=0, use_native=False)
+        self.cnum = 0
+        self.snum = 0
+
+    async def tearDown(self):
+        """Close down the test"""
+        if self.serialServer:
+            self.serialServer.terminate()
+        line = await self.SerialServer.stdout.readline()
+        print('SerialServer: {!r}'.format(line))
+        
+    def newpacketcallback(self, pkt, strconnection):
+        """Callback when a link has a new packet"""
+        if pkt.get_type() == 'HEARTBEAT':
+            if strconnection == self.cname:
+                self.cnum += 1
+            elif strconnection == self.sname:
+                self.snum += 1
+
+    async def test_link_serial(self):
+        """Test passing data between two tcplink connections"""
+        
         if platform.system() == "Windows":
             # self.serialServer = subprocess.Popen(['com2tcp.exe', '--ignore-dsr', '--baud', '115200', '--parity', 'e', '\\.\CNCA0', '127.0.0.1', '15001'], stdout=subprocess.PIPE)
             self.serialServer = await asyncio.create_subprocess_shell('com2tcp.exe --ignore-dsr --baud 115200 --parity e \\.\CNCA0 127.0.0.1 15001', stdout=asyncio.subprocess.PIPE)
@@ -67,28 +92,7 @@ class SerialLinkTest(asynctest.TestCase):
             print('process started {}'.format(self.serialServer.pid))
             self.sname = 'serial:/tmp/virtualcom0:115200'
             self.sPort = '/tmp/virtualcom0'
-
-        self.mod = getpymavlinkpackage(self.dialect, self.version)
-        self.mav = self.mod.MAVLink(
-            self, srcSystem=0, srcComponent=0, use_native=False)
-        self.cnum = 0
-        self.snum = 0
-
-    async def tearDown(self):
-        """Close down the test"""
-        if self.serialServer:
-            self.serialServer.terminate()
-        
-    def newpacketcallback(self, pkt, strconnection):
-        """Callback when a link has a new packet"""
-        if pkt.get_type() == 'HEARTBEAT':
-            if strconnection == self.cname:
-                self.cnum += 1
-            elif strconnection == self.sname:
-                self.snum += 1
-
-    async def test_link_serial(self):
-        """Test passing data between two tcplink connections"""
+            
         # server = SerialConnection
         server = SerialConnection(rxcallback=self.newpacketcallback,
                                dialect=self.dialect, mavversion=self.version,
@@ -97,9 +101,6 @@ class SerialLinkTest(asynctest.TestCase):
         client = TCPConnection(rxcallback=self.newpacketcallback,
                                dialect=self.dialect, mavversion=self.version,
                                srcsystem=0, srccomp=0, server=True, name=self.cname)
-        
-        #line = self.SerialServer.stdout.readline()
-        #print('read {!r}'.format(line))
         
         await self.loop.create_server(lambda: client, self.ip, self.port)
         await serial_asyncio.create_serial_connection(self.loop, lambda: server, self.sPort, self.baud)
