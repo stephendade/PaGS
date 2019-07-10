@@ -27,6 +27,8 @@ import asyncio
 import logging
 from contextlib import suppress
 
+import serial_asyncio
+
 from PaGS.connection.udplink import UDPConnection
 from PaGS.connection.tcplink import TCPConnection
 from PaGS.connection.seriallink import SerialConnection
@@ -148,7 +150,7 @@ class ConnectionManager():
                                            srcsystem=self.sourceSystem,
                                            srccomp=self.sourceComponent,
                                            name=strconnection)
-                trans = self.loop.create_serial_connection(
+                trans = serial_asyncio.create_serial_connection(self.loop, 
                     lambda: newlink, constr[1], int(constr[2]))
                 await asyncio.wait_for(trans, timeout=0.2)
             elif constr[0] == "tcpclient":
