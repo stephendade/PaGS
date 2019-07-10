@@ -49,9 +49,10 @@ class SerialLinkTest(asynctest.TestCase):
         self.sname = None
         
         # the serial <-> tcp server process. Will vary depending on OS
+        # Based on https://github.com/Apollon77/SupportingFiles/blob/master/README_SERIAL_TESTING.md
         self.serialServer = None
         if platform.system() == "Windows":
-            self.serialServer = subprocess.Popen(['com2tcp.exe', '--ignore-dsr', '--baud', '115200', '--parity', 'e', '\\\\.\\CNCA0', '127.0.0.1', '15001'], stdout=subprocess.PIPE)
+            self.serialServer = subprocess.Popen(['.\\tests\\\test support\\com2tcp.exe', '--ignore-dsr', '--baud', '115200', '--parity', 'e', '\\\\.\\CNCA0', '127.0.0.1', '15001'], stdout=subprocess.PIPE)
             self.sname = 'serial:\\\\.\\CNCB0:115200'
             self.sPort = '\\\\.\\CNCB0'
         elif platform.system() == "Linux":
