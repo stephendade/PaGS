@@ -51,19 +51,20 @@ class SerialLinkTest(asynctest.TestCase):
         # For subprocess support under Windows
         if platform.system() == "Windows":
             asyncio.set_event_loop(asyncio.ProactorEventLoop())
+            self.loop = asyncio.get_event_loop()
         
         # the serial <-> tcp server process. Will vary depending on OS
         self.serialServer = None
         if platform.system() == "Windows":
             # self.serialServer = subprocess.Popen(['com2tcp.exe', '--ignore-dsr', '--baud', '115200', '--parity', 'e', '\\.\CNCA0', '127.0.0.1', '15001'], stdout=subprocess.PIPE)
             self.serialServer = await asyncio.create_subprocess_shell('com2tcp.exe --ignore-dsr --baud 115200 --parity e \\.\CNCA0 127.0.0.1 15001', stdout=asyncio.subprocess.PIPE)
-            print('process started {}'.format(self.proc.pid))
+            print('process started {}'.format(self.serialServer.pid))
             self.sname = 'serial:CNCB0:115200'
             self.sPort = 'CNCB0'
         elif platform.system() == "Linux":
             # self.serialServer = subprocess.Popen(['socat', '-Dxs', 'pty,link=/tmp/virtualcom0,ispeed=115200,ospeed=115200,raw,waitslave', 'tcp:127.0.0.1:15001'], stdout=subprocess.PIPE)
             self.serialServer = await asyncio.create_subprocess_shell('socat -Dxs pty,link=/tmp/virtualcom0,ispeed=115200,ospeed=115200,raw,waitslave tcp:127.0.0.1:15001', stdout=asyncio.subprocess.PIPE)
-            print('process started {}'.format(self.proc.pid))
+            print('process started {}'.format(self.serialServer.pid))
             self.sname = 'serial:/tmp/virtualcom0:115200'
             self.sPort = '/tmp/virtualcom0'
 
