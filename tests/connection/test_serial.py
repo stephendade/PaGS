@@ -22,7 +22,7 @@ If a link fails (disconnected) the link should not crash.
 import asyncio
 import asynctest
 import platform
-import asyncio.subprocess
+import subprocess
 
 import serial_asyncio
 
@@ -47,14 +47,17 @@ class SerialLinkTest(asynctest.TestCase):
         self.baud = 115200
         self.cname = 'tcpclient:127.0.0.1:15001'
         self.sname = None
-
-        # For subprocess support under Windows
-        if platform.system() == "Windows":
-            asyncio.set_event_loop(asyncio.ProactorEventLoop())
-            self.loop = asyncio.get_event_loop()
         
         # the serial <-> tcp server process. Will vary depending on OS
         self.serialServer = None
+        if platform.system() == "Windows":
+            self.serialServer = subprocess.Popen(['com2tcp.exe', '--ignore-dsr', '--baud', '115200', '--parity', 'e', '\\\\.\\CNCA0', '127.0.0.1', '15001'], stdout=subprocess.PIPE)
+            self.sname = 'serial:\\\\.\\CNCB0:115200'
+            self.sPort = '\\\\.\\CNCB0'
+        elif platform.system() == "Linux":
+            self.serialServer = subprocess.Popen(['socat', '-Dxs', 'pty,link=/tmp/virtualcom0,ispeed=115200,ospeed=115200,raw,waitslave', 'tcp:127.0.0.1:15001'], stdout=subprocess.PIPE)
+            self.sname = 'serial:/home/appveyor/projects/virtualcom0:115200'
+            self.sPort = '/home/appveyor/projects/virtualcom0'
 
         self.mod = getpymavlinkpackage(self.dialect, self.version)
         self.mav = self.mod.MAVLink(
@@ -66,8 +69,6 @@ class SerialLinkTest(asynctest.TestCase):
         """Close down the test"""
         if self.serialServer:
             self.serialServer.terminate()
-        line = await self.serialServer.stdout.readline()
-        print('serialServer: {!r}'.format(line))
         
     def newpacketcallback(self, pkt, strconnection):
         """Callback when a link has a new packet"""
@@ -79,19 +80,6 @@ class SerialLinkTest(asynctest.TestCase):
 
     async def test_link_serial(self):
         """Test passing data between two tcplink connections"""
-        
-        if platform.system() == "Windows":
-            # self.serialServer = subprocess.Popen(['com2tcp.exe', '--ignore-dsr', '--baud', '115200', '--parity', 'e', '\\.\CNCA0', '127.0.0.1', '15001'], stdout=subprocess.PIPE)
-            self.serialServer = await asyncio.create_subprocess_shell('com2tcp.exe --ignore-dsr --baud 115200 --parity e \\.\CNCA0 127.0.0.1 15001', stdout=asyncio.subprocess.PIPE)
-            print('process started {}'.format(self.serialServer.pid))
-            self.sname = 'serial:\\.\CNCA0:115200'
-            self.sPort = 'CNCB0'
-        elif platform.system() == "Linux":
-            # self.serialServer = subprocess.Popen(['socat', '-Dxs', 'pty,link=/tmp/virtualcom0,ispeed=115200,ospeed=115200,raw,waitslave', 'tcp:127.0.0.1:15001'], stdout=subprocess.PIPE)
-            self.serialServer = await asyncio.create_subprocess_shell('socat -Dxs pty,link=/home/appveyor/projects/virtualcom0,ispeed=115200,ospeed=115200,raw,waitslave tcp:127.0.0.1:15001', stdout=asyncio.subprocess.PIPE)
-            print('process started {}'.format(self.serialServer.pid))
-            self.sname = 'serial:/home/appveyor/projects/virtualcom0:115200'
-            self.sPort = '/home/appveyor/projects/virtualcom0'
             
         # server = SerialConnection
         server = SerialConnection(rxcallback=self.newpacketcallback,
@@ -104,6 +92,9 @@ class SerialLinkTest(asynctest.TestCase):
         
         await self.loop.create_server(lambda: client, self.ip, self.port)
         await serial_asyncio.create_serial_connection(self.loop, lambda: server, self.sPort, self.baud)
+
+        # wait for 0.30 sec
+        await asyncio.sleep(0.30)
         
         # send a mavlink packet each way:
         pkt = self.mod.MAVLink_heartbeat_message(
@@ -111,8 +102,8 @@ class SerialLinkTest(asynctest.TestCase):
         client.send_data(pkt.pack(self.mav, force_mavlink1=False))
         server.send_data(pkt.pack(self.mav, force_mavlink1=False))
 
-        # wait for 0.10 sec
-        await asyncio.sleep(0.10)
+        # wait for 0.30 sec
+        await asyncio.sleep(0.30)
 
         client.close()
         server.close()
