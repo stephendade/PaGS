@@ -5,14 +5,14 @@ Development
 Installing
 ----------
 
-See the [Installing](installation.md) section
+See the :doc:`./installation` section
 
 Testing and CI
 --------------
 
 All tests are in the ``./tests`` folder.
 
-Windows users will need the [com0com](https://github.com/stephendade/PaGS/raw/master/tests/support/setup_com0com_W7_x64_signed.exe) software.
+Windows users will need the `com0com <https://github.com/stephendade/PaGS/raw/master/tests/support/setup_com0com_W7_x64_signed.exe>`_ software.
 
 Linux users will need socat installed via `sudo apt install socat``
 
@@ -21,9 +21,9 @@ Tests can be run via::
     python setup.py build install --user
     py.test --log-level DEBUG
 
-The CI uses [Appveyor](https://ci.appveyor.com/project/stephendade/PaGS) to run a build matrix of Windows/Linux and Python 3.5/3.6/3.7. So 6 runs total.
+The CI uses `Appveyor <https://ci.appveyor.com/project/stephendade/PaGS>`_ to run a build matrix of Windows/Linux and Python 3.5/3.6/3.7. So 6 runs total.
 
-[Coveralls](https://coveralls.io/github/stephendade/PaGS?branch=master) is used to check the test coverage.
+`Coveralls <https://coveralls.io/github/stephendade/PaGS?branch=master>`_ is used to check the test coverage.
 
 Modules
 -------

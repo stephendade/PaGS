@@ -2,9 +2,9 @@
 Introduction
 ============
 
-PAGS (Python-async Ground Station) is a ground station software suite for [MAVLink-based](https://mavlink.io/en/) autonomous vehicles, including [Ardupilot](http://ardupilot.org/) based vehicles.
+PAGS (Python-async Ground Station) is a ground station software suite for `MAVLink-based <https://mavlink.io/en/>`_ autonomous vehicles, including `Ardupilot <http://ardupilot.org/>`_ based vehicles.
 
-It is inspired by the [MAVProxy](http://ardupilot.github.io/MAVProxy/html/index.html) GCS, and features a similar module-based architecture.
+It is inspired by the `MAVProxy <http://ardupilot.github.io/MAVProxy/html/index.html>`_ GCS, and features a similar module-based architecture.
 
 The "async" comes from PAGS being entirely based on the asyncio library in Python. This allows for efficient asynchonous processing between the modules and links.
 
@@ -23,13 +23,13 @@ General Features:
 .. note::
    PAGS is still an early work in progress. Many features expected of a GCS are not currently present.
 
-   .. toctree::
-   :maxdepth: 2
+.. toctree::
+    :maxdepth: 2
 
-   installation
-   usage
-   contributing
-   development
-   authors
-   changelog
-   reference/index
+    installation
+    usage
+    contributing
+    development
+    authors
+    changelog
+    reference/index
