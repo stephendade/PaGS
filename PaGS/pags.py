@@ -48,6 +48,86 @@ class RedirPrint(object):
         #you might want to specify some extra behavior here.
         pass
 
+class pags():
+    """
+    A single PaGS instance
+    """
+    def __init__(self, dialect, mav, source_system, source_component, nogui, multi, source, loop, initialModules):
+        """
+        Start up PaGS
+        """
+        
+        # logging.basicConfig(level=logging.DEBUG)
+        self.loop = loop
+
+        # Start the connection maxtrix
+        self.connmtrx = ConnectionManager(self.loop, dialect, mav, source_system, source_component)
+
+        # Dict of vehicles
+        self.allvehicles = VehicleManager(self.loop)
+
+        # Module manager
+        self.modules = moduleManager.moduleManager(self.loop, dialect, mav, not nogui)
+
+        # event links from connmaxtrix -> vehicle manager
+        self.connmtrx.onPacketAttach(self.allvehicles.onPacketRecieved)
+
+        # event links from vehicle manager -> connmatrix
+        self.allvehicles.onPacketBufTxAttach(self.connmtrx.outgoingPacket)
+        asyncio.ensure_future(self.allvehicles.onLinkAddAttach(self.connmtrx.addVehicleLink))
+        asyncio.ensure_future(self.allvehicles.onLinkRemoveAttach(self.connmtrx.removeLink))
+
+        # event links from module manager -> vehicle manager
+        self.modules.onPktTxAttach(self.allvehicles.send_message)
+        self.modules.onVehListAttach(self.allvehicles.get_vehiclelist)
+        self.modules.onVehGetAttach(self.allvehicles.get_vehicle)
+
+        # event links vehicle manager -> module manager
+        self.allvehicles.onAddVehicleAttach(self.modules.addVehicle)
+        self.allvehicles.onRemoveVehicleAttach(self.modules.removeVehicle)
+        self.allvehicles.onPacketRxAttach(self.modules.incomingPacket)
+
+        # Need to load initial modules
+        for m in initialModules:
+            self.modules.addModule(m)
+
+        # redirect stdout to the terminal printer, if loaded
+        # Thus print() can be used properly
+        if self.modules.multiModules.get('modules.terminalModule'):
+            sys.stdout = RedirPrint(self.modules.multiModules.get('modules.terminalModule').print)
+
+        # Single or multi-vehicle?
+        if multi != "":
+            # TODO: figure out multivehicle parsing file
+            pass
+        else:
+            # Create vehicles and links
+            # Each sysID is assumed to be a different vehicle
+            # Multiple links with the same sysid will create a multilink vehicle
+            for connection in source:
+                Vehname = "Veh_" + str(connection.split(':')[3])
+                cn = connection.split(
+                    ':')[0]+":"+connection.split(':')[1]+":"+connection.split(':')[2]
+                asyncio.ensure_future(self.allvehicles.add_vehicle(Vehname, source_system, source_component,
+                                        connection.split(':')[3], connection.split(':')[4],
+                                        dialect, mav, cn))
+        
+    def close(self):
+        """
+        Cleanly shutdown a pags instance
+        """
+        
+        # shutdown all the modules
+        self.modules.closeAllModules()
+
+        # Shutdown all the running tasks
+        for veh in self.allvehicles.get_vehiclelist():
+            self.loop.run_until_complete(self.allvehicles.get_vehicle(veh).stopheartbeat())
+            self.loop.run_until_complete(self.allvehicles.get_vehicle(veh).stoprxtimeout())
+
+        self.loop.run_until_complete(self.connmtrx.stoploop())
+
+     
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description="MAVLink ground station")
@@ -69,81 +149,21 @@ if __name__ == '__main__':
                         action="store_true")
     args = parser.parse_args()
 
-    # Start asyncio
+    # Start asyncio, if needed
     loop = asyncio.get_event_loop()
     loop.set_default_executor(ThreadPoolExecutor(1000))
     
-    # logging.basicConfig(level=logging.DEBUG)
-
-    # Start the connection maxtrix
-    connmtrx = ConnectionManager(loop, args.dialect, args.mav, args.source_system, args.source_component)
-
-    # Dict of vehicles
-    allvehicles = VehicleManager(loop)
-
-    # Module manager
-    modules = moduleManager.moduleManager(loop, args.dialect, args.mav, not args.nogui)
-
-    # event links from connmaxtrix -> vehicle manager
-    connmtrx.onPacketAttach(allvehicles.onPacketRecieved)
-
-    # event links from vehicle manager -> connmatrix
-    allvehicles.onPacketBufTxAttach(connmtrx.outgoingPacket)
-    asyncio.ensure_future(allvehicles.onLinkAddAttach(connmtrx.addVehicleLink))
-    asyncio.ensure_future(allvehicles.onLinkRemoveAttach(connmtrx.removeLink))
-
-    # event links from module manager -> vehicle manager
-    modules.onPktTxAttach(allvehicles.send_message)
-    modules.onVehListAttach(allvehicles.get_vehiclelist)
-    modules.onVehGetAttach(allvehicles.get_vehicle)
-
-    # event links vehicle manager -> module manager
-    allvehicles.onAddVehicleAttach(modules.addVehicle)
-    allvehicles.onRemoveVehicleAttach(modules.removeVehicle)
-    allvehicles.onPacketRxAttach(modules.incomingPacket)
-
-    # Need to load the terminal UI
-    modules.addModule("modules.terminalModule")
-    modules.addModule("modules.paramModule")
-
-    # redirect stdout to the terminal printer
-    # Thus print() can be used properly
-    sys.stdout = RedirPrint(modules.multiModules.get('modules.terminalModule').print)
-
-    # Single or multi-vehicle?
-    if args.multi != "":
-        # TODO: figure out multivehicle parsing file
-        pass
-    else:
-        # Create vehicles and links
-        # Each sysID is assumed to be a different vehicle
-        # Multiple links with the same sysid will create a multilink vehicle
-        for connection in args.source:
-            Vehname = "Veh_" + str(connection.split(':')[3])
-            cn = connection.split(
-                ':')[0]+":"+connection.split(':')[1]+":"+connection.split(':')[2]
-            asyncio.ensure_future(allvehicles.add_vehicle(Vehname, args.source_system, args.source_component,
-                                    connection.split(':')[3], connection.split(':')[4],
-                                    args.dialect, args.mav, cn))
+    # Any modules to load on startup
+    initialModules = ["modules.terminalModule", "modules.paramModule"]
+        
+    main = pags(args.dialect, args.mav, args.source_system, args.source_component, args.nogui, args.multi, args.source, loop, initialModules)
 
     # Enter the asyncio event loop and wait for a
     # ctrl+c to exit
     try:
         loop.run_forever()
     except KeyboardInterrupt:
-        # shutdown all the modules
-        modules.closeAllModules()
-
-        # Shutdown all the running tasks
-        for veh in allvehicles.get_vehiclelist():
-            loop.run_until_complete(allvehicles.get_vehicle(veh).stopheartbeat())
-            loop.run_until_complete(allvehicles.get_vehicle(veh).stoprxtimeout())
-
-        #for veh in allvehicles.get_vehiclelist():
-        #    loop.run_until_complete(allvehicles.remove_vehicle(veh))
-
-        loop.run_until_complete(connmtrx.stoploop())
-
+        main.close()
         for task in asyncio.Task.all_tasks():
             task.cancel()
 
