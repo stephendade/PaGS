@@ -107,6 +107,9 @@ build_script:
 test_script:
   # Run pytest
   - python -m pytest --log-level DEBUG --junitxml=out_report.xml --cov=PaGS
+  
+  # Check pep8 compliance
+  - python -m pytest --flake8
 
   # Upload coverage to coveralls
   - coveralls
