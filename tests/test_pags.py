@@ -23,6 +23,7 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 Integrated tests of the main program
 
 '''
+
 import asyncio
 import asynctest
 
@@ -41,7 +42,7 @@ class IntegratedTest(asynctest.TestCase):
         self.version = 2.0
         self.port = 15000
         self.ip = "127.0.0.1"
-        
+
         self.source_system = 255
         self.source_component = 0
         self.nogui = True
@@ -50,14 +51,23 @@ class IntegratedTest(asynctest.TestCase):
 
     def tearDown(self):
         self.pagsInstance.close()
-        
+
     async def test_pagsNoGUI(self):
         """
         Startup an instance without a GUI
         """
         initModules = []
-        self.pagsInstance = pags(self.dialect, self.version, self.source_system, self.source_component, self.nogui, self.multi, self.source, self.loop, initModules)
-        
+        self.pagsInstance = pags(
+            self.dialect,
+            self.version,
+            self.source_system,
+            self.source_component,
+            self.nogui,
+            self.multi,
+            self.source,
+            self.loop,
+            initModules)
+
         await asyncio.sleep(0.5)
 
 

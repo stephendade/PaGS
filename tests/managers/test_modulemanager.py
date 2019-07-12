@@ -28,13 +28,13 @@ TODO:
 add and remove vehicle
 
 '''
-import asyncio
+
 import asynctest
-import logging
 
 from PaGS.managers import moduleManager
 from PaGS.vehicle.vehicle import Vehicle
 from PaGS.mavlink.pymavutil import getpymavlinkpackage
+
 
 class ModuleManagerTest(asynctest.TestCase):
 
@@ -55,7 +55,8 @@ class ModuleManagerTest(asynctest.TestCase):
         self.mod = getpymavlinkpackage(self.dialect, self.version)
         self.mavUAS = self.mod.MAVLink(
             self, srcSystem=4, srcComponent=0, use_native=False)
-        self.VehA = Vehicle(self.loop, "VehA", 255, 0, 4, 0, self.dialect, self.version)
+        self.VehA = Vehicle(self.loop, "VehA", 255, 0, 4,
+                            0, self.dialect, self.version)
 
         self.txPackets = {}
 
@@ -84,13 +85,15 @@ class ModuleManagerTest(asynctest.TestCase):
 
     def test_manager(self):
         """Check initialisation"""
-        self.manager = moduleManager.moduleManager(self.loop, self.dialect, self.version, False)
+        self.manager = moduleManager.moduleManager(
+            self.loop, self.dialect, self.version, False)
 
         assert len(self.manager.multiModules) == 0
 
     def test_addremoveModule(self):
         """Test adding and removal of module"""
-        self.manager = moduleManager.moduleManager(self.loop, self.dialect, self.version, False)
+        self.manager = moduleManager.moduleManager(
+            self.loop, self.dialect, self.version, False)
         self.manager.onVehListAttach(self.getVehListCallback)
         self.manager.onVehGetAttach(self.getVehicleCallback)
 
@@ -108,7 +111,8 @@ class ModuleManagerTest(asynctest.TestCase):
 
     def test_inoutPacket(self):
         """Test packets going in and out"""
-        self.manager = moduleManager.moduleManager(self.loop, self.dialect, self.version, False)
+        self.manager = moduleManager.moduleManager(
+            self.loop, self.dialect, self.version, False)
         self.manager.onVehListAttach(self.getVehListCallback)
         self.manager.onVehGetAttach(self.getVehicleCallback)
 
@@ -125,11 +129,12 @@ class ModuleManagerTest(asynctest.TestCase):
 
         assert self.manager.multiModules["PaGS.modules.templateModule"].pkts == 1
         print(self.txPackets)
-        assert self.txPackets["VehA"] == 0 # the packet type
+        assert self.txPackets["VehA"] == 0  # the packet type
 
     def test_addRemoveVehicle(self):
         """Test adding and removing a vehicle"""
-        self.manager = moduleManager.moduleManager(self.loop, self.dialect, self.version, False)
+        self.manager = moduleManager.moduleManager(
+            self.loop, self.dialect, self.version, False)
         self.manager.onVehListAttach(self.getVehListCallback)
         self.manager.onVehGetAttach(self.getVehicleCallback)
 
@@ -139,19 +144,22 @@ class ModuleManagerTest(asynctest.TestCase):
         self.manager.addVehicle("VehB")
         self.manager.addVehicle("VehC")
 
-        assert self.manager.multiModules['PaGS.modules.templateModule'].theVeh == ["VehA", "VehB", "VehC"]
+        assert self.manager.multiModules['PaGS.modules.templateModule'].theVeh == [
+            "VehA", "VehB", "VehC"]
 
         # and being removed
         self.manager.removeVehicle("VehB")
 
-        assert self.manager.multiModules['PaGS.modules.templateModule'].theVeh == ["VehA", "VehC"]
+        assert self.manager.multiModules['PaGS.modules.templateModule'].theVeh == [
+            "VehA", "VehC"]
 
     def test_addRemoveVehicleAfterModule(self):
         """Test adding and removing vehicles prior
         to module loading"""
-        self.manager = moduleManager.moduleManager(self.loop, self.dialect, self.version, False)
+        self.manager = moduleManager.moduleManager(
+            self.loop, self.dialect, self.version, False)
         self.manager.onVehListAttach(self.getVehListCallbackMany)
-        #self.manager.onVehGetAttach(self.getVehicleCallback)
+        # self.manager.onVehGetAttach(self.getVehicleCallback)
 
         # simulate some vehicles being added
         self.manager.addVehicle("VehB")
@@ -162,12 +170,14 @@ class ModuleManagerTest(asynctest.TestCase):
         # load module
         self.manager.addModule("PaGS.modules.templateModule")
 
-        assert self.manager.multiModules['PaGS.modules.templateModule'].theVeh == ["VehA", "VehC"]
+        assert self.manager.multiModules['PaGS.modules.templateModule'].theVeh == [
+            "VehA", "VehC"]
 
     def test_printer(self):
         """Test the printer function (output)
         for the modules"""
-        self.manager = moduleManager.moduleManager(self.loop, self.dialect, self.version, False)
+        self.manager = moduleManager.moduleManager(
+            self.loop, self.dialect, self.version, False)
         self.manager.onVehListAttach(self.getVehListCallbackMany)
 
         self.manager.addVehicle("VehB")
@@ -176,7 +186,7 @@ class ModuleManagerTest(asynctest.TestCase):
         # load module
         self.manager.addModule("PaGS.modules.templateModule")
 
-        #print some text
+        # print some text
         self.manager.printVeh("VehB", "test text")
         self.manager.printVeh("VehC", "test text2")
 
@@ -186,7 +196,8 @@ class ModuleManagerTest(asynctest.TestCase):
     def test_command(self):
         """Test the loading and execution of user commands
         in modules"""
-        self.manager = moduleManager.moduleManager(self.loop, self.dialect, self.version, False)
+        self.manager = moduleManager.moduleManager(
+            self.loop, self.dialect, self.version, False)
         self.manager.onVehListAttach(self.getVehListCallbackMany)
 
         self.manager.addVehicle("VehB")
@@ -196,19 +207,22 @@ class ModuleManagerTest(asynctest.TestCase):
         self.manager.addModule("PaGS.modules.templateModule")
 
         # execute a command
-        self.manager.onModuleCommandCallback("VehB", "template do_stuff 1 \"the rest\"")
+        self.manager.onModuleCommandCallback(
+            "VehB", "template do_stuff 1 \"the rest\"")
 
         # and invalid command
         self.manager.onModuleCommandCallback("VehB", "template do_nothing")
 
         # and assert
-        assert self.manager.multiModules['PaGS.modules.templateModule'].printedout["VehB"] == "Command not found: template do_nothing"
+        assert self.manager.multiModules['PaGS.modules.templateModule'].printedout[
+            "VehB"] == "Command not found: template do_nothing"
         assert self.manager.multiModules['PaGS.modules.templateModule'].calledStuff["VehB"] == "1,the rest"
 
     def test_moreCommand(self):
         """Test the stability of the command handler with all
         sorts of mangled uner input"""
-        self.manager = moduleManager.moduleManager(self.loop, self.dialect, self.version, False)
+        self.manager = moduleManager.moduleManager(
+            self.loop, self.dialect, self.version, False)
         self.manager.onVehListAttach(self.getVehListCallbackMany)
 
         self.manager.addVehicle("VehB")
@@ -221,7 +235,8 @@ class ModuleManagerTest(asynctest.TestCase):
         self.manager.onModuleCommandCallback("VehB", "")
         self.manager.onModuleCommandCallback("VehB", "template")
         self.manager.onModuleCommandCallback("VehB", "template do_stuff")
-        self.manager.onModuleCommandCallback("VehB", "template do_stuff 1 3 4 6 7")
+        self.manager.onModuleCommandCallback(
+            "VehB", "template do_stuff 1 3 4 6 7")
         self.manager.onModuleCommandCallback("VehB", "template do_stuff \"4")
         self.manager.onModuleCommandCallback("VehB", "template:")
         self.manager.onModuleCommandCallback("VehB", "template do_stuff:")
@@ -229,6 +244,7 @@ class ModuleManagerTest(asynctest.TestCase):
 
         # no need to assert, as we're just checking if any exceptions
         # were unhandled
+
 
 if __name__ == '__main__':
     asynctest.main()

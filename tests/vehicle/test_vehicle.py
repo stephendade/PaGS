@@ -26,6 +26,7 @@ Can get vehicle planform and controller name
 Can get arming status
 
 '''
+
 import asyncio
 import asynctest
 
@@ -123,7 +124,7 @@ class VehicleTest(asynctest.TestCase):
 
         assert self.veh is not None
 
-    #async def test_onPacketCallback(self):
+    # async def test_onPacketCallback(self):
     #    """Test the onPacketCallback works"""
     #    self.veh = Vehicle(self.loop, "VehA", self.source_system, self.source_component,
     #                       self.target_system, self.target_component, self.dialect, self.mavversion)
@@ -151,7 +152,7 @@ class VehicleTest(asynctest.TestCase):
         assert len(self.veh.latestPacketDict) == 1
         assert self.veh.getPacket(self.mod.MAVLINK_MSG_ID_HEARTBEAT) == pkt
         assert self.veh.getPacket(
-            self.mod.MAVLINK_MSG_ID_ESC_TELEMETRY_9_TO_12) == None
+            self.mod.MAVLINK_MSG_ID_ESC_TELEMETRY_9_TO_12) is None
 
     async def test_heartbeat(self):
         """Test heatbeat rate and stopping hb task"""
@@ -194,10 +195,10 @@ class VehicleTest(asynctest.TestCase):
         self.veh.newPacketCallback(pkt)
 
         await asyncio.sleep(0.02)
-        assert self.veh.isConnected == True
+        assert self.veh.isConnected is True
 
         await asyncio.sleep(0.10)
-        assert self.veh.isConnected == False
+        assert self.veh.isConnected is False
 
     async def test_norxheartbeat(self):
         """Test no rx hb task ever"""
@@ -207,7 +208,7 @@ class VehicleTest(asynctest.TestCase):
         await self.veh.setTimeout(0)
         await asyncio.sleep(0.01)
 
-        assert self.veh.isConnected == False
+        assert self.veh.isConnected is False
 
     async def test_vehtypename(self):
         """Test correct veh type and gf name from vehicle"""
@@ -227,28 +228,28 @@ class VehicleTest(asynctest.TestCase):
         self.veh = Vehicle(self.loop, "VehA", self.source_system, self.source_component,
                            self.target_system, self.target_component, self.dialect, self.mavversion)
 
-        assert self.veh.isArmed == None
-        assert self.veh.flightMode == None
+        assert self.veh.isArmed is None
+        assert self.veh.flightMode is None
 
         pkt = self.mod.MAVLink_heartbeat_message(
             self.mod.MAV_TYPE_QUADROTOR, self.mod.MAV_AUTOPILOT_ARDUPILOTMEGA, self.mod.MAV_MODE_AUTO_DISARMED, 0, 0, int(self.mavversion))
         self.veh.newPacketCallback(pkt)
 
-        assert self.veh.isArmed == False
+        assert self.veh.isArmed is False
         assert self.veh.flightMode == "0"
 
         pkt = self.mod.MAVLink_heartbeat_message(
             self.mod.MAV_TYPE_QUADROTOR, self.mod.MAV_AUTOPILOT_ARDUPILOTMEGA, self.mod.MAV_MODE_MANUAL_ARMED, 1, 0, int(self.mavversion))
         self.veh.newPacketCallback(pkt)
 
-        assert self.veh.isArmed == True
+        assert self.veh.isArmed is True
         assert self.veh.flightMode == "1"
 
         pkt = self.mod.MAVLink_heartbeat_message(
             self.mod.MAV_TYPE_QUADROTOR, self.mod.MAV_AUTOPILOT_ARDUPILOTMEGA, self.mod.MAV_MODE_MANUAL_DISARMED, 15, 0, int(self.mavversion))
         self.veh.newPacketCallback(pkt)
 
-        assert self.veh.isArmed == False
+        assert self.veh.isArmed is False
         assert self.veh.flightMode == '15'
 
     async def test_params_before(self):
@@ -256,8 +257,8 @@ class VehicleTest(asynctest.TestCase):
         self.veh = Vehicle(self.loop, "VehA", self.source_system, self.source_component,
                            self.target_system, self.target_component, self.dialect, self.mavversion)
 
-        assert self.veh.getParams('RC8_MAX') == None
-        assert self.veh.getParams() == None
+        assert self.veh.getParams('RC8_MAX') is None
+        assert self.veh.getParams() is None
 
     async def test_params_noresponse(self):
         """Test getting of the parameters, no response from vehicle"""
@@ -265,8 +266,8 @@ class VehicleTest(asynctest.TestCase):
                            self.target_system, self.target_component, self.dialect, self.mavversion)
         await self.veh.downloadParams(timeout=0.1)
 
-        assert self.veh.getParams('RC8_MAX') == None
-        assert self.veh.getParams() == None
+        assert self.veh.getParams('RC8_MAX') is None
+        assert self.veh.getParams() is None
 
     async def test_get_params(self):
         """Test getting of the parameters, got all. Plus typo"""
@@ -276,7 +277,7 @@ class VehicleTest(asynctest.TestCase):
         await self.veh.downloadParams(timeout=0.25)
 
         assert self.veh.getParams('RC8_MAX') == 1900
-        assert self.veh.getParams('RC8_MAXXX') == None
+        assert self.veh.getParams('RC8_MAXXX') is None
 
     async def test_get_params_retry(self):
         """Test getting of the parameters, need to retry some"""
@@ -294,7 +295,7 @@ class VehicleTest(asynctest.TestCase):
                            self.target_system, self.target_component, self.dialect, self.mavversion)
         self.veh.txcallback = self.paramcallback
 
-        assert await self.veh.setParam('RC8_MAX', 1800) == False
+        assert await self.veh.setParam('RC8_MAX', 1800) is False
 
     async def test_set_param(self):
         """Test setting of param"""
@@ -303,7 +304,7 @@ class VehicleTest(asynctest.TestCase):
         self.veh.txcallback = self.paramcallback
         await self.veh.downloadParams(timeout=0.25)
 
-        assert await self.veh.setParam('RC8_MAX', 1730) == True
+        assert await self.veh.setParam('RC8_MAX', 1730) is True
         assert self.veh.getParams('RC8_MAX') == 1730
 
     def test_sendPacket(self):
@@ -313,14 +314,15 @@ class VehicleTest(asynctest.TestCase):
         self.veh.txcallback = self.newpacketcallback
 
         self.veh.sendPacket(self.mod.MAVLINK_MSG_ID_HEARTBEAT,
-                                                    type=self.mod.MAV_TYPE_GCS,
-                                                    autopilot=self.mod.MAV_AUTOPILOT_INVALID,
-                                                    base_mode=0,
-                                                    custom_mode=0,
-                                                    system_status=0,
-                                                    mavlink_version=int(self.mavversion))
+                            type=self.mod.MAV_TYPE_GCS,
+                            autopilot=self.mod.MAV_AUTOPILOT_INVALID,
+                            base_mode=0,
+                            custom_mode=0,
+                            system_status=0,
+                            mavlink_version=int(self.mavversion))
 
         assert len(self.txpackets) == 1
+
 
 if __name__ == '__main__':
     asynctest.main()
