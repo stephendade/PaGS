@@ -98,7 +98,7 @@ install:
   # For CI - Coveralls.io
   - pip install -U coveralls
 
-before_script:
+before_build:
   # fail the build if there are Python syntax errors or undefined names
   - flake8 ./PaGS --count --ignore=E501,E402,W504 --show-source --statistics --max-line-length=127
   - flake8 ./tests --count --ignore=E501,E402,W504 --show-source --statistics --max-line-length=127
