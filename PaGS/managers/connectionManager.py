@@ -150,8 +150,8 @@ class ConnectionManager():
                                            srcsystem=self.sourceSystem,
                                            srccomp=self.sourceComponent,
                                            name=strconnection)
-                trans = serial_asyncio.create_serial_connection(self.loop, 
-                    lambda: newlink, constr[1], int(constr[2]))
+                trans = serial_asyncio.create_serial_connection(self.loop, lambda: newlink,
+                                                                constr[1], int(constr[2]))
                 await asyncio.wait_for(trans, timeout=0.2)
             elif constr[0] == "tcpclient":
                 newlink = TCPConnection(rxcallback=self.incomingPacket,
@@ -242,7 +242,6 @@ class ConnectionManager():
                 del self.matrix[link]
             # close link - if running link
             if self.linkdict[link] is not None:
-                #await self.linkdict[link].close()
                 self.linkdict[link].close()
             del self.linkdict[link]
             return True

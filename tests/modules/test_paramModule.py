@@ -22,14 +22,15 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 Testing of the "paramModule" module
 
 '''
+
 import asyncio
 import asynctest
-import logging
 import os
 
 from PaGS.managers import moduleManager
 from PaGS.vehicle.vehicle import Vehicle
 from PaGS.mavlink.pymavutil import getpymavlinkpackage
+
 
 class ModuleManagerTest(asynctest.TestCase):
 
@@ -47,13 +48,15 @@ class ModuleManagerTest(asynctest.TestCase):
         self.mod = getpymavlinkpackage(self.dialect, self.version)
         self.mavUAS = self.mod.MAVLink(
             self, srcSystem=4, srcComponent=0, use_native=False)
-        self.VehA = Vehicle(self.loop, "VehA", 255, 0, 4, 0, self.dialect, self.version)
+        self.VehA = Vehicle(self.loop, "VehA", 255, 0, 4,
+                            0, self.dialect, self.version)
         self.VehA.onPacketTxAttach(self.vehSendFunc)
 
         self.txPackets = {}
         self.txVehPackets = {}
 
-        self.manager = moduleManager.moduleManager(self.loop, self.dialect, self.version, False)
+        self.manager = moduleManager.moduleManager(
+            self.loop, self.dialect, self.version, False)
         self.manager.onVehListAttach(self.getVehListCallback)
         self.manager.onVehGetAttach(self.getVehicleCallback)
         self.manager.onPktTxAttach(self.txcallback)
@@ -122,7 +125,7 @@ class ModuleManagerTest(asynctest.TestCase):
         assert self.getOutText("VehA", 1) == "Params not downloaded"
 
         # now we have some params downloaded
-        self.VehA.paramstatus = [15, 20, [1,2,4,6,13]]
+        self.VehA.paramstatus = [15, 20, [1, 2, 4, 6, 13]]
 
         # execute a command
         self.manager.onModuleCommandCallback("VehA", "param status")
@@ -160,7 +163,7 @@ class ModuleManagerTest(asynctest.TestCase):
         # get several params
         self.manager.onModuleCommandCallback("VehA", "param show RC*")
         allstr = self.getOutText("VehA", 5) + ", " + self.getOutText("VehA", 6)
-        assert "RC1_MIN          1000" in allstr 
+        assert "RC1_MIN          1000" in allstr
         assert "RC2_MAX          2000" in allstr
 
         # get not existing param
@@ -184,7 +187,9 @@ class ModuleManagerTest(asynctest.TestCase):
         # now all params downloaded
         self.VehA.paramstatus = True
         self.VehA.params = {"RC1_MIN": 1000, "RC2_MAX": 2000}
-        self.VehA.params_type = {"RC1_MIN": self.mod.MAV_PARAM_TYPE_UINT16, "RC2_MAX": self.mod.MAV_PARAM_TYPE_UINT16}
+        self.VehA.params_type = {
+            "RC1_MIN": self.mod.MAV_PARAM_TYPE_UINT16,
+            "RC2_MAX": self.mod.MAV_PARAM_TYPE_UINT16}
 
         # test with single param
         self.manager.onModuleCommandCallback("VehA", "param set RC1_MIN 1102")
@@ -220,7 +225,9 @@ class ModuleManagerTest(asynctest.TestCase):
         # now all params downloaded
         self.VehA.paramstatus = True
         self.VehA.params = {"RC1_MIN": 1000, "RC2_MAX": 2000}
-        self.VehA.params_type = {"RC1_MIN": self.mod.MAV_PARAM_TYPE_UINT16, "RC2_MAX": self.mod.MAV_PARAM_TYPE_UINT16}
+        self.VehA.params_type = {
+            "RC1_MIN": self.mod.MAV_PARAM_TYPE_UINT16,
+            "RC2_MAX": self.mod.MAV_PARAM_TYPE_UINT16}
 
         # test with params
         self.manager.onModuleCommandCallback("VehA", "param save temp.parm")
@@ -233,7 +240,8 @@ class ModuleManagerTest(asynctest.TestCase):
         assert "RC2_MAX          2000\n" in data
 
         # test with space in filename
-        self.manager.onModuleCommandCallback("VehA", "param save \"temp 1.parm\"")
+        self.manager.onModuleCommandCallback(
+            "VehA", "param save \"temp 1.parm\"")
         # assert
         assert self.getOutText("VehA", 5) == "2 params saved to temp 1.parm"
         assert os.path.isfile("temp 1.parm")
@@ -250,7 +258,8 @@ class ModuleManagerTest(asynctest.TestCase):
         """Test the load param command"""
         self.manager.addModule("PaGS.modules.paramModule")
 
-        # create the param files - good, param name bad, param value bad, corrupt
+        # create the param files - good, param name bad, param value bad,
+        # corrupt
         with open('tempload.parm', 'w') as myfile:
             myfile.write("RC1_MIN          1100\nRC2_MAX          2100\n")
         with open('temploadbad1.parm', 'w') as myfile:
@@ -261,7 +270,8 @@ class ModuleManagerTest(asynctest.TestCase):
             myfile.write("w309836nb32n98n72\nw983n5c032 948")
 
         # test with no params
-        self.manager.onModuleCommandCallback("VehA", "param load tempload.parm")
+        self.manager.onModuleCommandCallback(
+            "VehA", "param load tempload.parm")
 
         # assert
         assert self.getOutText("VehA", 1) == "Params not downloaded"
@@ -269,37 +279,48 @@ class ModuleManagerTest(asynctest.TestCase):
         # now all params downloaded
         self.VehA.paramstatus = True
         self.VehA.params = {"RC1_MIN": 1000, "RC2_MAX": 2000}
-        self.VehA.params_type = {"RC1_MIN": self.mod.MAV_PARAM_TYPE_UINT16, "RC2_MAX": self.mod.MAV_PARAM_TYPE_UINT16}
+        self.VehA.params_type = {
+            "RC1_MIN": self.mod.MAV_PARAM_TYPE_UINT16,
+            "RC2_MAX": self.mod.MAV_PARAM_TYPE_UINT16}
 
         # test the normal good file
-        self.manager.onModuleCommandCallback("VehA", "param load tempload.parm")
+        self.manager.onModuleCommandCallback(
+            "VehA", "param load tempload.parm")
 
         # and assert
-        assert self.getOutText("VehA", 3) == "2 params loaded from tempload.parm"
+        assert self.getOutText(
+            "VehA", 3) == "2 params loaded from tempload.parm"
         await asyncio.sleep(0.01)
         assert self.txVehPackets['VehA'] is not None
 
         # bad file 1 - wrong param name
-        self.manager.onModuleCommandCallback("VehA", "param load temploadbad1.parm")
+        self.manager.onModuleCommandCallback(
+            "VehA", "param load temploadbad1.parm")
 
         # and assert
         assert self.getOutText("VehA", 5) == "Invalid param: RC1_MID"
-        assert self.getOutText("VehA", 6) == "1 params loaded from temploadbad1.parm"
+        assert self.getOutText(
+            "VehA", 6) == "1 params loaded from temploadbad1.parm"
 
         # bad file 2 - wrong param value
-        self.manager.onModuleCommandCallback("VehA", "param load temploadbad2.parm")
+        self.manager.onModuleCommandCallback(
+            "VehA", "param load temploadbad2.parm")
 
         # and assert
         assert self.getOutText("VehA", 8) == "Invalid param value: dsf"
-        assert self.getOutText("VehA", 9) == "1 params loaded from temploadbad2.parm"
+        assert self.getOutText(
+            "VehA", 9) == "1 params loaded from temploadbad2.parm"
 
         # bad file 3 - just plain corrupt
-        self.manager.onModuleCommandCallback("VehA", "param load temploadbad3.parm")
+        self.manager.onModuleCommandCallback(
+            "VehA", "param load temploadbad3.parm")
 
         # and assert
-        assert self.getOutText("VehA", 11) == "Param line not valid: w309836nb32n98n72"
+        assert self.getOutText(
+            "VehA", 11) == "Param line not valid: w309836nb32n98n72"
         assert self.getOutText("VehA", 12) == "Invalid param: w983n5c032"
-        assert self.getOutText("VehA", 13) == "0 params loaded from temploadbad3.parm"
+        assert self.getOutText(
+            "VehA", 13) == "0 params loaded from temploadbad3.parm"
 
         # and clean up files
         os.remove("tempload.parm")
@@ -311,7 +332,8 @@ class ModuleManagerTest(asynctest.TestCase):
         """Simple test of the GUI startup"""
 
         # need to reset for handling gui
-        self.manager = moduleManager.moduleManager(self.loop, self.dialect, self.version, True)
+        self.manager = moduleManager.moduleManager(
+            self.loop, self.dialect, self.version, True)
         self.manager.onVehListAttach(self.getVehListCallback)
         self.manager.onVehGetAttach(self.getVehicleCallback)
         self.manager.onPktTxAttach(self.txcallback)
@@ -329,6 +351,7 @@ class ModuleManagerTest(asynctest.TestCase):
     def test_incoming(self):
         """Test incoming packets"""
         pass
+
 
 if __name__ == '__main__':
     asynctest.main()

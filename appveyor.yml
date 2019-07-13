@@ -1,3 +1,12 @@
+# branches to build
+branches:
+  # whitelist
+  only:
+    - master
+
+# Do not build feature branch with open Pull Requests
+skip_branch_with_pr: true
+
 environment:
   COVERALLS_REPO_TOKEN:
     secure: nawPdszJTzIQ4ZSOlJIUcg8VdWOT+da4eB/VKuF6eUTK502B6dNIw+R2DA4OJxWc
@@ -98,7 +107,10 @@ install:
   # For CI - Coveralls.io
   - pip install -U coveralls
 
-
+before_build:
+  # fail the build if there are Python syntax errors or undefined names
+  - flake8 ./PaGS --count --ignore=E501,E402,W504 --show-source --statistics --max-line-length=127
+  - flake8 ./tests --count --ignore=E501,E402,W504 --show-source --statistics --max-line-length=127
 
 build_script:
   # Build and install PaGS
@@ -108,8 +120,11 @@ test_script:
   # Run pytest
   - python -m pytest --log-level DEBUG --junitxml=out_report.xml --cov=PaGS
 
-  # Upload coverage to coveralls
-  - coveralls
+  # Upload coverage to coveralls, only if the var is defined
+  - ps: if ($env:COVERALLS_REPO_TOKEN)
+        {
+         coveralls
+        }
 
 on_finish:
 # upload test results to AppVeyor

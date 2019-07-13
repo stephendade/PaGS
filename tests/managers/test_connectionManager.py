@@ -38,6 +38,7 @@ For each, ensure packets are routed, noting that duplicate
 packets will be discarded
 
 '''
+
 import asyncio
 import asynctest
 
@@ -68,9 +69,12 @@ class ConnectionMatrixTest(asynctest.TestCase):
 
         # The vehicles. Note the vehicles A and C have the same sysid
         # Source s/c then target s/c
-        self.VehA = Vehicle(self.loop, "VehA", 255, 0, 4, 0, self.dialect, self.version)
-        self.VehB = Vehicle(self.loop, "VehB", 254, 0, 3, 0, self.dialect, self.version)
-        self.VehC = Vehicle(self.loop, "VehC", 255, 0, 4, 0, self.dialect, self.version)
+        self.VehA = Vehicle(self.loop, "VehA", 255, 0, 4,
+                            0, self.dialect, self.version)
+        self.VehB = Vehicle(self.loop, "VehB", 254, 0, 3,
+                            0, self.dialect, self.version)
+        self.VehC = Vehicle(self.loop, "VehC", 255, 0, 4,
+                            0, self.dialect, self.version)
 
         # Dict of data rx'd by each link
         self.rxdata = {}
@@ -160,12 +164,12 @@ class ConnectionMatrixTest(asynctest.TestCase):
         """For each of the TCP link types, test that they
         keep re-trying to connect, by only adding in the
         other side of the link 0.5 sec after startup"""
-        matrix = ConnectionManager(self.loop, self.dialect, self.version, 0, 0, 0.05)
+        matrix = ConnectionManager(
+            self.loop, self.dialect, self.version, 0, 0, 0.05)
         matrix.onPacketAttach(self.newpacketcallbackVeh)
 
         await matrix.addVehicleLink(self.VehA.name, self.VehA.target_system, self.linkA)
         await matrix.addVehicleLink(self.VehB.name, self.VehB.target_system, self.linkB)
-
 
         # now wait for a bit
         await asyncio.sleep(0.10)
@@ -211,7 +215,8 @@ class ConnectionMatrixTest(asynctest.TestCase):
         """For each of the UDP link types, test that they
         keep re-trying to connect, by only adding in the
         other side of the link 0.5 sec after startup"""
-        matrix = ConnectionManager(self.loop, self.dialect, self.version, 0, 0, 0.05)
+        matrix = ConnectionManager(
+            self.loop, self.dialect, self.version, 0, 0, 0.05)
         matrix.onPacketAttach(self.newpacketcallbackVeh)
 
         self.VehA.onPacketTxAttach(matrix.outgoingPacket)
@@ -247,12 +252,12 @@ class ConnectionMatrixTest(asynctest.TestCase):
 
         # need to send a packet from client to server to init the link
         self.VehA.sendPacket(self.VehA.mod.MAVLINK_MSG_ID_HEARTBEAT,
-                                           type=self.VehA.mod.MAV_TYPE_GCS,
-                                           autopilot=self.VehA.mod.MAV_AUTOPILOT_INVALID,
-                                           base_mode=0,
-                                           custom_mode=0,
-                                           system_status=0,
-                                           mavlink_version=int(self.VehA.mavversion))
+                             type=self.VehA.mod.MAV_TYPE_GCS,
+                             autopilot=self.VehA.mod.MAV_AUTOPILOT_INVALID,
+                             base_mode=0,
+                             custom_mode=0,
+                             system_status=0,
+                             mavlink_version=int(self.VehA.mavversion))
 
         await asyncio.sleep(0.02)
 
@@ -279,7 +284,8 @@ class ConnectionMatrixTest(asynctest.TestCase):
         """Test incoming packets (from vehicle) are distributed
         correctly"""
         # -VehA: LinkA,LinkB, VehB: LinkB, VehC: LinkC
-        matrix = ConnectionManager(self.loop, self.dialect, self.version, 0, 0, 0.05)
+        matrix = ConnectionManager(
+            self.loop, self.dialect, self.version, 0, 0, 0.05)
         matrix.onPacketAttach(self.newpacketcallbackVeh)
 
         await matrix.addVehicleLink(self.VehA.name, self.VehA.target_system, self.linkA)
@@ -363,8 +369,9 @@ class ConnectionMatrixTest(asynctest.TestCase):
         await self.VehA.setHearbeatRate(0)
         await self.VehB.setHearbeatRate(0)
         await self.VehC.setHearbeatRate(0)
-        
-        matrix = ConnectionManager(self.loop, self.dialect, self.version, 0, 0, 0.05)
+
+        matrix = ConnectionManager(
+            self.loop, self.dialect, self.version, 0, 0, 0.05)
         matrix.onPacketAttach(self.newpacketcallbackVeh)
 
         self.VehA.onPacketTxAttach(matrix.outgoingPacket)
@@ -402,28 +409,28 @@ class ConnectionMatrixTest(asynctest.TestCase):
 
         # send packet from the GCS of VehA, VehB and VehC
         pktbytesA = self.VehA.sendPacket(self.mod.MAVLINK_MSG_ID_HEARTBEAT,
-                                   type=self.mod.MAV_TYPE_GCS,
-                                   autopilot=self.mod.MAV_AUTOPILOT_INVALID,
-                                   base_mode=0,
-                                   custom_mode=0,
-                                   system_status=0,
-                                   mavlink_version=int(self.VehA.mavversion))
+                                         type=self.mod.MAV_TYPE_GCS,
+                                         autopilot=self.mod.MAV_AUTOPILOT_INVALID,
+                                         base_mode=0,
+                                         custom_mode=0,
+                                         system_status=0,
+                                         mavlink_version=int(self.VehA.mavversion))
         await asyncio.sleep(0.10)
         pktbytesB = self.VehB.sendPacket(self.mod.MAVLINK_MSG_ID_HEARTBEAT,
-                                   type=self.mod.MAV_TYPE_GCS,
-                                   autopilot=self.mod.MAV_AUTOPILOT_INVALID,
-                                   base_mode=0,
-                                   custom_mode=0,
-                                   system_status=0,
-                                   mavlink_version=int(self.VehB.mavversion))
+                                         type=self.mod.MAV_TYPE_GCS,
+                                         autopilot=self.mod.MAV_AUTOPILOT_INVALID,
+                                         base_mode=0,
+                                         custom_mode=0,
+                                         system_status=0,
+                                         mavlink_version=int(self.VehB.mavversion))
         await asyncio.sleep(0.10)
         pktbytesC = self.VehC.sendPacket(self.mod.MAVLINK_MSG_ID_HEARTBEAT,
-                                   type=self.mod.MAV_TYPE_GCS,
-                                   autopilot=self.mod.MAV_AUTOPILOT_INVALID,
-                                   base_mode=0,
-                                   custom_mode=0,
-                                   system_status=0,
-                                   mavlink_version=int(self.VehC.mavversion))
+                                         type=self.mod.MAV_TYPE_GCS,
+                                         autopilot=self.mod.MAV_AUTOPILOT_INVALID,
+                                         base_mode=0,
+                                         custom_mode=0,
+                                         system_status=0,
+                                         mavlink_version=int(self.VehC.mavversion))
 
         # wait for packets to send
         await asyncio.sleep(0.15)
@@ -440,10 +447,14 @@ class ConnectionMatrixTest(asynctest.TestCase):
         assert len(matrix.linkdict) == 3
 
         # assert packets were recived on the endpoints
-        assert self.rxdata['tcpserver:127.0.0.1:15001'][0].get_msgbuf() == pktbytesA
-        assert self.rxdata['tcpclient:127.0.0.1:15020'][0].get_msgbuf() == pktbytesC
-        assert self.rxdata['tcpclient:127.0.0.1:15020'][1].get_msgbuf() == pktbytesB
-        assert self.rxdata['udpserver:127.0.0.1:15002'][0].get_msgbuf() == pktbytesC
+        assert self.rxdata['tcpserver:127.0.0.1:15001'][0].get_msgbuf(
+        ) == pktbytesA
+        assert self.rxdata['tcpclient:127.0.0.1:15020'][0].get_msgbuf(
+        ) == pktbytesC
+        assert self.rxdata['tcpclient:127.0.0.1:15020'][1].get_msgbuf(
+        ) == pktbytesB
+        assert self.rxdata['udpserver:127.0.0.1:15002'][0].get_msgbuf(
+        ) == pktbytesC
 
 
 if __name__ == '__main__':

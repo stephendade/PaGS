@@ -39,7 +39,6 @@ Most of these come in on a incoming packet
 import asyncio
 import logging
 import time
-import struct
 from contextlib import suppress
 
 from PaGS.mavlink.pymavutil import getpymavlinkpackage
@@ -110,15 +109,6 @@ class Vehicle():
         self.timeoflasthb = 0  # time of last rx'd hb
         self.hbInterval = 1  # Seconds between hb sending
         self.hbTxTask = asyncio.ensure_future(self.sendHeartbeat())
-
-        # Event linkages for modulemanager
-        #self.onPacketRxCallback = None
-
-    # def onPacketRxAttach(self, func):
-    #    """
-    #    Attach a callback to when a packet is recieved
-    #    """
-    #    self.onPacketRxCallback = func
 
     def onPacketTxAttach(self, func):
         """
@@ -200,7 +190,7 @@ class Vehicle():
         self.sendPacket(self.mod.MAVLINK_MSG_ID_PARAM_REQUEST_LIST)
         # wait while getting params
         prevind = 0
-        while self.paramstatus[0] < self.paramstatus[1]-1 or self.paramstatus[0] == 0:
+        while self.paramstatus[0] < self.paramstatus[1] - 1 or self.paramstatus[0] == 0:
             await asyncio.sleep(timeout)
             # is the number of processed params increasing? if not: timeout
             logging.debug("Status: %s", self.paramstatus)
@@ -211,14 +201,13 @@ class Vehicle():
         # now get any missed ones
         logging.debug("Status: %s", self.paramstatus)
         if len(self.paramstatus[2]) < self.paramstatus[1]:
-            for pid in range(0, self.paramstatus[1]-1):
+            for pid in range(0, self.paramstatus[1] - 1):
                 if pid not in self.paramstatus[2]:
                     logging.debug("Retrying PID " + str(pid))
                     self.sendPacket(
                         self.mod.MAVLINK_MSG_ID_PARAM_REQUEST_READ, param_id=b'', param_index=pid)
                     await asyncio.sleep(timeout)
         # We're done!
-        #print("Got " + len(self.paramstatus[2]) + "params")
         self.paramstatus = True
         return True
 
@@ -251,26 +240,25 @@ class Vehicle():
             return False
 
         # first need to encode param value
-        #paramEnc = 0.0
-        if self.params_type[param] == self.mod.MAV_PARAM_TYPE_REAL32 or self.params_type[param] == None:
+        if self.params_type[param] == self.mod.MAV_PARAM_TYPE_REAL32 or self.params_type[param] is None:
             paramEnc = float(value)
         elif self.params_type[param] == self.mod.MAV_PARAM_TYPE_UINT8:
-            #paramEnc, = struct.unpack(">f", struct.pack(">xxxB", int(value)))
+            # paramEnc, = struct.unpack(">f", struct.pack(">xxxB", int(value)))
             paramEnc = int(value)
         elif self.params_type[param] == self.mod.MAV_PARAM_TYPE_INT8:
-            #paramEnc, = struct.unpack(">f", struct.pack(">xxxb", int(value)))
+            # paramEnc, = struct.unpack(">f", struct.pack(">xxxb", int(value)))
             paramEnc = int(value)
         elif self.params_type[param] == self.mod.MAV_PARAM_TYPE_UINT16:
-            #paramEnc, = struct.unpack(">f", struct.pack(">xxH", int(value)))
+            # paramEnc, = struct.unpack(">f", struct.pack(">xxH", int(value)))
             paramEnc = int(value)
         elif self.params_type[param] == self.mod.MAV_PARAM_TYPE_INT16:
-            #paramEnc, = struct.unpack(">f", struct.pack(">xxh", int(value)))
+            # paramEnc, = struct.unpack(">f", struct.pack(">xxh", int(value)))
             paramEnc = int(value)
         elif self.params_type[param] == self.mod.MAV_PARAM_TYPE_UINT32:
-            #paramEnc, = struct.unpack(">f", struct.pack(">I", int(value)))
+            # paramEnc, = struct.unpack(">f", struct.pack(">I", int(value)))
             paramEnc = int(value)
         elif self.params_type[param] == self.mod.MAV_PARAM_TYPE_INT32:
-            #paramEnc, = struct.unpack(">f", struct.pack(">i", int(value)))
+            # paramEnc, = struct.unpack(">f", struct.pack(">i", int(value)))
             paramEnc = int(value)
         else:
             logging.debug("Not a valid param type")
@@ -285,7 +273,6 @@ class Vehicle():
         # send the packet n times, returning if we succeeded
         for n in range(retries):
             logging.debug("Trying to send " + str(param.upper()))
-            #print("Sending " + str(paramEnc))
             self.sendPacket(self.mod.MAVLINK_MSG_ID_PARAM_SET, param_id=paramBytes,
                             param_value=paramEnc, param_type=self.params_type[param.upper()])
 
@@ -294,11 +281,8 @@ class Vehicle():
 
             # and check, to 6DP
             if self.params[param.upper()] == round(float(value), 6):
-                #print("Param updated")
+                # print("Param updated")
                 return True
-            #else:
-            #    print(
-            #        "Param " + str(self.params[param.upper()]) + ", " + str(value))
 
         # nothing changed
         return False

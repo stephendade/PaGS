@@ -19,11 +19,11 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 Can send and recieve data (client/server)
 If a link fails (disconnected) the link should not crash.
 '''
+
 import asyncio
 import asynctest
 import platform
 import subprocess
-
 import serial_asyncio
 
 from PaGS.connection.seriallink import SerialConnection, findserial
@@ -49,14 +49,32 @@ class SerialLinkTest(asynctest.TestCase):
         self.sname = None
 
         # the serial <-> tcp server process. Will vary depending on OS
-        # Based on https://github.com/Apollon77/SupportingFiles/blob/master/README_SERIAL_TESTING.md
+        # Based on
+        # https://github.com/Apollon77/SupportingFiles/blob/master/README_SERIAL_TESTING.md
         self.serialServer = None
         if platform.system() == "Windows":
-            self.serialServer = subprocess.Popen(['.\\tests\\\support\\com2tcp.exe', '--ignore-dsr', '--baud', '115200', '--parity', 'e', '\\\\.\\CNCA0', '127.0.0.1', '15001'], stdout=subprocess.PIPE)
+            self.serialServer = subprocess.Popen(
+                [
+                    r'.\\tests\\\support\\com2tcp.exe',
+                    '--ignore-dsr',
+                    '--baud',
+                    '115200',
+                    '--parity',
+                    'e',
+                    '\\\\.\\CNCA0',
+                    '127.0.0.1',
+                    '15001'],
+                stdout=subprocess.PIPE)
             self.sname = 'serial:\\\\.\\CNCB0:115200'
             self.sPort = '\\\\.\\CNCB0'
         elif platform.system() == "Linux":
-            self.serialServer = subprocess.Popen(['socat', '-Dxs', 'pty,link=/tmp/virtualcom0,ispeed=115200,ospeed=115200,raw,waitslave', 'tcp:127.0.0.1:15001'], stdout=subprocess.PIPE)
+            self.serialServer = subprocess.Popen(
+                [
+                    'socat',
+                    '-Dxs',
+                    'pty,link=/tmp/virtualcom0,ispeed=115200,ospeed=115200,raw,waitslave',
+                    'tcp:127.0.0.1:15001'],
+                stdout=subprocess.PIPE)
             self.sname = 'serial:/tmp/virtualcom0:115200'
             self.sPort = '/tmp/virtualcom0'
 
@@ -84,8 +102,8 @@ class SerialLinkTest(asynctest.TestCase):
 
         # server = SerialConnection
         server = SerialConnection(rxcallback=self.newpacketcallback,
-                               dialect=self.dialect, mavversion=self.version,
-                               srcsystem=0, srccomp=0, name=self.sname)
+                                  dialect=self.dialect, mavversion=self.version,
+                                  srcsystem=0, srccomp=0, name=self.sname)
 
         client = TCPConnection(rxcallback=self.newpacketcallback,
                                dialect=self.dialect, mavversion=self.version,
@@ -120,6 +138,7 @@ class SerialLinkTest(asynctest.TestCase):
 
         # can only test the function doesn't crash
         assert findserial() == []
+
 
 if __name__ == '__main__':
     asynctest.main()

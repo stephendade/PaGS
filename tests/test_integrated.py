@@ -28,15 +28,14 @@ adding extra links to a vehicle
 adding and removing modules
 
 '''
+
 import asyncio
 import asynctest
 
 from PaGS.managers.connectionManager import ConnectionManager
 from PaGS.managers.vehicleManager import VehicleManager
 from PaGS.managers.moduleManager import moduleManager
-
 from PaGS.connection.tcplink import TCPConnection
-
 from PaGS.mavlink.pymavutil import getpymavlinkpackage
 
 
@@ -59,15 +58,15 @@ class IntegratedTest(asynctest.TestCase):
         self.mav = self.mod.MAVLink(
             self, srcSystem=4, srcComponent=0, use_native=False)
 
-        connmtrx = None
-        allvehicles = None
-        allModules = None
+        self.connmtrx = None
+        self.allvehicles = None
+        self.allModules = None
 
         self.cnum = 0
 
     def newpacketcallback(self, pkt, strconnection):
         """Callback when a link has a new packet"""
-        if pkt.get_type is not 'BAD_DATA':
+        if pkt.get_type != 'BAD_DATA':
             if strconnection == self.cname:
                 self.cnum += 1
 
@@ -79,7 +78,7 @@ class IntegratedTest(asynctest.TestCase):
         if self.connmtrx:
             await self.connmtrx.stoploop()
 
-        #for task in asyncio.Task.all_tasks():
+        # for task in asyncio.Task.all_tasks():
         #    task.cancel()
 
     async def doEventLinkages(self):
@@ -109,44 +108,46 @@ class IntegratedTest(asynctest.TestCase):
         """ Test that we can cleanly startup and shutdown
         """
         # Start the connection maxtrix
-        self.connmtrx = ConnectionManager(self.loop, self.dialect, self.version, 0, 0)
+        self.connmtrx = ConnectionManager(
+            self.loop, self.dialect, self.version, 0, 0)
 
         # Dict of vehicles
         self.allvehicles = VehicleManager(self.loop)
 
         # Module manager
-        self.allModules = moduleManager(self.loop, self.dialect, self.version, False)
+        self.allModules = moduleManager(
+            self.loop, self.dialect, self.version, False)
 
         # and link them all together
         await self.doEventLinkages()
-
-
 
     async def test_singleConnection(self):
         """ Test that we can get a packet with a single
         vehicle with single connection
         """
         # Start the connection maxtrix
-        self.connmtrx = ConnectionManager(self.loop, self.dialect, self.version, 0, 0)
+        self.connmtrx = ConnectionManager(
+            self.loop, self.dialect, self.version, 0, 0)
 
         # Dict of vehicles
         self.allvehicles = VehicleManager(self.loop)
 
         # Module manager
-        self.allModules = moduleManager(self.loop, self.dialect, self.version, False)
+        self.allModules = moduleManager(
+            self.loop, self.dialect, self.version, False)
 
         # and link them all together
         await self.doEventLinkages()
 
-        #add a link
+        # add a link
         await self.allvehicles.add_vehicle("VehA", 255, 0, 4, 0,
-                                    self.dialect, self.version, 'tcpserver:127.0.0.1:15000')
+                                           self.dialect, self.version, 'tcpserver:127.0.0.1:15000')
 
         # Start a remote connection (TCP)
         self.remoteClient = TCPConnection(rxcallback=self.newpacketcallback,
-                               dialect=self.dialect, mavversion=self.version,
-                               srcsystem=0, srccomp=0,
-                               server=False, name=self.cname)
+                                          dialect=self.dialect, mavversion=self.version,
+                                          srcsystem=0, srccomp=0,
+                                          server=False, name=self.cname)
 
         await asyncio.sleep(0.3)
 
@@ -167,6 +168,7 @@ class IntegratedTest(asynctest.TestCase):
         # assert the vehicle recieved the packet
         assert len(self.allvehicles.get_vehicle("VehA").latestPacketDict) == 1
         assert self.allvehicles.get_vehicle("VehA").latestPacketDict[0] == pkt
+
 
 if __name__ == '__main__':
     asynctest.main()

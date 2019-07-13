@@ -25,8 +25,10 @@ Can send and recieve data (client/server)
 If a link fails (disconnected) the link should not crash.
 
 '''
+
 import asyncio
 import asynctest
+
 from PaGS.connection.tcplink import TCPConnection
 from PaGS.mavlink.pymavutil import getpymavlinkpackage
 
@@ -172,6 +174,7 @@ class TCPLinkTest(asynctest.TestCase):
         # Assert only the correct packets were sent
         assert self.cnum == 1
         assert self.snum == 1
+
 
 if __name__ == '__main__':
     asynctest.main()

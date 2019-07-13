@@ -22,15 +22,15 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 Testing of the "terminal" module
 
 '''
-import asyncio
+
 import asynctest
-import logging
 import pytest
 import platform
 
 from PaGS.managers import moduleManager
 from PaGS.vehicle.vehicle import Vehicle
 from PaGS.mavlink.pymavutil import getpymavlinkpackage
+
 
 class TerminalModuleTest(asynctest.TestCase):
 
@@ -48,7 +48,8 @@ class TerminalModuleTest(asynctest.TestCase):
         self.mod = getpymavlinkpackage(self.dialect, self.version)
         self.mavUAS = self.mod.MAVLink(
             self, srcSystem=4, srcComponent=0, use_native=False)
-        self.VehA = Vehicle(self.loop, "VehA", 255, 0, 4, 0, self.dialect, self.version)
+        self.VehA = Vehicle(self.loop, "VehA", 255, 0, 4,
+                            0, self.dialect, self.version)
 
         self.txPackets = {}
 
@@ -74,7 +75,8 @@ class TerminalModuleTest(asynctest.TestCase):
 
     def test_loadModule(self):
         """Test adding and removal of module"""
-        self.manager = moduleManager.moduleManager(self.loop, self.dialect, self.version, False)
+        self.manager = moduleManager.moduleManager(
+            self.loop, self.dialect, self.version, False)
         self.manager.onVehListAttach(self.getVehListCallback)
         self.manager.onVehGetAttach(self.getVehicleCallback)
 
@@ -87,11 +89,12 @@ class TerminalModuleTest(asynctest.TestCase):
             if platform.system() == "Linux":
                 assert "Stdin is not a terminal" in str(excinfo.value)
             elif platform.system() == "Windows":
-                assert "No Windows console found" in str(excinfo.value)        
+                assert "No Windows console found" in str(excinfo.value)
 
     def test_incoming(self):
         """Test incoming packets"""
         pass
+
 
 if __name__ == '__main__':
     asynctest.main()

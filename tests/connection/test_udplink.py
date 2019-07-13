@@ -25,9 +25,9 @@ Can send and recieve data (client/server)
 If a link fails (disconnected) the link should not crash.
 
 '''
+
 import asyncio
 import asynctest
-import logging
 
 from PaGS.connection.udplink import UDPConnection
 from PaGS.mavlink.pymavutil import getpymavlinkpackage
@@ -179,6 +179,7 @@ class UDPLinkTest(asynctest.TestCase):
         # Assert only the correct packets were sent
         assert self.cnum == 1
         assert self.snum == 1
+
 
 if __name__ == '__main__':
     asynctest.main()

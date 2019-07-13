@@ -31,6 +31,7 @@ import shlex
 import traceback
 from importlib import import_module
 
+
 class moduleManager():
     """
     Manage a set of modules
@@ -40,7 +41,7 @@ class moduleManager():
         # dict of modules. Key is module name
         self.multiModules = {}
 
-        #are we using a GUI?
+        # are we using a GUI?
         self.useGUI = useGUI
 
         # mavlink
@@ -101,7 +102,7 @@ class moduleManager():
             return
         try:
             args = shlex.split(cmd)
-        except:
+        except ValueError:
             self.printVeh(vehname, "Malformed command: " + str(cmd))
             return
         # ensure the command is not malformed
@@ -140,7 +141,6 @@ class moduleManager():
         # add any command callbacks
         self.commands[self.multiModules[name].shortName] = {}
         for key, val in self.multiModules[name].commandDict.items():
-            #self.commands[self.multiModules[name].shortName + " " + key] = val
             self.commands[self.multiModules[name].shortName].update({key: val})
 
         # add any output printers, if defined

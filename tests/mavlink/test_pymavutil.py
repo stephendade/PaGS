@@ -24,6 +24,7 @@ Can import any generate dialect from pymavlink, rasing an exception
 if that dialet does not exist
 
 '''
+
 import unittest
 
 from PaGS.mavlink.pymavutil import getpymavlinkpackage, mode_toString
@@ -57,11 +58,13 @@ class getpymavlinkpackageTest(unittest.TestCase):
             mod = getpymavlinkpackage('bad', 1.0)
         except ValueError as e:
             assert str(e) == 'Incorrect mavlink dialect'
+            assert 'mod' not in locals()
 
         try:
             mod = getpymavlinkpackage('common', 1.5)
         except ValueError as e:
             assert str(e) == 'Incorrect mavlink version (must be 1.0 or 2.0)'
+            assert 'mod' not in locals()
 
     def test_modemappings(self):
         """Test the mode_toString() method"""
@@ -69,51 +72,52 @@ class getpymavlinkpackageTest(unittest.TestCase):
 
         # PX4
         pktIn = mavlink.MAVLink_heartbeat_message(
-                mavlink.MAV_TYPE_QUADROTOR, mavlink.MAV_AUTOPILOT_PX4, 0, 0, 0, 2)
+            mavlink.MAV_TYPE_QUADROTOR, mavlink.MAV_AUTOPILOT_PX4, 0, 0, 0, 2)
         assert mode_toString(pktIn, mavlink) == "MANUAL"
         pktIn = mavlink.MAVLink_heartbeat_message(
-                mavlink.MAV_TYPE_QUADROTOR, mavlink.MAV_AUTOPILOT_PX4, 0, 5, 0, 2)
+            mavlink.MAV_TYPE_QUADROTOR, mavlink.MAV_AUTOPILOT_PX4, 0, 5, 0, 2)
         assert mode_toString(pktIn, mavlink) == "AUTO_RTL"
 
         # APM:Copter
         pktIn = mavlink.MAVLink_heartbeat_message(
-                mavlink.MAV_TYPE_QUADROTOR, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 0, 0, 2)
+            mavlink.MAV_TYPE_QUADROTOR, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 0, 0, 2)
         assert mode_toString(pktIn, mavlink) == "STABILIZE"
         pktIn = mavlink.MAVLink_heartbeat_message(
-                mavlink.MAV_TYPE_QUADROTOR, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 5, 0, 2)
+            mavlink.MAV_TYPE_QUADROTOR, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 5, 0, 2)
         assert mode_toString(pktIn, mavlink) == "LOITER"
 
         # APM:Rover
         pktIn = mavlink.MAVLink_heartbeat_message(
-                mavlink.MAV_TYPE_GROUND_ROVER, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 0, 0, 2)
+            mavlink.MAV_TYPE_GROUND_ROVER, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 0, 0, 2)
         assert mode_toString(pktIn, mavlink) == "MANUAL"
         pktIn = mavlink.MAVLink_heartbeat_message(
-                mavlink.MAV_TYPE_GROUND_ROVER, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 10, 0, 2)
+            mavlink.MAV_TYPE_GROUND_ROVER, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 10, 0, 2)
         assert mode_toString(pktIn, mavlink) == "AUTO"
 
         # APM:Sub
         pktIn = mavlink.MAVLink_heartbeat_message(
-                mavlink.MAV_TYPE_SUBMARINE, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 0, 0, 2)
+            mavlink.MAV_TYPE_SUBMARINE, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 0, 0, 2)
         assert mode_toString(pktIn, mavlink) == "STABILIZE"
         pktIn = mavlink.MAVLink_heartbeat_message(
-                mavlink.MAV_TYPE_SUBMARINE, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 4, 0, 2)
+            mavlink.MAV_TYPE_SUBMARINE, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 4, 0, 2)
         assert mode_toString(pktIn, mavlink) == "GUIDED"
 
         # APM:Plane
         pktIn = mavlink.MAVLink_heartbeat_message(
-                mavlink.MAV_TYPE_FIXED_WING, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 0, 0, 2)
+            mavlink.MAV_TYPE_FIXED_WING, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 0, 0, 2)
         assert mode_toString(pktIn, mavlink) == "MANUAL"
         pktIn = mavlink.MAVLink_heartbeat_message(
-                mavlink.MAV_TYPE_FIXED_WING, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 20, 0, 2)
+            mavlink.MAV_TYPE_FIXED_WING, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 20, 0, 2)
         assert mode_toString(pktIn, mavlink) == "QLAND"
 
         # APM:Antenna Tracker
         pktIn = mavlink.MAVLink_heartbeat_message(
-                mavlink.MAV_TYPE_ANTENNA_TRACKER, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 0, 0, 2)
+            mavlink.MAV_TYPE_ANTENNA_TRACKER, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 0, 0, 2)
         assert mode_toString(pktIn, mavlink) == "MANUAL"
         pktIn = mavlink.MAVLink_heartbeat_message(
-                mavlink.MAV_TYPE_ANTENNA_TRACKER, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 2, 0, 2)
+            mavlink.MAV_TYPE_ANTENNA_TRACKER, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 2, 0, 2)
         assert mode_toString(pktIn, mavlink) == "SCAN"
+
 
 if __name__ == '__main__':
     unittest.main()
