@@ -22,6 +22,7 @@ Module to hold helper functions for interfacing with the pymavlink library
 """
 from importlib import import_module
 
+
 def getpymavlinkpackage(dialect: str, version: float) -> str:
     """
     Return an import to the specified mavlink dialect and version
@@ -42,19 +43,23 @@ def getpymavlinkpackage(dialect: str, version: float) -> str:
         raise ValueError('Incorrect mavlink dialect')
     return mod
 
-#----------------------
+
+# ----------------------
 # Taken from mavutil.py
-#----------------------
+# ----------------------
+
 
 def mode_toString(pktIn, mavlink):
     """Given a hearbeat packet, get the mode
     string"""
     return mode_mapping(pktIn, mavlink, False)[pktIn.custom_mode]
 
+
 def mode_toInt(mode: str, mavlink):
     """Given a string mode, give the id
     number"""
     pass
+
 
 def mode_mapping(pktIn, mavlink, inv: bool):
     '''return dictionary mapping mode names to numbers, or None if unknown'''
@@ -78,7 +83,7 @@ def mode_mapping(pktIn, mavlink, inv: bool):
     if mav_type == mavlink.MAV_TYPE_GROUND_ROVER:
         map = mode_mapping_rover
     if mav_type == mavlink.MAV_TYPE_SURFACE_BOAT:
-        map = mode_mapping_rover # for the time being
+        map = mode_mapping_rover  # for the time being
     if mav_type == mavlink.MAV_TYPE_ANTENNA_TRACKER:
         map = mode_mapping_tracker
     if mav_type == mavlink.MAV_TYPE_SUBMARINE:
@@ -91,75 +96,78 @@ def mode_mapping(pktIn, mavlink, inv: bool):
     else:
         return map
 
+
 mode_mapping_apm = {
-    0 : 'MANUAL',
-    1 : 'CIRCLE',
-    2 : 'STABILIZE',
-    3 : 'TRAINING',
-    4 : 'ACRO',
-    5 : 'FBWA',
-    6 : 'FBWB',
-    7 : 'CRUISE',
-    8 : 'AUTOTUNE',
-    10 : 'AUTO',
-    11 : 'RTL',
-    12 : 'LOITER',
-    14 : 'LAND',
-    15 : 'GUIDED',
-    16 : 'INITIALISING',
-    17 : 'QSTABILIZE',
-    18 : 'QHOVER',
-    19 : 'QLOITER',
-    20 : 'QLAND',
-    21 : 'QRTL',
-    22 : 'QAUTOTUNE',
-    }
-mode_mapping_acm = {
-    0 : 'STABILIZE',
-    1 : 'ACRO',
-    2 : 'ALT_HOLD',
-    3 : 'AUTO',
-    4 : 'GUIDED',
-    5 : 'LOITER',
-    6 : 'RTL',
-    7 : 'CIRCLE',
-    8 : 'POSITION',
-    9 : 'LAND',
-    10 : 'OF_LOITER',
-    11 : 'DRIFT',
-    13 : 'SPORT',
-    14 : 'FLIP',
-    15 : 'AUTOTUNE',
-    16 : 'POSHOLD',
-    17 : 'BRAKE',
-    18 : 'THROW',
-    19 : 'AVOID_ADSB',
-    20 : 'GUIDED_NOGPS',
-    21 : 'SMART_RTL',
-    22 : 'FLOWHOLD',
-    23 : 'FOLLOW',
+    0: 'MANUAL',
+    1: 'CIRCLE',
+    2: 'STABILIZE',
+    3: 'TRAINING',
+    4: 'ACRO',
+    5: 'FBWA',
+    6: 'FBWB',
+    7: 'CRUISE',
+    8: 'AUTOTUNE',
+    10: 'AUTO',
+    11: 'RTL',
+    12: 'LOITER',
+    14: 'LAND',
+    15: 'GUIDED',
+    16: 'INITIALISING',
+    17: 'QSTABILIZE',
+    18: 'QHOVER',
+    19: 'QLOITER',
+    20: 'QLAND',
+    21: 'QRTL',
+    22: 'QAUTOTUNE'
 }
+
+mode_mapping_acm = {
+    0: 'STABILIZE',
+    1: 'ACRO',
+    2: 'ALT_HOLD',
+    3: 'AUTO',
+    4: 'GUIDED',
+    5: 'LOITER',
+    6: 'RTL',
+    7: 'CIRCLE',
+    8: 'POSITION',
+    9: 'LAND',
+    10: 'OF_LOITER',
+    11: 'DRIFT',
+    13: 'SPORT',
+    14: 'FLIP',
+    15: 'AUTOTUNE',
+    16: 'POSHOLD',
+    17: 'BRAKE',
+    18: 'THROW',
+    19: 'AVOID_ADSB',
+    20: 'GUIDED_NOGPS',
+    21: 'SMART_RTL',
+    22: 'FLOWHOLD',
+    23: 'FOLLOW',
+}
+
 mode_mapping_rover = {
-    0 : 'MANUAL',
-    1 : 'ACRO',
-    2 : 'LEARNING',
-    3 : 'STEERING',
-    4 : 'HOLD',
-    5 : 'LOITER',
-    10 : 'AUTO',
-    11 : 'RTL',
-    12 : 'SMART_RTL',
-    15 : 'GUIDED',
-    16 : 'INITIALISING'
-    }
+    0: 'MANUAL',
+    1: 'ACRO',
+    2: 'LEARNING',
+    3: 'STEERING',
+    4: 'HOLD',
+    5: 'LOITER',
+    10: 'AUTO',
+    11: 'RTL',
+    12: 'SMART_RTL',
+    15: 'GUIDED',
+    16: 'INITIALISING'
+}
 
 mode_mapping_tracker = {
-    0 : 'MANUAL',
-    1 : 'STOP',
-    2 : 'SCAN',
-    10 : 'AUTO',
-    16 : 'INITIALISING'
-    }
+    0: 'MANUAL',
+    1: 'STOP',
+    2: 'SCAN',
+    10: 'AUTO',
+    16: 'INITIALISING'
+}
 
 mode_mapping_sub = {
     0: 'STABILIZE',
@@ -171,7 +179,7 @@ mode_mapping_sub = {
     9: 'SURFACE',
     16: 'POSHOLD',
     19: 'MANUAL',
-    }
+}
 
 # map from a PX4 "main_state" to a string; see msg/commander_state.msg
 # This allows us to map sdlog STAT.MainState to a simple "mode"
@@ -179,18 +187,18 @@ mode_mapping_sub = {
 # related but distict from what is found in mavlink messages; see
 # "Custom mode definitions", below.
 mainstate_mapping_px4 = {
-    0 : 'MANUAL',
-    1 : 'ALTCTL',
-    2 : 'POSCTL',
-    3 : 'AUTO_MISSION',
-    4 : 'AUTO_LOITER',
-    5 : 'AUTO_RTL',
-    6 : 'ACRO',
-    7 : 'OFFBOARD',
-    8 : 'STAB',
-    9 : 'RATTITUDE',
-    10 : 'AUTO_TAKEOFF',
-    11 : 'AUTO_LAND',
-    12 : 'AUTO_FOLLOW_TARGET',
-    13 : 'MAX',
+    0: 'MANUAL',
+    1: 'ALTCTL',
+    2: 'POSCTL',
+    3: 'AUTO_MISSION',
+    4: 'AUTO_LOITER',
+    5: 'AUTO_RTL',
+    6: 'ACRO',
+    7: 'OFFBOARD',
+    8: 'STAB',
+    9: 'RATTITUDE',
+    10: 'AUTO_TAKEOFF',
+    11: 'AUTO_LAND',
+    12: 'AUTO_FOLLOW_TARGET',
+    13: 'MAX',
 }

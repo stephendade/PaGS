@@ -64,16 +64,15 @@ class Module():
         self.pkts += 1
         # need a ref to the vehicle...
         self.txCallback(vehname, self.vehObjCallback(vehname).mod.MAVLINK_MSG_ID_HEARTBEAT,
-                                           type=self.vehObjCallback(vehname).mod.MAV_TYPE_GCS,
-                                           autopilot=self.vehObjCallback(vehname).mod.MAV_AUTOPILOT_INVALID,
-                                           base_mode=0,
-                                           custom_mode=0,
-                                           system_status=0,
-                                           mavlink_version=int(self.vehObjCallback(vehname).mavversion))
+                        type=self.vehObjCallback(vehname).mod.MAV_TYPE_GCS,
+                        autopilot=self.vehObjCallback(vehname).mod.MAV_AUTOPILOT_INVALID,
+                        base_mode=0,
+                        custom_mode=0,
+                        system_status=0,
+                        mavlink_version=int(self.vehObjCallback(vehname).mavversion))
 
     def removeVehicle(self, name: str):
         self.theVeh.remove(name)
 
     def closeModule(self):
         pass
-

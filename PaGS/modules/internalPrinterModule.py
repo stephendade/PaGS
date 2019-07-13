@@ -53,4 +53,3 @@ class Module():
 
     def closeModule(self):
         pass
-

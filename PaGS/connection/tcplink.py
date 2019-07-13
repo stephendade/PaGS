@@ -36,7 +36,6 @@ class TCPConnection(MAVConnection):
                                srcsystem, srccomp, rxcallback, clcallback)
         self.server = server
         self.transport = None
-        #self.listen.setsockopt(socket.SOL_TCP, socket.TCP_NODELAY, 1)
 
     def connection_made(self, transport) -> None:
         logging.debug("Connection made %s", self.name)
@@ -46,8 +45,6 @@ class TCPConnection(MAVConnection):
 
     def data_received(self, data) -> None:
         logging.debug("Rx packet %s", self.name)
-        #if 0xFD in data:
-        #    print("Got pkt")
         self.processPackets(data)
 
     def send_data(self, data: bytes) -> None:

@@ -41,7 +41,7 @@ class MAVConnection(asyncio.Protocol):
         self.packetsRx = collections.deque()
         self.packetsTx = collections.deque()
         self.mav = self.mod.MAVLink(self, self.sourceSystem,
-                               self.sourceComponent, use_native=False)
+                                    self.sourceComponent, use_native=False)
         self.mav.robust_parsing = True
 
         # BW measures for RX, per sysid
@@ -90,7 +90,7 @@ class MAVConnection(asyncio.Protocol):
         (bytesi, timei) = self.bytesmeasure
         if time.time() - timei > 5:
             # do an update if 5 seconds since last BW update
-            self.bytespersecond = int(bytesi/(time.time() - timei))
+            self.bytespersecond = int(bytesi / (time.time() - timei))
             self.bytesmeasure = (bytelen, time.time())
         else:
-            self.bytesmeasure = (bytesi+bytelen, timei)
+            self.bytesmeasure = (bytesi + bytelen, timei)

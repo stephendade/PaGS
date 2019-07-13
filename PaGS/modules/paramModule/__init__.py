@@ -28,10 +28,10 @@ You can:
 """
 
 import fnmatch
-import os
 import asyncio
 
 from PaGS.mavlink.pymavutil import getpymavlinkpackage
+
 
 class Module():
     """
@@ -142,7 +142,7 @@ class Module():
 
     def parmStatus(self, veh: str):
         """Download the parameters from the vehicle"""
-        if self.vehObjCallback(veh).paramstatus == None:
+        if self.vehObjCallback(veh).paramstatus is None:
             self.printer(veh, "Params not downloaded")
         elif isinstance(self.vehObjCallback(veh).paramstatus, (list,)):
             self.printer(veh, "Downloaded " + str(len(self.vehObjCallback(
@@ -187,7 +187,7 @@ class Module():
             try:
                 await asyncio.sleep(0.2)
 
-                if self.vehObjCallback(vehname).paramstatus == True:
+                if self.vehObjCallback(vehname).paramstatus is True:
                     # erase old list (if it exists)
 
                     # good to load

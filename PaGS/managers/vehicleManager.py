@@ -90,7 +90,8 @@ class VehicleManager():
         self.outgoingPacketBuffer = func
 
     async def add_vehicle(self, name: str, source_system: int, source_component: int,
-                    target_system: int, target_component: int, dialect: str, mavversion: float, strconnection: str):
+                          target_system: int, target_component: int, dialect: str,
+                          mavversion: float, strconnection: str):
         """ Add a new vehicle"""
         if name in self.veh_list:
             raise ValueError('Already a vehicle with that name')
@@ -109,7 +110,7 @@ class VehicleManager():
                 self.add_vehicle_callback(name)
             # matrix.addVehicleLink(self.VehA.name, self.VehA.target_system, self.linkC)
             if self.add_link:
-                #self.add_link(name, target_system, strconnection)
+                # self.add_link(name, target_system, strconnection)
                 asyncio.ensure_future(self.add_link(name, target_system, strconnection))
 
     async def add_extraLink(self, name: str, strconnection: str):
@@ -137,10 +138,7 @@ class VehicleManager():
                 self.remove_vehicle_callback(name)
             # remove the link(s)
             if self.remove_link:
-                #await self.remove_link(name)
                 await self.remove_link(name)
-                #await t1
-                #asyncio.ensure_future(self.remove_link(name), loop=self.loop)
 
     def send_message(self, name, msgid, **kwargs):
         """transmit a packet id and args to vehicle"""

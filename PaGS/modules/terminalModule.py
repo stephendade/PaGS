@@ -68,16 +68,13 @@ class VehicleTab():
         """
         Handles any commands from prompt for this vehicle
         """
-        #text = buff.text[::-1]
         # Process command?
         self.cmdCallback(self.name, buff.text)
-        #self.output_text(text)
 
     def output_text(self, text: str):
         """
         Send text to output
         """
-        #self.output.text += self.prompt.text + str(text) + '\n'
         self.output.insert_text(self.prompt.text + str(text) + '\n')
 
     def changePrompt(self, prompt: str):
@@ -120,9 +117,9 @@ class Module():
 
         self.style_extensions = {
             # Tabs
-            'tabbar':                 'noinherit',
-            'tabbar.tab':             '',
-            'tabbar.tab.active':      'bold noinherit reverse',
+            'tabbar': 'noinherit',
+            'tabbar.tab': '',
+            'tabbar.tab.active': 'bold noinherit reverse',
         }
 
         self.current_style = Style.from_dict(self.style_extensions)
@@ -189,7 +186,6 @@ class Module():
         """
         Process a user command cmd in tab name
         """
-        #self.sendText("I got " + cmd, name)
         self.commandProcessor(vehname, cmd)
 
     def incomingPacket(self, vehname: str, pkt):

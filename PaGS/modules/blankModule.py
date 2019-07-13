@@ -2,6 +2,7 @@
 <Module Description>
 """
 
+
 class Module():
     """
     <Module Description>
@@ -25,5 +26,3 @@ class Module():
 
     def closeModule(self):
         pass
-
-

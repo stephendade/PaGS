@@ -29,18 +29,19 @@ You can:
 
 import fnmatch
 import os
-import asyncio
 
 import wx
 import wx.grid
 import wx.lib.agw.persist as PM
 import wx.lib.mixins.listctrl as listmix
 
-from wxasync import AsyncBind, WxAsyncApp, StartCoroutine
+from wxasync import WxAsyncApp
+
 
 def start_gui():
     """start the GUI"""
     return WxAsyncApp()
+
 
 class EditableListCtrl(wx.ListCtrl, listmix.TextEditMixin):
     ''' TextEditMixin allows any column to be edited. '''
@@ -69,11 +70,9 @@ class EditableListCtrl(wx.ListCtrl, listmix.TextEditMixin):
         self.SetItemData(i, self.paramdataCounter)
 
         self.paramdataCounter += 1
-        #self.itemDataMap[len(self.paramsall)] = param
 
     def updateItem(self, param, val):
         """update existing param"""
-        #self.paramsall[param] = val
         for key, itm in self.paramdata.items():
             if itm[0] == param:
                 self.paramdata[key] = (param, val)
@@ -118,7 +117,7 @@ class EditableListCtrl(wx.ListCtrl, listmix.TextEditMixin):
         try:
             if float(new_data):
                 pass
-        except:  # Issue error and revert to previous data
+        except ValueError:  # Issue error and revert to previous data
             wx.MessageBox('Invalid Entry - Must be a number',
                           'Error', wx.OK | wx.ICON_INFORMATION)
             wx.CallLater(10, self.SetItem, rowid, 1, old_data)
@@ -138,7 +137,7 @@ class EditableListCtrl(wx.ListCtrl, listmix.TextEditMixin):
 
 
 class VehParamTab(wx.Panel):
-    def __init__(self, parent, writeParamCallback, paramValCallback, saveParamCallback,loadParamCallback, vehName):
+    def __init__(self, parent, writeParamCallback, paramValCallback, saveParamCallback, loadParamCallback, vehName):
         wx.Panel.__init__(self, parent)
 
         self.vehName = vehName
@@ -203,7 +202,6 @@ class VehParamTab(wx.Panel):
             item = self.list.GetItem(row, col=0)
             newval = self.list.GetItem(row, col=1)
             if self.list.GetItemBackgroundColour(row) == 'MEDIUM SPRING GREEN':
-                #print("Changing " + str(item.Text))
                 self.writeParamCallback(
                     self.vehName, item.Text, float(newval.Text))
                 self.list.SetItemBackgroundColour(row, 'WHITE')
@@ -221,7 +219,7 @@ class VehParamTab(wx.Panel):
     def onButtonSave(self, event):
         """Save params to file"""
         with wx.FileDialog(self, "Save Parameters file", wildcard="Parameters files (*.parm)|*.parm",
-                               style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT) as fileDialog:
+                           style=wx.FD_SAVE | wx.FD_OVERWRITE_PROMPT) as fileDialog:
             fileDialog.SetFilename("parameters.parm")
 
             if fileDialog.ShowModal() == wx.ID_CANCEL:
@@ -236,7 +234,7 @@ class VehParamTab(wx.Panel):
     def onButtonLoad(self, event):
         """Save params to file"""
         with wx.FileDialog(self, "Load Parameters file", wildcard="Parameters files (*.parm)|*.parm",
-                               style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
+                           style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as fileDialog:
 
             if fileDialog.ShowModal() == wx.ID_CANCEL:
                 return     # the user changed their mind
@@ -247,10 +245,11 @@ class VehParamTab(wx.Panel):
             if self.loadParamCallback:
                 self.loadParamCallback(self.vehName, pathname)
 
+
 class ParamGUIFrame(wx.Frame):
     def __init__(self):
         wx.Frame.__init__(self, None, title="Parameters", name="ParamGUI")
-        #self.grid = wx.grid.Grid(self, -1)
+        # self.grid = wx.grid.Grid(self, -1)
 
         # Create a panel and notebook (tabs holder)
         self.p = wx.Panel(self)

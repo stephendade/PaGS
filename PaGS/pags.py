@@ -23,7 +23,6 @@ from __future__ import unicode_literals
 import asyncio
 import argparse
 import sys
-import logging
 
 from concurrent.futures import ThreadPoolExecutor
 
@@ -31,6 +30,7 @@ from PaGS.managers.connectionManager import ConnectionManager
 from PaGS.managers.vehicleManager import VehicleManager
 
 from PaGS.managers import moduleManager
+
 
 class RedirPrint(object):
     """
@@ -43,10 +43,11 @@ class RedirPrint(object):
         self.writefunc(message)
 
     def flush(self):
-        #this flush method is needed for python 3 compatibility.
-        #this handles the flush command by doing nothing.
-        #you might want to specify some extra behavior here.
+        # this flush method is needed for python 3 compatibility.
+        # this handles the flush command by doing nothing.
+        # you might want to specify some extra behavior here.
         pass
+
 
 class pags():
     """
@@ -56,7 +57,7 @@ class pags():
         """
         Start up PaGS
         """
-        
+
         # logging.basicConfig(level=logging.DEBUG)
         self.loop = loop
 
@@ -106,17 +107,16 @@ class pags():
             # Multiple links with the same sysid will create a multilink vehicle
             for connection in source:
                 Vehname = "Veh_" + str(connection.split(':')[3])
-                cn = connection.split(
-                    ':')[0]+":"+connection.split(':')[1]+":"+connection.split(':')[2]
+                cn = connection.split(':')[0] + ":" + connection.split(':')[1] + ":" + connection.split(':')[2]
                 asyncio.ensure_future(self.allvehicles.add_vehicle(Vehname, source_system, source_component,
-                                        connection.split(':')[3], connection.split(':')[4],
-                                        dialect, mav, cn))
-        
+                                      connection.split(':')[3], connection.split(':')[4],
+                                      dialect, mav, cn))
+
     def close(self):
         """
         Cleanly shutdown a pags instance
         """
-        
+
         # shutdown all the modules
         self.modules.closeAllModules()
 
@@ -127,7 +127,7 @@ class pags():
 
         self.loop.run_until_complete(self.connmtrx.stoploop())
 
-     
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description="MAVLink ground station")
@@ -152,10 +152,10 @@ if __name__ == '__main__':
     # Start asyncio, if needed
     loop = asyncio.get_event_loop()
     loop.set_default_executor(ThreadPoolExecutor(1000))
-    
+
     # Any modules to load on startup
     initialModules = ["modules.terminalModule", "modules.paramModule"]
-        
+
     main = pags(args.dialect, args.mav, args.source_system, args.source_component, args.nogui, args.multi, args.source, loop, initialModules)
 
     # Enter the asyncio event loop and wait for a
