@@ -98,7 +98,10 @@ install:
   # For CI - Coveralls.io
   - pip install -U coveralls
 
-
+before_script:
+  # fail the build if there are Python syntax errors or undefined names
+  - flake8 ./PaGS --count --ignore=E501,E402,W504 --show-source --statistics --max-line-length=127
+  - flake8 ./tests --count --ignore=E501,E402,W504 --show-source --statistics --max-line-length=127
 
 build_script:
   # Build and install PaGS
@@ -107,9 +110,6 @@ build_script:
 test_script:
   # Run pytest
   - python -m pytest --log-level DEBUG --junitxml=out_report.xml --cov=PaGS
-  
-  # Check pep8 compliance
-  - python -m pytest --flake8
 
   # Upload coverage to coveralls
   - coveralls
