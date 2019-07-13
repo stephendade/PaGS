@@ -123,7 +123,7 @@ test_script:
   # Upload coverage to coveralls, only if the var is defined
   - ps: if ($env:COVERALLS_REPO_TOKEN)
         {
-         coveralls
+         iex coveralls
         }
 
 on_finish:
