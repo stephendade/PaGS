@@ -1,3 +1,12 @@
+# branches to build
+branches:
+  # whitelist
+  only:
+    - master
+
+# Do not build feature branch with open Pull Requests
+skip_branch_with_pr: true
+
 environment:
   COVERALLS_REPO_TOKEN:
     secure: nawPdszJTzIQ4ZSOlJIUcg8VdWOT+da4eB/VKuF6eUTK502B6dNIw+R2DA4OJxWc
