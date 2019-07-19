@@ -24,7 +24,6 @@ Testing of the "mode" module
 '''
 
 import asynctest
-import asyncio
 
 from PaGS.managers import moduleManager
 from PaGS.vehicle.vehicle import Vehicle
