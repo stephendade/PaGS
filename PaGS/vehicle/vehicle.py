@@ -58,10 +58,10 @@ class Vehicle():
         self.latestPacketDict = dict()
 
         # The vehicle
-        self.source_system = source_system
-        self.source_component = source_component
-        self.target_system = target_system
-        self.target_component = target_component
+        self.source_system = int(source_system)
+        self.source_component = int(source_component)
+        self.target_system = int(target_system)
+        self.target_component = int(target_component)
         self.dialect = dialect
         self.mavversion = mavversion
 
@@ -93,14 +93,14 @@ class Vehicle():
         self.rally = []
 
         # Vehicle strings
-        self.fcName = ""  # MAV_AUTOPILOT_ string
+        self.fcName = None  # int for MAV_AUTOPILOT_ string
         self.fcVersion = ""
         self.OSVersion = ""
-        self.vehType = None  # MAV_TYPE_ string
+        self.vehType = None  # int of MAV_TYPE_ string
 
         # Vehicle state
         self.isArmed = None  # True if armed, False if disarmed, None if unknown
-        self.flightMode = None  # None is unknown, string MAV_MODE_ otherwise
+        self.flightMode = None  # None is unknown, int otherwise
         self.isConnected = False  # True if getting hb packets
 
         # Heartbeats (tx and rx)
@@ -148,9 +148,8 @@ class Vehicle():
             self.timeoflasthb = time.time()
 
             # Get FC name and vehicle type
-            self.fcName = str(
-                self.mod.enums['MAV_AUTOPILOT'][pkt.autopilot].name)
-            self.vehType = str(self.mod.enums['MAV_TYPE'][pkt.type].name)
+            self.fcName = pkt.autopilot
+            self.vehType = pkt.type
 
             # Get armed status
             if pkt.base_mode & self.mod.MAV_MODE_FLAG_SAFETY_ARMED:
@@ -159,7 +158,7 @@ class Vehicle():
                 self.isArmed = False
 
             # Get flight mode
-            self.flightMode = str(pkt.custom_mode)
+            self.flightMode = pkt.custom_mode
         # if it's a new param, put it in the dict and update status
         if pkt.get_type() == "PARAM_VALUE":
             # need to convert from bytes to str if required, as mavlink
@@ -365,9 +364,12 @@ class Vehicle():
         """
         # add in the sys/component id if required:
         # Check if the message if targetted
-        if 'target_system' in self.mod.mavlink_map[pktType].fieldnames:
+        if 'target_system' in self.mod.mavlink_map[pktType].fieldnames and 'target_component' in self.mod.mavlink_map[pktType].fieldnames:
             pkt = self.mod.mavlink_map[pktType](
-                **dict(kwargs, target_system=0, target_component=0))
+                **dict(kwargs, target_system=self.target_system, target_component=self.target_component))
+        elif 'target_system' in self.mod.mavlink_map[pktType].fieldnames:
+            pkt = self.mod.mavlink_map[pktType](
+                **dict(kwargs, target_system=self.target_system))
         else:
             pkt = self.mod.mavlink_map[pktType](**dict(kwargs))
 
