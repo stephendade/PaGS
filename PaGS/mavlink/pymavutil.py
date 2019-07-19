@@ -52,42 +52,46 @@ def getpymavlinkpackage(dialect: str, version: float) -> str:
 def mode_toString(pktIn, mavlink):
     """Given a hearbeat packet, get the mode
     string"""
-    return mode_mapping(pktIn, mavlink, False)[pktIn.custom_mode]
+    return mode_mapping(pktIn.type, pktIn.autopilot, mavlink, False)[pktIn.custom_mode]
 
 
-def mode_toInt(mode: str, mavlink):
+def mode_toInt(mav_type, mav_autopilot, mode: str, mavlink):
     """Given a string mode, give the id
     number"""
-    pass
+    return mode_mapping(mav_type, mav_autopilot, mavlink, True)[mode]
 
 
-def mode_mapping(pktIn, mavlink, inv: bool):
+def allModes(mav_type, mav_autopilot, mavlink):
+    """Get all valid mode strings for a vehicle"""
+    return list(mode_mapping(mav_type, mav_autopilot, mavlink, False).values())
+
+
+def mode_mapping(mav_type, mav_autopilot, mavlink, inv: bool):
     '''return dictionary mapping mode names to numbers, or None if unknown'''
-    mav_type = pktIn.type
-    mav_autopilot = pktIn.autopilot
-    if mav_autopilot == mavlink.MAV_AUTOPILOT_PX4:
-        return mainstate_mapping_px4
     if mav_type is None:
         return None
     map = None
-    if mav_type in [mavlink.MAV_TYPE_QUADROTOR,
-                    mavlink.MAV_TYPE_HELICOPTER,
-                    mavlink.MAV_TYPE_HEXAROTOR,
-                    mavlink.MAV_TYPE_OCTOROTOR,
-                    mavlink.MAV_TYPE_DODECAROTOR,
-                    mavlink.MAV_TYPE_COAXIAL,
-                    mavlink.MAV_TYPE_TRICOPTER]:
-        map = mode_mapping_acm
-    if mav_type == mavlink.MAV_TYPE_FIXED_WING:
-        map = mode_mapping_apm
-    if mav_type == mavlink.MAV_TYPE_GROUND_ROVER:
-        map = mode_mapping_rover
-    if mav_type == mavlink.MAV_TYPE_SURFACE_BOAT:
-        map = mode_mapping_rover  # for the time being
-    if mav_type == mavlink.MAV_TYPE_ANTENNA_TRACKER:
-        map = mode_mapping_tracker
-    if mav_type == mavlink.MAV_TYPE_SUBMARINE:
-        map = mode_mapping_sub
+    if mav_autopilot == mavlink.MAV_AUTOPILOT_PX4:
+        map = mainstate_mapping_px4
+    elif mav_autopilot == mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA:
+        if mav_type in [mavlink.MAV_TYPE_QUADROTOR,
+                        mavlink.MAV_TYPE_HELICOPTER,
+                        mavlink.MAV_TYPE_HEXAROTOR,
+                        mavlink.MAV_TYPE_OCTOROTOR,
+                        mavlink.MAV_TYPE_DODECAROTOR,
+                        mavlink.MAV_TYPE_COAXIAL,
+                        mavlink.MAV_TYPE_TRICOPTER]:
+            map = mode_mapping_acm
+        if mav_type == mavlink.MAV_TYPE_FIXED_WING:
+            map = mode_mapping_apm
+        if mav_type == mavlink.MAV_TYPE_GROUND_ROVER:
+            map = mode_mapping_rover
+        if mav_type == mavlink.MAV_TYPE_SURFACE_BOAT:
+            map = mode_mapping_rover  # for the time being
+        if mav_type == mavlink.MAV_TYPE_ANTENNA_TRACKER:
+            map = mode_mapping_tracker
+        if mav_type == mavlink.MAV_TYPE_SUBMARINE:
+            map = mode_mapping_sub
     if map is None:
         return None
     if inv:
