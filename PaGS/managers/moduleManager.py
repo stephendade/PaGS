@@ -37,16 +37,12 @@ class moduleManager():
     Manage a set of modules
     """
 
-    def __init__(self, loop, dialect, mavversion, useGUI):
+    def __init__(self, loop, useGUI):
         # dict of modules. Key is module name
         self.multiModules = {}
 
         # are we using a GUI?
         self.useGUI = useGUI
-
-        # mavlink
-        self.mavversion = mavversion
-        self.dialect = dialect
 
         # asyncio event loop
         self.loop = loop
@@ -133,7 +129,7 @@ class moduleManager():
 
         self.multiModules[name] = mod.Module(
             self.loop, self.outgoingPacket, self.vehListCallback,
-            self.getVehCallback, self.onModuleCommandCallback, self.printVeh, self.dialect, self.mavversion, self.useGUI)
+            self.getVehCallback, self.onModuleCommandCallback, self.printVeh, self.useGUI)
         # and add any vehicles from beforehand
         for vehname in self.vehListCallback():
             self.multiModules[name].addVehicle(vehname)

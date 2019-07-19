@@ -38,9 +38,6 @@ class ModuleManagerTest(asynctest.TestCase):
 
     def setUp(self):
         """Set up some data that is reused in many tests"""
-
-        self.manager = None
-
         self.dialect = 'ardupilotmega'
         self.version = 2.0
         self.mod = getpymavlinkpackage(self.dialect, self.version)
@@ -48,6 +45,10 @@ class ModuleManagerTest(asynctest.TestCase):
             self, srcSystem=4, srcComponent=0, use_native=False)
         self.VehA = Vehicle(self.loop, "VehA", 255, 0, 4,
                             0, self.dialect, self.version)
+
+        self.manager = moduleManager.moduleManager(self.loop, False)
+        self.manager.onVehListAttach(self.getVehListCallback)
+        self.manager.onVehGetAttach(self.getVehicleCallback)
 
         self.txPackets = {}
 
@@ -73,11 +74,6 @@ class ModuleManagerTest(asynctest.TestCase):
 
     def test_loadModule(self):
         """Test adding and removal of module"""
-        self.manager = moduleManager.moduleManager(
-            self.loop, self.dialect, self.version, False)
-        self.manager.onVehListAttach(self.getVehListCallback)
-        self.manager.onVehGetAttach(self.getVehicleCallback)
-
         self.manager.addModule("PaGS.modules.templateModule")
 
         # is the module loaded?
@@ -93,11 +89,6 @@ class ModuleManagerTest(asynctest.TestCase):
 
     def test_cmd_do_stuff(self):
         """Test the do_stuff() command"""
-        self.manager = moduleManager.moduleManager(
-            self.loop, self.dialect, self.version, False)
-        self.manager.onVehListAttach(self.getVehListCallback)
-        self.manager.onVehGetAttach(self.getVehicleCallback)
-
         self.manager.addModule("PaGS.modules.templateModule")
 
         # execute a command

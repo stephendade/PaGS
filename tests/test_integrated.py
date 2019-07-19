@@ -115,8 +115,7 @@ class IntegratedTest(asynctest.TestCase):
         self.allvehicles = VehicleManager(self.loop)
 
         # Module manager
-        self.allModules = moduleManager(
-            self.loop, self.dialect, self.version, False)
+        self.allModules = moduleManager(self.loop, False)
 
         # and link them all together
         await self.doEventLinkages()
@@ -133,8 +132,7 @@ class IntegratedTest(asynctest.TestCase):
         self.allvehicles = VehicleManager(self.loop)
 
         # Module manager
-        self.allModules = moduleManager(
-            self.loop, self.dialect, self.version, False)
+        self.allModules = moduleManager(self.loop, False)
 
         # and link them all together
         await self.doEventLinkages()

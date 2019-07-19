@@ -55,8 +55,7 @@ class ModuleManagerTest(asynctest.TestCase):
         self.txPackets = {}
         self.txVehPackets = {}
 
-        self.manager = moduleManager.moduleManager(
-            self.loop, self.dialect, self.version, False)
+        self.manager = moduleManager.moduleManager(self.loop, False)
         self.manager.onVehListAttach(self.getVehListCallback)
         self.manager.onVehGetAttach(self.getVehicleCallback)
         self.manager.onPktTxAttach(self.txcallback)
@@ -332,8 +331,7 @@ class ModuleManagerTest(asynctest.TestCase):
         """Simple test of the GUI startup"""
 
         # need to reset for handling gui
-        self.manager = moduleManager.moduleManager(
-            self.loop, self.dialect, self.version, True)
+        self.manager = moduleManager.moduleManager(self.loop, True)
         self.manager.onVehListAttach(self.getVehListCallback)
         self.manager.onVehGetAttach(self.getVehicleCallback)
         self.manager.onPktTxAttach(self.txcallback)

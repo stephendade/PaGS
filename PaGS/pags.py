@@ -68,7 +68,7 @@ class pags():
         self.allvehicles = VehicleManager(self.loop)
 
         # Module manager
-        self.modules = moduleManager.moduleManager(self.loop, dialect, mav, not nogui)
+        self.modules = moduleManager.moduleManager(self.loop, not nogui)
 
         # event links from connmaxtrix -> vehicle manager
         self.connmtrx.onPacketAttach(self.allvehicles.onPacketRecieved)
@@ -154,7 +154,7 @@ if __name__ == '__main__':
     loop.set_default_executor(ThreadPoolExecutor(1000))
 
     # Any modules to load on startup
-    initialModules = ["modules.terminalModule", "modules.paramModule"]
+    initialModules = ["modules.terminalModule", "modules.paramModule", "modules.modeModule"]
 
     main = pags(args.dialect, args.mav, args.source_system, args.source_component, args.nogui, args.multi, args.source, loop, initialModules)
 
