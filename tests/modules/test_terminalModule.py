@@ -41,8 +41,6 @@ class TerminalModuleTest(asynctest.TestCase):
     def setUp(self):
         """Set up some data that is reused in many tests"""
 
-        self.manager = None
-
         self.dialect = 'ardupilotmega'
         self.version = 2.0
         self.mod = getpymavlinkpackage(self.dialect, self.version)
@@ -50,6 +48,10 @@ class TerminalModuleTest(asynctest.TestCase):
             self, srcSystem=4, srcComponent=0, use_native=False)
         self.VehA = Vehicle(self.loop, "VehA", 255, 0, 4,
                             0, self.dialect, self.version)
+
+        self.manager = moduleManager.moduleManager(self.loop, False)
+        self.manager.onVehListAttach(self.getVehListCallback)
+        self.manager.onVehGetAttach(self.getVehicleCallback)
 
         self.txPackets = {}
 
@@ -75,10 +77,6 @@ class TerminalModuleTest(asynctest.TestCase):
 
     def test_loadModule(self):
         """Test adding and removal of module"""
-        self.manager = moduleManager.moduleManager(
-            self.loop, self.dialect, self.version, False)
-        self.manager.onVehListAttach(self.getVehListCallback)
-        self.manager.onVehGetAttach(self.getVehicleCallback)
 
         # won't load in pytest, instead we just watch for the correct exception
         with pytest.raises(Exception) as excinfo:

@@ -85,15 +85,13 @@ class ModuleManagerTest(asynctest.TestCase):
 
     def test_manager(self):
         """Check initialisation"""
-        self.manager = moduleManager.moduleManager(
-            self.loop, self.dialect, self.version, False)
+        self.manager = moduleManager.moduleManager(self.loop, False)
 
         assert len(self.manager.multiModules) == 0
 
     def test_addremoveModule(self):
         """Test adding and removal of module"""
-        self.manager = moduleManager.moduleManager(
-            self.loop, self.dialect, self.version, False)
+        self.manager = moduleManager.moduleManager(self.loop, False)
         self.manager.onVehListAttach(self.getVehListCallback)
         self.manager.onVehGetAttach(self.getVehicleCallback)
 
@@ -111,8 +109,7 @@ class ModuleManagerTest(asynctest.TestCase):
 
     def test_inoutPacket(self):
         """Test packets going in and out"""
-        self.manager = moduleManager.moduleManager(
-            self.loop, self.dialect, self.version, False)
+        self.manager = moduleManager.moduleManager(self.loop, False)
         self.manager.onVehListAttach(self.getVehListCallback)
         self.manager.onVehGetAttach(self.getVehicleCallback)
 
@@ -133,8 +130,7 @@ class ModuleManagerTest(asynctest.TestCase):
 
     def test_addRemoveVehicle(self):
         """Test adding and removing a vehicle"""
-        self.manager = moduleManager.moduleManager(
-            self.loop, self.dialect, self.version, False)
+        self.manager = moduleManager.moduleManager(self.loop, False)
         self.manager.onVehListAttach(self.getVehListCallback)
         self.manager.onVehGetAttach(self.getVehicleCallback)
 
@@ -156,8 +152,7 @@ class ModuleManagerTest(asynctest.TestCase):
     def test_addRemoveVehicleAfterModule(self):
         """Test adding and removing vehicles prior
         to module loading"""
-        self.manager = moduleManager.moduleManager(
-            self.loop, self.dialect, self.version, False)
+        self.manager = moduleManager.moduleManager(self.loop, False)
         self.manager.onVehListAttach(self.getVehListCallbackMany)
         # self.manager.onVehGetAttach(self.getVehicleCallback)
 
@@ -176,8 +171,7 @@ class ModuleManagerTest(asynctest.TestCase):
     def test_printer(self):
         """Test the printer function (output)
         for the modules"""
-        self.manager = moduleManager.moduleManager(
-            self.loop, self.dialect, self.version, False)
+        self.manager = moduleManager.moduleManager(self.loop, False)
         self.manager.onVehListAttach(self.getVehListCallbackMany)
 
         self.manager.addVehicle("VehB")
@@ -196,8 +190,7 @@ class ModuleManagerTest(asynctest.TestCase):
     def test_command(self):
         """Test the loading and execution of user commands
         in modules"""
-        self.manager = moduleManager.moduleManager(
-            self.loop, self.dialect, self.version, False)
+        self.manager = moduleManager.moduleManager(self.loop, False)
         self.manager.onVehListAttach(self.getVehListCallbackMany)
 
         self.manager.addVehicle("VehB")
@@ -221,8 +214,7 @@ class ModuleManagerTest(asynctest.TestCase):
     def test_moreCommand(self):
         """Test the stability of the command handler with all
         sorts of mangled uner input"""
-        self.manager = moduleManager.moduleManager(
-            self.loop, self.dialect, self.version, False)
+        self.manager = moduleManager.moduleManager(self.loop, False)
         self.manager.onVehListAttach(self.getVehListCallbackMany)
 
         self.manager.addVehicle("VehB")

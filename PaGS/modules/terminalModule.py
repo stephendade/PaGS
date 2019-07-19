@@ -38,7 +38,7 @@ from prompt_toolkit.eventloop import use_asyncio_event_loop
 from prompt_toolkit.styles import Style
 from prompt_toolkit.layout.processors import BeforeInput
 
-from PaGS.mavlink.pymavutil import mode_toString, getpymavlinkpackage
+from PaGS.mavlink.pymavutil import mode_toString
 
 # Key bindings.
 KB = KeyBindings()
@@ -89,7 +89,7 @@ class Module():
     The terminal UI, based on prompt-toolkit
     """
 
-    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, cmdPrint, dialect, mavversion, isGUI):
+    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, cmdPrint, isGUI):
         self.tabs = []  # all the vehicles, one in each tab
 
         self.loop = loop
@@ -100,11 +100,6 @@ class Module():
         self.vehObjCallback = vehObjClk
         self.commandProcessor = cmdProcessClk
         self.printer = cmdPrint
-
-        # Mavlink
-        self.dialect = dialect
-        self.mavversion = mavversion
-        self.mod = getpymavlinkpackage(self.dialect, self.mavversion)
 
         # commands
         self.shortName = "terminal"
@@ -197,7 +192,7 @@ class Module():
             self.printVeh(pkt.text, vehname)
         # Mode change - update prompt
         if pkt.get_type() == "HEARTBEAT":
-            self.changePrompt(vehname, mode_toString(pkt, self.mod))
+            self.changePrompt(vehname, mode_toString(pkt, self.vehObjCallback(vehname).mod))
             self.application._redraw()
 
     def removeVehicleTab(self, name: str):

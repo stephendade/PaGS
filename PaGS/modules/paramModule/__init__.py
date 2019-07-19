@@ -30,15 +30,13 @@ You can:
 import fnmatch
 import asyncio
 
-from PaGS.mavlink.pymavutil import getpymavlinkpackage
-
 
 class Module():
     """
     Module for reading and writing parameters
     """
 
-    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, dialect, mavversion, isGUI):
+    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, isGUI):
         self.txCallback = txClbk
         self.vehListCallback = vehListClk
         self.vehObjCallback = vehObjClk
@@ -54,8 +52,6 @@ class Module():
                             'set': self.set,
                             'save': self.save,
                             'load': self.load}
-
-        self.mod = getpymavlinkpackage(dialect, mavversion)
 
         if self.isGUI:
             from PaGS.modules.paramModule.paramModule_gui import ParamGUIFrame, start_gui

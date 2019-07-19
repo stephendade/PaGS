@@ -56,8 +56,7 @@ class ModeModuleTest(asynctest.TestCase):
         self.txPackets = {}
         self.txVehPackets = {}
 
-        self.manager = moduleManager.moduleManager(
-            self.loop, self.dialect, self.version, False)
+        self.manager = moduleManager.moduleManager(self.loop, False)
         self.manager.onVehListAttach(self.getVehListCallback)
         self.manager.onVehGetAttach(self.getVehicleCallback)
         self.manager.onPktTxAttach(self.txcallback)

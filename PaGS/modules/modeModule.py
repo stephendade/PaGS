@@ -14,7 +14,7 @@ class Module():
     Set the vehicle's flight mode
     """
 
-    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, dialect, mavversion, isGUI):
+    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, isGUI):
         self.txCallback = txClbk
         self.vehListCallback = vehListClk
         self.vehObj = vehObjClk
