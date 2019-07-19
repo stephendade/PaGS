@@ -27,7 +27,7 @@ if that dialet does not exist
 
 import unittest
 
-from PaGS.mavlink.pymavutil import getpymavlinkpackage, mode_toString
+from PaGS.mavlink.pymavutil import getpymavlinkpackage, mode_toString, mode_toInt, allModes
 
 
 class getpymavlinkpackageTest(unittest.TestCase):
@@ -66,7 +66,7 @@ class getpymavlinkpackageTest(unittest.TestCase):
             assert str(e) == 'Incorrect mavlink version (must be 1.0 or 2.0)'
             assert 'mod' not in locals()
 
-    def test_modemappings(self):
+    def test_modetoString(self):
         """Test the mode_toString() method"""
         mavlink = getpymavlinkpackage('ardupilotmega', 2.0)
 
@@ -118,6 +118,31 @@ class getpymavlinkpackageTest(unittest.TestCase):
             mavlink.MAV_TYPE_ANTENNA_TRACKER, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 2, 0, 2)
         assert mode_toString(pktIn, mavlink) == "SCAN"
 
+    def test_allModes(self):
+        """
+        Test the allModes() function
+        """
+        mavlink = getpymavlinkpackage('ardupilotmega', 2.0)
+
+        modes = allModes(mavlink.MAV_TYPE_QUADROTOR, mavlink.MAV_AUTOPILOT_PX4, mavlink)
+        assert len(modes) == 14
+
+        modes = allModes(mavlink.MAV_TYPE_QUADROTOR, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, mavlink)
+        assert len(modes) == 23
+
+    def test_modetoInt(self):
+        """
+        Test the mode_toInt() function
+        """
+        mavlink = getpymavlinkpackage('ardupilotmega', 2.0)
+
+        # PX4
+        assert mode_toInt(mavlink.MAV_TYPE_QUADROTOR, mavlink.MAV_AUTOPILOT_PX4, "MANUAL", mavlink) == 0
+        assert mode_toInt(mavlink.MAV_TYPE_QUADROTOR, mavlink.MAV_AUTOPILOT_PX4, "AUTO_RTL", mavlink) == 5
+
+        # Ardupilot
+        assert mode_toInt(mavlink.MAV_TYPE_FIXED_WING, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, "QLAND", mavlink) == 20
+        assert mode_toInt(mavlink.MAV_TYPE_GROUND_ROVER, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, "HOLD", mavlink) == 4
 
 if __name__ == '__main__':
     unittest.main()
