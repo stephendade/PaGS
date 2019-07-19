@@ -46,8 +46,8 @@ class VehicleTest(asynctest.TestCase):
         self.mavversion = 2.0
         self.source_system = 255
         self.source_component = 0
-        self.target_system = 1
-        self.target_component = 0
+        self.target_system = 3
+        self.target_component = 8
 
         # This is the "vehicle" to respond to messages
         self.mod = getpymavlinkpackage(self.dialect, self.mavversion)
@@ -220,8 +220,8 @@ class VehicleTest(asynctest.TestCase):
             self.mod.MAV_TYPE_QUADROTOR, self.mod.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 0, 0, int(self.mavversion))
         self.veh.newPacketCallback(pkt)
 
-        assert self.veh.fcName == "MAV_AUTOPILOT_ARDUPILOTMEGA"
-        assert self.veh.vehType == "MAV_TYPE_QUADROTOR"
+        assert self.veh.fcName == 3 #"MAV_AUTOPILOT_ARDUPILOTMEGA"
+        assert self.veh.vehType == 2 #"MAV_TYPE_QUADROTOR"
 
     async def test_armmodestatus(self):
         """Test getting of the arming status and mode from heartbeat"""
@@ -236,21 +236,21 @@ class VehicleTest(asynctest.TestCase):
         self.veh.newPacketCallback(pkt)
 
         assert self.veh.isArmed is False
-        assert self.veh.flightMode == "0"
+        assert self.veh.flightMode == 0
 
         pkt = self.mod.MAVLink_heartbeat_message(
             self.mod.MAV_TYPE_QUADROTOR, self.mod.MAV_AUTOPILOT_ARDUPILOTMEGA, self.mod.MAV_MODE_MANUAL_ARMED, 1, 0, int(self.mavversion))
         self.veh.newPacketCallback(pkt)
 
         assert self.veh.isArmed is True
-        assert self.veh.flightMode == "1"
+        assert self.veh.flightMode == 1
 
         pkt = self.mod.MAVLink_heartbeat_message(
             self.mod.MAV_TYPE_QUADROTOR, self.mod.MAV_AUTOPILOT_ARDUPILOTMEGA, self.mod.MAV_MODE_MANUAL_DISARMED, 15, 0, int(self.mavversion))
         self.veh.newPacketCallback(pkt)
 
         assert self.veh.isArmed is False
-        assert self.veh.flightMode == '15'
+        assert self.veh.flightMode == 15
 
     async def test_params_before(self):
         """Test getting of the parameters before downloaded"""
@@ -321,8 +321,15 @@ class VehicleTest(asynctest.TestCase):
                             system_status=0,
                             mavlink_version=int(self.mavversion))
 
-        assert len(self.txpackets) == 1
+        self.veh.sendPacket(self.mod.MAVLINK_MSG_ID_SET_MODE,
+                            base_mode=self.mod.MAV_MODE_FLAG_CUSTOM_MODE_ENABLED,
+                            custom_mode=5)
 
+        assert len(self.txpackets) == 2
+
+        # Check the correct sysid was attached to the
+        # mode change packet. Going by packet indexes
+        assert self.txpackets[1][14] == self.target_system
 
 if __name__ == '__main__':
     asynctest.main()
