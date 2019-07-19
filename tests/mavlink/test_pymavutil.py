@@ -144,5 +144,6 @@ class getpymavlinkpackageTest(unittest.TestCase):
         assert mode_toInt(mavlink.MAV_TYPE_FIXED_WING, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, "QLAND", mavlink) == 20
         assert mode_toInt(mavlink.MAV_TYPE_GROUND_ROVER, mavlink.MAV_AUTOPILOT_ARDUPILOTMEGA, "HOLD", mavlink) == 4
 
+
 if __name__ == '__main__':
     unittest.main()

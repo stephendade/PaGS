@@ -220,8 +220,8 @@ class VehicleTest(asynctest.TestCase):
             self.mod.MAV_TYPE_QUADROTOR, self.mod.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 0, 0, int(self.mavversion))
         self.veh.newPacketCallback(pkt)
 
-        assert self.veh.fcName == 3 #"MAV_AUTOPILOT_ARDUPILOTMEGA"
-        assert self.veh.vehType == 2 #"MAV_TYPE_QUADROTOR"
+        assert self.veh.fcName == 3  # "MAV_AUTOPILOT_ARDUPILOTMEGA"
+        assert self.veh.vehType == 2  # "MAV_TYPE_QUADROTOR"
 
     async def test_armmodestatus(self):
         """Test getting of the arming status and mode from heartbeat"""
@@ -330,6 +330,7 @@ class VehicleTest(asynctest.TestCase):
         # Check the correct sysid was attached to the
         # mode change packet. Going by packet indexes
         assert self.txpackets[1][14] == self.target_system
+
 
 if __name__ == '__main__':
     asynctest.main()
