@@ -51,6 +51,7 @@ class ModuleManagerTest(asynctest.TestCase):
         self.VehA = Vehicle(self.loop, "VehA", 255, 0, 4,
                             0, self.dialect, self.version)
         self.VehA.onPacketTxAttach(self.vehSendFunc)
+        self.VehA.hasInitial = True
 
         self.txPackets = {}
         self.txVehPackets = {}

@@ -51,6 +51,7 @@ class ModeModuleTest(asynctest.TestCase):
         self.VehA.onPacketTxAttach(self.vehSendFunc)
         self.VehA.vehType = 1
         self.VehA.fcName = 3
+        self.VehA.hasInitial = True
 
         self.txPackets = {}
         self.txVehPackets = {}
