@@ -105,6 +105,10 @@ class moduleManager():
         if len(args) < 2 or args[0] not in self.commands.keys() or args[1] not in self.commands[args[0]].keys():
             self.printVeh(vehname, "Command not found: " + str(cmd))
             return
+        # ensure the vehicle has a connection
+        if not self.getVehCallback(vehname).hasInitial:
+            self.printVeh(vehname, "Cannot send command to vehicle - no packets received on link")
+            return
         try:
             # then send it onwards, with handled exceptions
             if len(args) > 2:

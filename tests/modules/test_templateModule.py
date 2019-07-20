@@ -45,6 +45,7 @@ class ModuleManagerTest(asynctest.TestCase):
             self, srcSystem=4, srcComponent=0, use_native=False)
         self.VehA = Vehicle(self.loop, "VehA", 255, 0, 4,
                             0, self.dialect, self.version)
+        self.VehA.hasInitial = True
 
         self.manager = moduleManager.moduleManager(self.loop, False)
         self.manager.onVehListAttach(self.getVehListCallback)

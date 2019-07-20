@@ -55,8 +55,16 @@ class ModuleManagerTest(asynctest.TestCase):
         self.mod = getpymavlinkpackage(self.dialect, self.version)
         self.mavUAS = self.mod.MAVLink(
             self, srcSystem=4, srcComponent=0, use_native=False)
+
         self.VehA = Vehicle(self.loop, "VehA", 255, 0, 4,
                             0, self.dialect, self.version)
+        self.VehA.hasInitial = True
+        self.VehB = Vehicle(self.loop, "VehB", 255, 0, 5,
+                            0, self.dialect, self.version)
+        self.VehB.hasInitial = True
+        self.VehC = Vehicle(self.loop, "VehC", 255, 0, 10,
+                            0, self.dialect, self.version)
+        self.VehC.hasInitial = False
 
         self.txPackets = {}
 
@@ -80,6 +88,17 @@ class ModuleManagerTest(asynctest.TestCase):
         """Get a particular vehicle"""
         if vehname == "VehA":
             return self.VehA
+        else:
+            raise ValueError('No vehicle with that name')
+
+    def getVehicleCallbackMany(self, vehname):
+        """Get a particular vehicle"""
+        if vehname == "VehA":
+            return self.VehA
+        elif vehname == "VehB":
+            return self.VehB
+        elif vehname == "VehC":
+            return self.VehC
         else:
             raise ValueError('No vehicle with that name')
 
@@ -192,6 +211,7 @@ class ModuleManagerTest(asynctest.TestCase):
         in modules"""
         self.manager = moduleManager.moduleManager(self.loop, False)
         self.manager.onVehListAttach(self.getVehListCallbackMany)
+        self.manager.onVehGetAttach(self.getVehicleCallbackMany)
 
         self.manager.addVehicle("VehB")
         self.manager.addVehicle("VehC")
@@ -206,16 +226,26 @@ class ModuleManagerTest(asynctest.TestCase):
         # and invalid command
         self.manager.onModuleCommandCallback("VehB", "template do_nothing")
 
+        # Command to not-initialised vehicle
+        self.manager.onModuleCommandCallback(
+            "VehC", "template do_stuff 1 \"the rest\"")
+
         # and assert
         assert self.manager.multiModules['PaGS.modules.templateModule'].printedout[
             "VehB"] == "Command not found: template do_nothing"
         assert self.manager.multiModules['PaGS.modules.templateModule'].calledStuff["VehB"] == "1,the rest"
 
+        # VehC was not initialised, so the command should not be passed
+        assert self.manager.multiModules['PaGS.modules.templateModule'].printedout[
+            "VehC"] == "Cannot send command to vehicle - no packets received on link"
+        assert "VehC" not in self.manager.multiModules['PaGS.modules.templateModule'].calledStuff
+
     def test_moreCommand(self):
         """Test the stability of the command handler with all
-        sorts of mangled uner input"""
+        sorts of mangled user input"""
         self.manager = moduleManager.moduleManager(self.loop, False)
         self.manager.onVehListAttach(self.getVehListCallbackMany)
+        self.manager.onVehGetAttach(self.getVehicleCallbackMany)
 
         self.manager.addVehicle("VehB")
         self.manager.addVehicle("VehC")

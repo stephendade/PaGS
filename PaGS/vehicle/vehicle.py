@@ -92,11 +92,12 @@ class Vehicle():
         self.fence = []
         self.rally = []
 
-        # Vehicle strings
+        # Vehicle data
         self.fcName = None  # int for MAV_AUTOPILOT_ string
         self.fcVersion = ""
         self.OSVersion = ""
         self.vehType = None  # int of MAV_TYPE_ string
+        self.hasInitial = False  # True if the vehicle has rx'd >0 hb pkts
 
         # Vehicle state
         self.isArmed = None  # True if armed, False if disarmed, None if unknown
@@ -159,6 +160,10 @@ class Vehicle():
 
             # Get flight mode
             self.flightMode = pkt.custom_mode
+
+            if not self.hasInitial:
+                self.hasInitial = True
+
         # if it's a new param, put it in the dict and update status
         if pkt.get_type() == "PARAM_VALUE":
             # need to convert from bytes to str if required, as mavlink
