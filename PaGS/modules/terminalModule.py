@@ -126,7 +126,7 @@ class Module():
                                        self.tabbar, style='class:tabbar'),
                                    align=WindowAlign.LEFT))
         self.hscreen.append(Window(height=1, char='-', style='class:line'))
-        self.hscreen.append(Window(content=None))
+        self.hscreen.append(Window(content=None, wrap_lines = True))
         self.hscreen.append(Window(height=1, char='-', style='class:line'))
         self.hscreen.append(Window(height=1, content=None))
 
