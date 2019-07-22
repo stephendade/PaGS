@@ -126,7 +126,7 @@ class Module():
                                        self.tabbar, style='class:tabbar'),
                                    align=WindowAlign.LEFT))
         self.hscreen.append(Window(height=1, char='-', style='class:line'))
-        self.hscreen.append(Window(content=None, wrap_lines = True))
+        self.hscreen.append(Window(content=None, wrap_lines=True))
         self.hscreen.append(Window(height=1, char='-', style='class:line'))
         self.hscreen.append(Window(height=1, content=None))
 
@@ -190,9 +190,12 @@ class Module():
         # Send statustext to UI
         if pkt.get_type() == "STATUSTEXT":
             self.printVeh(pkt.text, vehname)
-        # Mode change - update prompt
+        # Mode change - update prompt (mode and arm status)
         if pkt.get_type() == "HEARTBEAT":
-            self.changePrompt(vehname, mode_toString(pkt, self.vehObjCallback(vehname).mod))
+            if pkt.base_mode & self.vehObjCallback(vehname).mod.MAV_MODE_FLAG_SAFETY_ARMED:
+                self.changePrompt(vehname, "A|" + mode_toString(pkt, self.vehObjCallback(vehname).mod))
+            else:
+                self.changePrompt(vehname, "D|" + mode_toString(pkt, self.vehObjCallback(vehname).mod))
             self.application._redraw()
 
     def removeVehicleTab(self, name: str):
