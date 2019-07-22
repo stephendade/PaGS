@@ -22,7 +22,6 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 Testing of the "mode" module
 
 '''
-
 import asynctest
 
 from PaGS.managers import moduleManager
@@ -55,6 +54,7 @@ class ModeModuleTest(asynctest.TestCase):
 
         self.txPackets = {}
         self.txVehPackets = {}
+        self.txPackets["VehA"] = []
 
         self.manager = moduleManager.moduleManager(self.loop, False)
         self.manager.onVehListAttach(self.getVehListCallback)
@@ -74,7 +74,7 @@ class ModeModuleTest(asynctest.TestCase):
 
     def txcallback(self, name, pkt, **kwargs):
         """Event callback to sending a packet on to vehiclemanager"""
-        self.txPackets[name] = pkt
+        self.txPackets[name].append(pkt)
 
     def getVehListCallback(self):
         """Get list of vehicles"""
@@ -98,7 +98,7 @@ class ModeModuleTest(asynctest.TestCase):
         # is the module loaded?
         assert len(self.manager.multiModules) == 2
         assert "mode" in self.manager.commands
-        assert len(self.manager.commands["mode"]) == 2
+        assert len(self.manager.commands["mode"]) == 4
 
         self.manager.removeModule("PaGS.modules.modeModule")
 
@@ -127,7 +127,7 @@ class ModeModuleTest(asynctest.TestCase):
             "VehA", "mode do BADMODE")
 
         # assert
-        assert len(self.txPackets) == 0
+        assert len(self.txPackets["VehA"]) == 0
         assert self.getOutText("VehA", 1) == "No mode: BADMODE"
 
         # execute a mode change
@@ -135,6 +135,26 @@ class ModeModuleTest(asynctest.TestCase):
             "VehA", "mode do AUTO")
 
         # assert
+        assert len(self.txPackets["VehA"]) == 1
+        assert len(self.txPackets) == 1
+
+    async def test_cmd_armDisarm(self):
+        """Test the arm and disarm commands"""
+        self.manager.addModule("PaGS.modules.modeModule")
+
+        # execute an arm
+        self.manager.onModuleCommandCallback(
+            "VehA", "mode arm")
+
+        # assert
+        assert len(self.txPackets["VehA"]) == 1
+
+        # execute a disarm
+        self.manager.onModuleCommandCallback(
+            "VehA", "mode disarm")
+
+        # assert
+        assert len(self.txPackets["VehA"]) == 2
         assert len(self.txPackets) == 1
 
     def test_incoming(self):

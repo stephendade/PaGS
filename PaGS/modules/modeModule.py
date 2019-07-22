@@ -22,7 +22,9 @@ class Module():
 
         self.shortName = "mode"
         self.commandDict = {"do": self.modeDo,
-                            "list": self.listModes}
+                            "list": self.listModes,
+                            "arm": self.arm,
+                            "disarm": self.disarm}
 
         # for detecting mode change
         self.lastMode = {}
@@ -43,6 +45,24 @@ class Module():
 
         self.txCallback(vehname, self.vehObj(vehname).mod.MAVLINK_MSG_ID_SET_MODE, base_mode=self.vehObj(
             vehname).mod.MAV_MODE_FLAG_CUSTOM_MODE_ENABLED, custom_mode=intMode)
+
+    def arm(self, vehname: str):
+        """
+        Arm the vehicle MAV_CMD_COMPONENT_ARM_DISARM
+        """
+        self.txCallback(vehname, self.vehObj(vehname).mod.MAVLINK_MSG_ID_COMMAND_LONG,
+                        command=self.vehObj(vehname).mod.MAV_CMD_COMPONENT_ARM_DISARM,
+                        confirmation=0, param1=1, param2=0, param3=0, param4=0,
+                        param5=0, param6=0, param7=0)
+
+    def disarm(self, vehname: str):
+        """
+        Disarm the vehicle
+        """
+        self.txCallback(vehname, self.vehObj(vehname).mod.MAVLINK_MSG_ID_COMMAND_LONG,
+                        command=self.vehObj(vehname).mod.MAV_CMD_COMPONENT_ARM_DISARM,
+                        confirmation=0, param1=0, param2=0, param3=0, param4=0,
+                        param5=0, param6=0, param7=0)
 
     def listModes(self, vehname: str):
         """
