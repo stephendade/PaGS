@@ -28,19 +28,18 @@ long_line_behaviour=1
 long_line_column=80
 
 [files]
-current_page=5
-FILE_NAME_0=1006;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2Ftests%2Fmanagers%2Ftest_vehicleManager.py;0;4
-FILE_NAME_1=2196;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2Ftests%2Fmavlink%2Ftest_pymavutil.py;0;4
-FILE_NAME_2=4233;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2FPaGS%2Fmavlink%2Fpymavutil.py;0;4
-FILE_NAME_3=2761;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2Ftests%2Fmodules%2Ftest_terminalModule.py;0;4
-FILE_NAME_4=3087;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2FPaGS%2Fmodules%2FterminalModule.py;0;4
-FILE_NAME_5=4658;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2Ftests%2Fconnection%2Ftest_serial.py;0;4
-FILE_NAME_6=0;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2Ftests%2Fconnection%2Ftest_tcplink.py;0;4
-FILE_NAME_7=1759;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2FPaGS%2Fconnection%2Fseriallink.py;0;4
+current_page=1
+FILE_NAME_0=11419;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2FPaGS%2Fvehicle%2Fvehicle.py;0;4
+FILE_NAME_1=6562;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2FPaGS%2Fpags.py;0;4
+FILE_NAME_2=913;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2FPaGS%2Fmodules%2FinternalPrinterModule.py;0;4
+FILE_NAME_3=3260;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2FPaGS%2Fmanagers%2FmoduleManager.py;0;4
+FILE_NAME_4=315;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2FPaGS%2Fmodules%2FmodeModule.py;0;4
+FILE_NAME_5=3504;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2FPaGS%2Fmodules%2FterminalModule.py;0;4
+FILE_NAME_6=1687;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2Ftests%2Fmodules%2Ftest_modeModule.py;0;4
 
 [build-menu]
 EX_00_LB=_Execute
-EX_00_CM=python3 "%f"
+EX_00_CM=cd "%p/PaGS"; python3 pags.py --sitl=1
 EX_00_WD=
 PythonFT_01_LB=Pylint
 PythonFT_01_CM=pylint3 "%f"
