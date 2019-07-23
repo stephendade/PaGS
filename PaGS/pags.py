@@ -28,8 +28,8 @@ from concurrent.futures import ThreadPoolExecutor
 
 from PaGS.managers.connectionManager import ConnectionManager
 from PaGS.managers.vehicleManager import VehicleManager
-
 from PaGS.managers import moduleManager
+from PaGS.connection.seriallink import findserial
 
 
 class RedirPrint(object):
@@ -106,7 +106,7 @@ class pags():
             # Each sysID is assumed to be a different vehicle
             # Multiple links with the same sysid will create a multilink vehicle
             for connection in source:
-                Vehname = "Veh_" + str(connection.split(':')[3])
+                Vehname = "Veh_" + str(connection)
                 cn = connection.split(':')[0] + ":" + connection.split(':')[1] + ":" + connection.split(':')[2]
                 asyncio.ensure_future(self.allvehicles.add_vehicle(Vehname, source_system, source_component,
                                       connection.split(':')[3], connection.split(':')[4],
@@ -134,7 +134,11 @@ if __name__ == '__main__':
     parser.add_argument("--source",
                         nargs="*",
                         help="Connection in format connectiontype:connectionstr:sys:comp",
-                        default=["tcpclient:127.0.0.1:5760:1:0"])
+                        default=[])
+    parser.add_argument("--sitl",
+                        nargs="*",
+                        help="SITL Instance to connect to, ie --sitl=0, --sitl=1",
+                        default=[])
     parser.add_argument(
         "--mav", help="Mavlink Version (1 or 2)", default=2, type=int)
     parser.add_argument(
@@ -155,6 +159,19 @@ if __name__ == '__main__':
 
     # Any modules to load on startup
     initialModules = ["modules.terminalModule", "modules.paramModule", "modules.modeModule"]
+
+    # Add SITL instances, if any
+    for inst in args.sitl:
+        try:
+            args.source.append("tcpclient:127.0.0.1:" + str(5760 + 10 * int(inst)) + ":1:0")
+        except ValueError:
+            pass  # it was a string, not an int.
+
+    # If no sitl or source args, default to USB
+    if len(args.sitl) == 0 and len(args.source) == 0:
+        devices = findserial()
+        for dev in devices:
+            args.source.append("serial:" + dev + ":" + str(115200) + ":1:0")
 
     main = pags(args.dialect, args.mav, args.source_system, args.source_component, args.nogui, args.multi, args.source, loop, initialModules)
 
