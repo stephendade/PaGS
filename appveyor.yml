@@ -50,7 +50,8 @@ cache:
   - '%LOCALAPPDATA%\pip\Cache\wheels'
   
   # Linux
-  - '$HOME/.pip/wheels'
+  - '$HOME/.cache/pip/wheels'
+  - '$HOME/.cache/pip/http'
 
 install:
   # If there is a newer build queued for the same PR, cancel this one.
