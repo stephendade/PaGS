@@ -57,8 +57,19 @@ def findserial():
     Return the port(s) that are likely to be a flight controller
     """
     ret_list = []
-    serial_list = ["FTDI*", "*3D_Robotics*", "*USB_to_UART*",
-                   "*Ardu*", "*PX4*", "FMU*"]
+    serial_list = [
+        '*FTDI*',
+        "*Arduino_Mega_2560*",
+        "*3D*",
+        "*USB_to_UART*",
+        '*Ardu*',
+        '*PX4*',
+        '*Hex_*',
+        '*Holybro_*',
+        '*mRo*',
+        '*FMU*',
+        '*Kakute*']
+
     ports = list(serial.tools.list_ports.comports())
     for port, description, hwid in ports:
         for preferred in serial_list:
