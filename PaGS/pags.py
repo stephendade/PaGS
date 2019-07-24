@@ -173,6 +173,10 @@ if __name__ == '__main__':
         for dev in devices:
             args.source.append("serial:" + dev + ":" + str(115200) + ":1:0")
 
+    # If no USB devices, goto udp 14550
+    if len(args.source) == 0:
+        args.source.append("udpserver:127.0.0.1:14550:1:0")
+
     main = pags(args.dialect, args.mav, args.source_system, args.source_component, args.nogui, args.multi, args.source, loop, initialModules)
 
     # Enter the asyncio event loop and wait for a
