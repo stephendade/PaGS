@@ -19,7 +19,8 @@ The following commandline arguments can be used:
 * ``--source-system=255`` MAVLink source system for this GCS
 * ``--source-component=0`` MAVLink source component for this GCS
 * ``--multi``
-* ``--nogui`` Disable useage of a GUI
+* ``--nogui`` Disable usage of a GUI
+* ``--sitl=n`` Connect to Ardupilot SITL instance, where ``n`` is the instance ID (ID is required).
 
 (Default values of each argument are shown above).
 
@@ -29,7 +30,7 @@ For the connection sources (``--source``), the connection types can be:
 * ``tcpserver`` with the connectionstr being ``localip:port``
 * ``udpserver`` with the connectionstr being ``localip:port``
 * ``udpclient`` with the connectionstr being ``remoteip:port``
-* ``serial`` with the connectionstr being ``serialport:baud``, ie ``source=--serial:COM17:115200:1:0``
+* ``serial`` with the connectionstr being ``serialport:baud``, ie ``source=serial:COM17:115200:1:0``
 
 The ``sys`` is the System ID of the remote vehicle and the ``comp`` is the component ID of the vehicle.
 These are typically 1 and 0 respectively for Ardupilot with the default parameters.
@@ -39,6 +40,10 @@ to a single vehicle can be used.
 
 In the alternate case, where multiple vehicles (each with a different System ID) are on a single connection, 
 simply repeat the ``--source`` with the same connectionstr and the relevent (differerent) source ID's.
+
+If using the ``--sitl`` options, multiple connections to different APM SITL instances can be used. For example, to connect to 3 SITL instances: ``--sitl=0 --sitl=1 --sitl=2``
+
+If neither the ``--source`` and ``--sitl`` arguments are used, PaGS will first look for any USB-connected flight controllers and attempt to connect at a buad rate of 115200, otherwise it will connect to a UDP server on localhost, port 14550.
 
 As an example:
 

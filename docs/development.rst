@@ -23,7 +23,11 @@ Tests can be run via::
 
 The CI uses `Appveyor <https://ci.appveyor.com/project/stephendade/PaGS>`_ to run a build matrix of Windows/Linux and Python 3.5/3.6/3.7. So 6 runs total.
 
-`Coveralls <https://coveralls.io/github/stephendade/PaGS?branch=master>`_ is used to check the test coverage.
+`Coveralls <https://coveralls.io/github/stephendade/PaGS?branch=master>`_ is used to check the test coverage. This can be run manually via the ``./scripts/run_pytest_coverage.sh`` script
+
+All changes should be compliant with the PEP8 standard. This is checked as part of the CI processes.
+
+The PEP8 checks can be run via the ``./scripts/flake8check.sh`` script.
 
 Modules
 -------

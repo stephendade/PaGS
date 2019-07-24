@@ -28,6 +28,7 @@ General Features:
 
     installation
     usage
+    modules/index
     contributing
     development
     authors
