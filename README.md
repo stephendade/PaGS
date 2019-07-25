@@ -2,8 +2,6 @@
 
 ## Build Status
 
-### Windows
-
 OS | Python 3.5 | Python 3.6 | Python 3.7 |
 |-------------------|-------------------|-------------------|-------------------|
 Windows | [![build3][]][build-link] | [![build2][]][build-link] | [![build1][]][build-link] |
