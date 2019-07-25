@@ -11,11 +11,11 @@ The module allows the mode and arming status of the vehicle to be controlled.
 Commands
 --------
 
-mode list
+``mode list``. List the valid modes for the vehicle
 
-mode do <mode>
+``mode do <mode>``. Switch to mode <mode>. The <mode> is not case sensitive.
 
-mode arm
+``mode arm``. Send an arming command to the vehicle
 
-mode disarm
+``mode disarm``. Send a disarm command to the vehicle.
 
