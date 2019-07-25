@@ -103,7 +103,7 @@ class Module():
 
         # commands
         self.shortName = "terminal"
-        self.commandDict = {'watch': self.watch}
+        self.commandDict = {}
 
         # Tell prompt_toolkit to use asyncio.
         terminal_use_async()
@@ -152,9 +152,6 @@ class Module():
 
     def closeModule(self):
         pass
-
-    def watch(self, veh: str, cmd):
-        self.printer(veh, "Watching: " + str(cmd))
 
     def runUI(self):
         self.application.run_async()
