@@ -10,6 +10,9 @@ This module provides commands an a GUI for reading and writing vehicle parameter
 
 Note that the parameters are not checked for correctness before being sent to the vehicle.
 
+.. image:: parameter.png
+  :alt: Example of param module running
+
 Commands
 --------
 

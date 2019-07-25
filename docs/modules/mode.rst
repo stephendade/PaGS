@@ -8,6 +8,9 @@ Summary
 
 The module allows the mode and arming status of the vehicle to be controlled.
 
+.. image:: mode.png
+  :alt: Example of mode module running
+
 Commands
 --------
 
