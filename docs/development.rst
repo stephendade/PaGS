@@ -44,23 +44,47 @@ There is a template available at ``./PaGS/PaGS/modules/blankModule.py``, or see 
         <Module Description>
         """
         def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, isGUI):
+            """
+            Called by PaGS when a module is loaded 'module load xxx'
+            """
+            # Call this to send out a MAVLink packet
             self.txCallback = txClbk
+            # Call this to get a list of current vehicles
             self.vehListCallback = vehListClk
+            # Call this to get a Vehicle object by name
             self.vehObjCallback = vehObjClk
-
+            # Call this to print to the console(s)
+            self.printer = prntr
+            # true if we're running in a GUI environment
+            self.isGUI = isGUI
+            
+            # The short name of the module.
             self.shortName = ""
+            # A dict of user commands. Key is the string name, value is the function to run
             self.commandDict = {}
 
         def addVehicle(self, name: str):
+            """
+            Called by PaGS when a new vehicle is added
+            """
             pass
 
         def incomingPacket(self, vehname: str, pkt):
+            """
+            Called by PaGS when a decoded valid MAVLink packet is recieved from a vehicle
+            """
             pass
 
         def removeVehicle(self, name: str):
+            """
+            Called by PaGS when a vehicle is removed
+            """
             pass
 
         def closeModule(self):
+            """
+            Called by PaGS when the module is shut down
+            """
             pass
 
 If modules have a GUI, they should respect the isGUI parameter. They should use the wxPython (with wxAsync) GUI library for consistency.
