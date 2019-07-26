@@ -262,14 +262,11 @@ class ParamGUIFrame(wx.Frame):
         self._persistMgr.SetPersistenceFile(_configFile)
         self._persistMgr.RegisterAndRestoreAll(self)
 
-        # event bindings
-        self.Bind(wx.EVT_CLOSE, self.OnClose)
-
         # Set noteboook in a sizer to create the layout
         self.sizer = wx.BoxSizer()
         self.sizer.Add(self.nb, 1, wx.EXPAND)
         self.p.SetSizer(self.sizer)
 
-    def OnClose(self, event):
+    def SavePos(self):
         """Event for when the window is closed"""
         self._persistMgr.SaveAndUnregister()
