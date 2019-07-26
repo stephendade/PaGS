@@ -29,6 +29,7 @@ You can:
 
 import fnmatch
 import asyncio
+from contextlib import suppress
 
 
 class Module():
@@ -44,6 +45,7 @@ class Module():
         self.loop = loop
 
         self.isGUI = isGUI
+        self.GUITasks = []
 
         self.shortName = "param"
         self.commandDict = {'download': self.startDownParam,
@@ -61,7 +63,7 @@ class Module():
             self.paramframe = ParamGUIFrame()
             self.paramframe.Show()
             app.SetTopWindow(self.paramframe)
-            asyncio.ensure_future(app.MainLoop())
+            self.GUITasks.append(asyncio.ensure_future(app.MainLoop()))
 
     def show(self, veh: str, parmname: str):
         """Show a parameter value"""
@@ -157,7 +159,7 @@ class Module():
             self.paramframe.nb.AddPage(self.vehTabs[vehname], vehname)
 
             # add task to load GUI when full param set available
-            asyncio.ensure_future(self.loadGUI(vehname))
+            self.GUITasks.append(asyncio.ensure_future(self.loadGUI(vehname)))
 
     def incomingPacket(self, vehname: str, pkt):
         if pkt.get_type() == "PARAM_VALUE" and self.isGUI:
@@ -171,10 +173,14 @@ class Module():
     def removeVehicle(self, name: str):
         pass
 
-    def closeModule(self):
+    async def closeModule(self):
         """Shutdown the module"""
         if self.isGUI:
-            self.paramframe.OnClose(None)
+            self.paramframe.SavePos()
+        for task in self.GUITasks:
+            task.cancel()
+            with suppress(asyncio.CancelledError):
+                await task  # await for task cancellation
 
     async def loadGUI(self, vehname: str):
         """This function waits for all the params to be downloaded

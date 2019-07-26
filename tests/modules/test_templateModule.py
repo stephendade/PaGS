@@ -73,7 +73,7 @@ class ModuleManagerTest(asynctest.TestCase):
         else:
             raise ValueError('No vehicle with that name')
 
-    def test_loadModule(self):
+    async def test_loadModule(self):
         """Test adding and removal of module"""
         self.manager.addModule("PaGS.modules.templateModule")
 
@@ -82,7 +82,7 @@ class ModuleManagerTest(asynctest.TestCase):
         assert "template" in self.manager.commands
         assert len(self.manager.commands["template"]) == 2
 
-        self.manager.removeModule("PaGS.modules.templateModule")
+        await self.manager.removeModule("PaGS.modules.templateModule")
 
         # is the module unloaded?
         assert len(self.manager.multiModules) == 0

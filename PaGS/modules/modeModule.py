@@ -97,5 +97,5 @@ class Module():
         if name in self.lastMode.keys():
             del self.lastMode[name]
 
-    def closeModule(self):
+    async def closeModule(self):
         pass

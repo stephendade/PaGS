@@ -51,5 +51,5 @@ class Module():
     def removeVehicle(self, name: str):
         del self.printedout[name]
 
-    def closeModule(self):
+    async def closeModule(self):
         pass

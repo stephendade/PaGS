@@ -150,7 +150,7 @@ class Module():
 
         self.runUI()
 
-    def closeModule(self):
+    async def closeModule(self):
         pass
 
     def runUI(self):

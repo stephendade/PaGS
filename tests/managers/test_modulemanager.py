@@ -108,7 +108,7 @@ class ModuleManagerTest(asynctest.TestCase):
 
         assert len(self.manager.multiModules) == 0
 
-    def test_addremoveModule(self):
+    async def test_addremoveModule(self):
         """Test adding and removal of module"""
         self.manager = moduleManager.moduleManager(self.loop, False)
         self.manager.onVehListAttach(self.getVehListCallback)
@@ -120,7 +120,7 @@ class ModuleManagerTest(asynctest.TestCase):
         assert "template" in self.manager.commands
         assert len(self.manager.commands["template"]) == 2
 
-        self.manager.removeModule("PaGS.modules.templateModule")
+        await self.manager.removeModule("PaGS.modules.templateModule")
 
         assert len(self.manager.multiModules) == 0
         assert "template" not in self.manager.commands

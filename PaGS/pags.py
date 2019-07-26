@@ -118,7 +118,7 @@ class pags():
         """
 
         # shutdown all the modules
-        self.modules.closeAllModules()
+        self.loop.run_until_complete(self.modules.closeAllModules())
 
         # Shutdown all the running tasks
         for veh in self.allvehicles.get_vehiclelist():

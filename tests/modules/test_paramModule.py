@@ -67,6 +67,8 @@ class ModuleManagerTest(asynctest.TestCase):
         """Close down the test"""
         await self.VehA.stopheartbeat()
         await self.VehA.stoprxtimeout()
+        if "PaGS.modules.paramModule" in self.manager.multiModules:
+            await self.manager.removeModule("PaGS.modules.paramModule")
 
     def vehSendFunc(self, buf, name):
         """Event for when vehicle send buffer"""
@@ -87,7 +89,7 @@ class ModuleManagerTest(asynctest.TestCase):
         else:
             raise ValueError('No vehicle with that name')
 
-    def test_loadModule(self):
+    async def test_loadModule(self):
         """Test adding and removal of module"""
         self.manager.addModule("PaGS.modules.paramModule")
 
@@ -97,7 +99,7 @@ class ModuleManagerTest(asynctest.TestCase):
         assert "param" in self.manager.commands
         assert len(self.manager.commands["param"]) == 6
 
-        self.manager.removeModule("PaGS.modules.paramModule")
+        await self.manager.removeModule("PaGS.modules.paramModule")
 
         # is the module unloaded?
         assert len(self.manager.multiModules) == 1
