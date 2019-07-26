@@ -150,7 +150,7 @@ class moduleManager():
         except AttributeError:
             pass
 
-    def removeModule(self, name: str):
+    async def removeModule(self, name: str):
         """
         Remove a module
         """
@@ -161,16 +161,16 @@ class moduleManager():
                 del self.printers[name]
             del self.commands[self.multiModules[name].shortName]
 
-            self.multiModules[name].closeModule()
+            await self.multiModules[name].closeModule()
 
             del self.multiModules[name]
 
-    def closeAllModules(self):
+    async def closeAllModules(self):
         """
         Close all modules cleanly
         """
         for modulename in self.multiModules:
-            self.multiModules[modulename].closeModule()
+            await self.multiModules[modulename].closeModule()
 
     def addVehicle(self, vehName):
         """

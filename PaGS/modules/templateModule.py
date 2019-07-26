@@ -74,5 +74,5 @@ class Module():
     def removeVehicle(self, name: str):
         self.theVeh.remove(name)
 
-    def closeModule(self):
+    async def closeModule(self):
         pass

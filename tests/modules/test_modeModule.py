@@ -91,7 +91,7 @@ class ModeModuleTest(asynctest.TestCase):
         """Helper function for getting output text from internalPrinterModule"""
         return self.manager.multiModules['PaGS.modules.internalPrinterModule'].printedout[Veh][line]
 
-    def test_loadModule(self):
+    async def test_loadModule(self):
         """Test adding and removal of module"""
         self.manager.addModule("PaGS.modules.modeModule")
 
@@ -100,7 +100,7 @@ class ModeModuleTest(asynctest.TestCase):
         assert "mode" in self.manager.commands
         assert len(self.manager.commands["mode"]) == 4
 
-        self.manager.removeModule("PaGS.modules.modeModule")
+        await self.manager.removeModule("PaGS.modules.modeModule")
 
         # is the module unloaded?
         assert len(self.manager.multiModules) == 1
