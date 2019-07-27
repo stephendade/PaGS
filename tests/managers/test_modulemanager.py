@@ -30,6 +30,8 @@ add and remove vehicle
 '''
 
 import asynctest
+import os
+import shutil
 
 from PaGS.managers import moduleManager
 from PaGS.vehicle.vehicle import Vehicle
@@ -49,6 +51,11 @@ class ModuleManagerTest(asynctest.TestCase):
         """Set up some data that is reused in many tests"""
 
         self.manager = None
+
+        # The PaGS settings dir (just in source dir)
+        self.settingsdir = os.path.join(os.getcwd(), ".PaGS")
+        if not os.path.exists(self.settingsdir):
+            os.makedirs(self.settingsdir)
 
         self.dialect = 'ardupilotmega'
         self.version = 2.0
@@ -70,7 +77,8 @@ class ModuleManagerTest(asynctest.TestCase):
 
     def tearDown(self):
         """Close down the test"""
-        pass
+        if os.path.exists(self.settingsdir):
+            shutil.rmtree(self.settingsdir)
 
     def txcallback(self, name, pkt, **kwargs):
         """Event callback to sending a packet on to vehiclemanager"""
@@ -104,13 +112,13 @@ class ModuleManagerTest(asynctest.TestCase):
 
     def test_manager(self):
         """Check initialisation"""
-        self.manager = moduleManager.moduleManager(self.loop, False)
+        self.manager = moduleManager.moduleManager(self.loop, self.settingsdir, False)
 
         assert len(self.manager.multiModules) == 0
 
     async def test_addremoveModule(self):
         """Test adding and removal of module"""
-        self.manager = moduleManager.moduleManager(self.loop, False)
+        self.manager = moduleManager.moduleManager(self.loop, self.settingsdir, False)
         self.manager.onVehListAttach(self.getVehListCallback)
         self.manager.onVehGetAttach(self.getVehicleCallback)
 
@@ -128,7 +136,7 @@ class ModuleManagerTest(asynctest.TestCase):
 
     def test_inoutPacket(self):
         """Test packets going in and out"""
-        self.manager = moduleManager.moduleManager(self.loop, False)
+        self.manager = moduleManager.moduleManager(self.loop, self.settingsdir, False)
         self.manager.onVehListAttach(self.getVehListCallback)
         self.manager.onVehGetAttach(self.getVehicleCallback)
 
@@ -149,7 +157,7 @@ class ModuleManagerTest(asynctest.TestCase):
 
     def test_addRemoveVehicle(self):
         """Test adding and removing a vehicle"""
-        self.manager = moduleManager.moduleManager(self.loop, False)
+        self.manager = moduleManager.moduleManager(self.loop, self.settingsdir, False)
         self.manager.onVehListAttach(self.getVehListCallback)
         self.manager.onVehGetAttach(self.getVehicleCallback)
 
@@ -171,7 +179,7 @@ class ModuleManagerTest(asynctest.TestCase):
     def test_addRemoveVehicleAfterModule(self):
         """Test adding and removing vehicles prior
         to module loading"""
-        self.manager = moduleManager.moduleManager(self.loop, False)
+        self.manager = moduleManager.moduleManager(self.loop, self.settingsdir, False)
         self.manager.onVehListAttach(self.getVehListCallbackMany)
         # self.manager.onVehGetAttach(self.getVehicleCallback)
 
@@ -190,7 +198,7 @@ class ModuleManagerTest(asynctest.TestCase):
     def test_printer(self):
         """Test the printer function (output)
         for the modules"""
-        self.manager = moduleManager.moduleManager(self.loop, False)
+        self.manager = moduleManager.moduleManager(self.loop, self.settingsdir, False)
         self.manager.onVehListAttach(self.getVehListCallbackMany)
 
         self.manager.addVehicle("VehB")
@@ -209,7 +217,7 @@ class ModuleManagerTest(asynctest.TestCase):
     def test_command(self):
         """Test the loading and execution of user commands
         in modules"""
-        self.manager = moduleManager.moduleManager(self.loop, False)
+        self.manager = moduleManager.moduleManager(self.loop, self.settingsdir, False)
         self.manager.onVehListAttach(self.getVehListCallbackMany)
         self.manager.onVehGetAttach(self.getVehicleCallbackMany)
 
@@ -243,7 +251,7 @@ class ModuleManagerTest(asynctest.TestCase):
     def test_moreCommand(self):
         """Test the stability of the command handler with all
         sorts of mangled user input"""
-        self.manager = moduleManager.moduleManager(self.loop, False)
+        self.manager = moduleManager.moduleManager(self.loop, self.settingsdir, False)
         self.manager.onVehListAttach(self.getVehListCallbackMany)
         self.manager.onVehGetAttach(self.getVehicleCallbackMany)
 

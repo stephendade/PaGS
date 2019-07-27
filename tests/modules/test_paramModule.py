@@ -26,6 +26,7 @@ Testing of the "paramModule" module
 import asyncio
 import asynctest
 import os
+import shutil
 
 from PaGS.managers import moduleManager
 from PaGS.vehicle.vehicle import Vehicle
@@ -53,10 +54,15 @@ class ModuleManagerTest(asynctest.TestCase):
         self.VehA.onPacketTxAttach(self.vehSendFunc)
         self.VehA.hasInitial = True
 
+        # The PaGS settings dir (just in source dir)
+        self.settingsdir = os.path.join(os.getcwd(), ".PaGS")
+        if not os.path.exists(self.settingsdir):
+            os.makedirs(self.settingsdir)
+
         self.txPackets = {}
         self.txVehPackets = {}
 
-        self.manager = moduleManager.moduleManager(self.loop, False)
+        self.manager = moduleManager.moduleManager(self.loop, self.settingsdir, False)
         self.manager.onVehListAttach(self.getVehListCallback)
         self.manager.onVehGetAttach(self.getVehicleCallback)
         self.manager.onPktTxAttach(self.txcallback)
@@ -69,6 +75,8 @@ class ModuleManagerTest(asynctest.TestCase):
         await self.VehA.stoprxtimeout()
         if "PaGS.modules.paramModule" in self.manager.multiModules:
             await self.manager.removeModule("PaGS.modules.paramModule")
+        if os.path.exists(self.settingsdir):
+            shutil.rmtree(self.settingsdir)
 
     def vehSendFunc(self, buf, name):
         """Event for when vehicle send buffer"""
@@ -334,7 +342,7 @@ class ModuleManagerTest(asynctest.TestCase):
         """Simple test of the GUI startup"""
 
         # need to reset for handling gui
-        self.manager = moduleManager.moduleManager(self.loop, True)
+        self.manager = moduleManager.moduleManager(self.loop, self.settingsdir, True)
         self.manager.onVehListAttach(self.getVehListCallback)
         self.manager.onVehGetAttach(self.getVehicleCallback)
         self.manager.onPktTxAttach(self.txcallback)

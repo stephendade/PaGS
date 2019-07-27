@@ -26,6 +26,8 @@ Testing of the "terminal" module
 import asynctest
 import pytest
 import platform
+import os
+import shutil
 
 from PaGS.managers import moduleManager
 from PaGS.vehicle.vehicle import Vehicle
@@ -48,8 +50,12 @@ class TerminalModuleTest(asynctest.TestCase):
             self, srcSystem=4, srcComponent=0, use_native=False)
         self.VehA = Vehicle(self.loop, "VehA", 255, 0, 4,
                             0, self.dialect, self.version)
+        # The PaGS settings dir (just in source dir)
+        self.settingsdir = os.path.join(os.getcwd(), ".PaGS")
+        if not os.path.exists(self.settingsdir):
+            os.makedirs(self.settingsdir)
 
-        self.manager = moduleManager.moduleManager(self.loop, False)
+        self.manager = moduleManager.moduleManager(self.loop, self.settingsdir, False)
         self.manager.onVehListAttach(self.getVehListCallback)
         self.manager.onVehGetAttach(self.getVehicleCallback)
 
@@ -59,6 +65,8 @@ class TerminalModuleTest(asynctest.TestCase):
         """Close down the test"""
         await self.VehA.stopheartbeat()
         await self.VehA.stoprxtimeout()
+        if os.path.exists(self.settingsdir):
+            shutil.rmtree(self.settingsdir)
 
     def txcallback(self, name, pkt, **kwargs):
         """Event callback to sending a packet on to vehiclemanager"""

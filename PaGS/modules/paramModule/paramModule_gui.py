@@ -247,7 +247,7 @@ class VehParamTab(wx.Panel):
 
 
 class ParamGUIFrame(wx.Frame):
-    def __init__(self):
+    def __init__(self, settingsDir):
         wx.Frame.__init__(self, None, title="Parameters", name="ParamGUI")
         # self.grid = wx.grid.Grid(self, -1)
 
@@ -258,7 +258,7 @@ class ParamGUIFrame(wx.Frame):
         # restore size/position
         self._persistMgr = PM.PersistenceManager.Get()
         _configFile = os.path.join(
-            os.getcwd(), "persistGUI.cfg")    # getname()
+            settingsDir, "persistGUI.cfg")    # getname()
         self._persistMgr.SetPersistenceFile(_configFile)
         self._persistMgr.RegisterAndRestoreAll(self)
 

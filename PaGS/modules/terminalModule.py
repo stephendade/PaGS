@@ -89,7 +89,7 @@ class Module():
     The terminal UI, based on prompt-toolkit
     """
 
-    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, cmdPrint, isGUI):
+    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, cmdPrint, settingsDir, isGUI):
         self.tabs = []  # all the vehicles, one in each tab
 
         self.loop = loop
