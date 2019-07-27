@@ -31,6 +31,8 @@ adding and removing modules
 
 import asyncio
 import asynctest
+import os
+import shutil
 
 from PaGS.managers.connectionManager import ConnectionManager
 from PaGS.managers.vehicleManager import VehicleManager
@@ -53,6 +55,11 @@ class IntegratedTest(asynctest.TestCase):
         self.ip = "127.0.0.1"
 
         self.cname = 'tcpclient:127.0.0.1:15000'
+
+        # The PaGS settings dir (just in source dir)
+        self.settingsdir = os.path.join(os.getcwd(), ".PaGS")
+        if not os.path.exists(self.settingsdir):
+            os.makedirs(self.settingsdir)
 
         self.mod = getpymavlinkpackage(self.dialect, self.version)
         self.mav = self.mod.MAVLink(
@@ -77,6 +84,8 @@ class IntegratedTest(asynctest.TestCase):
                 await self.allvehicles.remove_vehicle(veh)
         if self.connmtrx:
             await self.connmtrx.stoploop()
+        if os.path.exists(self.settingsdir):
+            shutil.rmtree(self.settingsdir)
 
         # for task in asyncio.Task.all_tasks():
         #    task.cancel()
@@ -115,7 +124,7 @@ class IntegratedTest(asynctest.TestCase):
         self.allvehicles = VehicleManager(self.loop)
 
         # Module manager
-        self.allModules = moduleManager(self.loop, False)
+        self.allModules = moduleManager(self.loop, self.settingsdir, False)
 
         # and link them all together
         await self.doEventLinkages()
@@ -132,7 +141,7 @@ class IntegratedTest(asynctest.TestCase):
         self.allvehicles = VehicleManager(self.loop)
 
         # Module manager
-        self.allModules = moduleManager(self.loop, False)
+        self.allModules = moduleManager(self.loop, self.settingsdir, False)
 
         # and link them all together
         await self.doEventLinkages()

@@ -26,7 +26,7 @@ class Module():
     """
     small test module for the manager tests
     """
-    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, isGUI):
+    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI):
         self.txCallback = txClbk
         self.vehListCallback = vehListClk
         self.vehObjCallback = vehObjClk

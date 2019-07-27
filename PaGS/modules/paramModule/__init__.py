@@ -37,12 +37,13 @@ class Module():
     Module for reading and writing parameters
     """
 
-    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, isGUI):
+    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI):
         self.txCallback = txClbk
         self.vehListCallback = vehListClk
         self.vehObjCallback = vehObjClk
         self.printer = prntr
         self.loop = loop
+        self.settingsDir = settingsDir
 
         self.isGUI = isGUI
         self.GUITasks = []
@@ -60,7 +61,7 @@ class Module():
 
             app = start_gui()
             self.vehTabs = {}
-            self.paramframe = ParamGUIFrame()
+            self.paramframe = ParamGUIFrame(self.settingsDir)
             self.paramframe.Show()
             app.SetTopWindow(self.paramframe)
             self.GUITasks.append(asyncio.ensure_future(app.MainLoop()))

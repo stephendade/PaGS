@@ -37,7 +37,7 @@ class moduleManager():
     Manage a set of modules
     """
 
-    def __init__(self, loop, useGUI):
+    def __init__(self, loop, settingsDir, useGUI):
         # dict of modules. Key is module name
         self.multiModules = {}
 
@@ -46,6 +46,9 @@ class moduleManager():
 
         # asyncio event loop
         self.loop = loop
+
+        # PaGS settings dir
+        self.settingsDir = settingsDir
 
         # dict of tx send functions for vehicles
         # self.vehTxCallbacks = {}
@@ -133,7 +136,8 @@ class moduleManager():
 
         self.multiModules[name] = mod.Module(
             self.loop, self.outgoingPacket, self.vehListCallback,
-            self.getVehCallback, self.onModuleCommandCallback, self.printVeh, self.useGUI)
+            self.getVehCallback, self.onModuleCommandCallback,
+            self.printVeh, self.settingsDir, self.useGUI)
         # and add any vehicles from beforehand
         for vehname in self.vehListCallback():
             self.multiModules[name].addVehicle(vehname)

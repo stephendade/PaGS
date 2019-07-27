@@ -23,6 +23,8 @@ Testing of the "mode" module
 
 '''
 import asynctest
+import os
+import shutil
 
 from PaGS.managers import moduleManager
 from PaGS.vehicle.vehicle import Vehicle
@@ -40,6 +42,11 @@ class ModeModuleTest(asynctest.TestCase):
 
         self.manager = None
 
+        # The PaGS settings dir (just in source dir)
+        self.settingsdir = os.path.join(os.getcwd(), ".PaGS")
+        if not os.path.exists(self.settingsdir):
+            os.makedirs(self.settingsdir)
+
         self.dialect = 'ardupilotmega'
         self.version = 2.0
         self.mod = getpymavlinkpackage(self.dialect, self.version)
@@ -56,7 +63,7 @@ class ModeModuleTest(asynctest.TestCase):
         self.txVehPackets = {}
         self.txPackets["VehA"] = []
 
-        self.manager = moduleManager.moduleManager(self.loop, False)
+        self.manager = moduleManager.moduleManager(self.loop, self.settingsdir, False)
         self.manager.onVehListAttach(self.getVehListCallback)
         self.manager.onVehGetAttach(self.getVehicleCallback)
         self.manager.onPktTxAttach(self.txcallback)
@@ -67,6 +74,8 @@ class ModeModuleTest(asynctest.TestCase):
         """Close down the test"""
         await self.VehA.stopheartbeat()
         await self.VehA.stoprxtimeout()
+        if os.path.exists(self.settingsdir):
+            shutil.rmtree(self.settingsdir)
 
     def vehSendFunc(self, buf, name):
         """Event for when vehicle send buffer"""

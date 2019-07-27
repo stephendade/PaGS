@@ -23,7 +23,8 @@ from __future__ import unicode_literals
 import asyncio
 import argparse
 import sys
-
+import os
+from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 
 from PaGS.managers.connectionManager import ConnectionManager
@@ -58,6 +59,11 @@ class pags():
         Start up PaGS
         """
 
+        # The PaGS settings dir
+        self.settingsdir = os.path.join(str(Path.home()), ".PaGS")
+        if not os.path.exists(self.settingsdir):
+            os.makedirs(self.settingsdir)
+
         # logging.basicConfig(level=logging.DEBUG)
         self.loop = loop
 
@@ -68,7 +74,7 @@ class pags():
         self.allvehicles = VehicleManager(self.loop)
 
         # Module manager
-        self.modules = moduleManager.moduleManager(self.loop, not nogui)
+        self.modules = moduleManager.moduleManager(self.loop, self.settingsdir, not nogui)
 
         # event links from connmaxtrix -> vehicle manager
         self.connmtrx.onPacketAttach(self.allvehicles.onPacketRecieved)
