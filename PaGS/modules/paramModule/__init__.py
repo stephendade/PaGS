@@ -31,21 +31,17 @@ import fnmatch
 import asyncio
 from contextlib import suppress
 
+from PaGS.modulesupport.module import BaseModule
 
-class Module():
+
+class Module(BaseModule):
     """
     Module for reading and writing parameters
     """
 
     def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI):
-        self.txCallback = txClbk
-        self.vehListCallback = vehListClk
-        self.vehObjCallback = vehObjClk
-        self.printer = prntr
-        self.loop = loop
-        self.settingsDir = settingsDir
+        BaseModule.__init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI)
 
-        self.isGUI = isGUI
         self.GUITasks = []
 
         self.shortName = "param"
@@ -68,15 +64,15 @@ class Module():
 
     def show(self, veh: str, parmname: str):
         """Show a parameter value"""
-        if self.vehObjCallback(veh).paramstatus is not True:
+        if self.vehObj(veh).paramstatus is not True:
             self.printer(veh, "Params not downloaded")
             return
         else:
             found = False
-            for p in self.vehObjCallback(veh).params:
+            for p in self.vehObj(veh).params:
                 if fnmatch.fnmatch(p, parmname.upper()):
                     self.printer(veh, "{0:<16} {1}".format(
-                        p, self.vehObjCallback(veh).params[p]))
+                        p, self.vehObj(veh).params[p]))
                     found = True
             if not found:
                 # no param with that name
@@ -84,7 +80,7 @@ class Module():
 
     def get(self, veh: str, param: str):
         """get a param value - for GUI only"""
-        return self.vehObjCallback(veh).params[param]
+        return self.vehObj(veh).params[param]
 
     def set(self, veh: str, parmname: str, parmval: float):
         """Set a parameter value"""
@@ -93,28 +89,28 @@ class Module():
         except ValueError:
             self.printer(veh, "Invalid param value")
             return
-        if self.vehObjCallback(veh).paramstatus is not True:
+        if self.vehObj(veh).paramstatus is not True:
             self.printer(veh, "Params not downloaded")
-        elif parmname.upper() not in self.vehObjCallback(veh).params:
+        elif parmname.upper() not in self.vehObj(veh).params:
             self.printer(veh, "No param with that name")
         else:
-            asyncio.ensure_future(self.vehObjCallback(
+            asyncio.ensure_future(self.vehObj(
                 veh).setParam(parmname.upper(), parmval))
 
     def save(self, veh: str, filename: str):
         """Save the params to file"""
-        if self.vehObjCallback(veh).paramstatus is not True:
+        if self.vehObj(veh).paramstatus is not True:
             self.printer(veh, "Params not downloaded")
             return
         with open(filename, 'w') as out:
-            for p in self.vehObjCallback(veh).params:
+            for p in self.vehObj(veh).params:
                 out.write("{0:<16} {1}\n".format(
-                    p, self.vehObjCallback(veh).params[p]))
-            self.printer(veh, str(len(self.vehObjCallback(veh).params)) + " params saved to " + filename)
+                    p, self.vehObj(veh).params[p]))
+            self.printer(veh, str(len(self.vehObj(veh).params)) + " params saved to " + filename)
 
     def load(self, veh: str, filename: str):
         """load params from file"""
-        if self.vehObjCallback(veh).paramstatus is not True:
+        if self.vehObj(veh).paramstatus is not True:
             self.printer(veh, "Params not downloaded")
             return
         counter = 0
@@ -124,7 +120,7 @@ class Module():
                 lparts = line.split()
                 if len(lparts) != 2:
                     self.printer(veh, "Param line not valid: " + line)
-                elif lparts[0] not in self.vehObjCallback(veh).params:
+                elif lparts[0] not in self.vehObj(veh).params:
                     self.printer(veh, "Invalid param: " + lparts[0])
                 else:
                     try:
@@ -137,18 +133,18 @@ class Module():
 
     def startDownParam(self, veh: str):
         """Download the parameters from the vehicle"""
-        asyncio.ensure_future(self.vehObjCallback(veh).downloadParams())
+        asyncio.ensure_future(self.vehObj(veh).downloadParams())
 
     def parmStatus(self, veh: str):
         """Download the parameters from the vehicle"""
-        if self.vehObjCallback(veh).paramstatus is None:
+        if self.vehObj(veh).paramstatus is None:
             self.printer(veh, "Params not downloaded")
-        elif isinstance(self.vehObjCallback(veh).paramstatus, (list,)):
-            self.printer(veh, "Downloaded " + str(len(self.vehObjCallback(
-                veh).paramstatus[2])) + " of " + str(self.vehObjCallback(veh).paramstatus[1]) + " params")
+        elif isinstance(self.vehObj(veh).paramstatus, (list,)):
+            self.printer(veh, "Downloaded " + str(len(self.vehObj(
+                veh).paramstatus[2])) + " of " + str(self.vehObj(veh).paramstatus[1]) + " params")
         else:
             self.printer(
-                veh, "Got all (" + str(len(self.vehObjCallback(veh).params)) + ") params")
+                veh, "Got all (" + str(len(self.vehObj(veh).params)) + ") params")
 
     def addVehicle(self, vehname: str):
         """New vehicle added"""
@@ -169,7 +165,7 @@ class Module():
             except AttributeError:
                 pass
             self.vehTabs[vehname].list.updateItem(pkt.param_id.upper(
-            ), self.vehObjCallback(vehname).params[pkt.param_id.upper()])
+            ), self.vehObj(vehname).params[pkt.param_id.upper()])
 
     def removeVehicle(self, name: str):
         pass
@@ -190,13 +186,13 @@ class Module():
             try:
                 await asyncio.sleep(0.2)
 
-                if self.vehObjCallback(vehname).paramstatus is True:
+                if self.vehObj(vehname).paramstatus is True:
                     # erase old list (if it exists)
 
                     # good to load
-                    for p in self.vehObjCallback(vehname).params:
+                    for p in self.vehObj(vehname).params:
                         self.vehTabs[vehname].list.addItem(
-                            p, self.vehObjCallback(vehname).params[p])
+                            p, self.vehObj(vehname).params[p])
                     # finally sort all the items in the list
                     self.vehTabs[vehname].list.SortList()
 
