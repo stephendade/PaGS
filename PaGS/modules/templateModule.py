@@ -20,16 +20,16 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 """
 Template module - for testing only
 """
+from PaGS.modulesupport.module import BaseModule
 
 
-class Module():
+class Module(BaseModule):
     """
     small test module for the manager tests
     """
     def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI):
-        self.txCallback = txClbk
-        self.vehListCallback = vehListClk
-        self.vehObjCallback = vehObjClk
+        BaseModule.__init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI)
+
         self.pkts = 0
         # self.vehRef = {}
         self.theVeh = []
@@ -63,16 +63,13 @@ class Module():
         """
         self.pkts += 1
         # need a ref to the vehicle...
-        self.txCallback(vehname, self.vehObjCallback(vehname).mod.MAVLINK_MSG_ID_HEARTBEAT,
-                        type=self.vehObjCallback(vehname).mod.MAV_TYPE_GCS,
-                        autopilot=self.vehObjCallback(vehname).mod.MAV_AUTOPILOT_INVALID,
+        self.txCallback(vehname, self.vehObj(vehname).mod.MAVLINK_MSG_ID_HEARTBEAT,
+                        type=self.vehObj(vehname).mod.MAV_TYPE_GCS,
+                        autopilot=self.vehObj(vehname).mod.MAV_AUTOPILOT_INVALID,
                         base_mode=0,
                         custom_mode=0,
                         system_status=0,
-                        mavlink_version=int(self.vehObjCallback(vehname).mavversion))
+                        mavlink_version=int(self.vehObj(vehname).mavversion))
 
     def removeVehicle(self, name: str):
         self.theVeh.remove(name)
-
-    async def closeModule(self):
-        pass

@@ -7,18 +7,16 @@ Module for changing the vehicle's flight mode
 Console only. No GUI
 """
 from PaGS.mavlink.pymavutil import mode_toString, allModes, mode_toInt
+from PaGS.modulesupport.module import BaseModule
 
 
-class Module():
+class Module(BaseModule):
     """
     Set the vehicle's flight mode
     """
 
     def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI):
-        self.txCallback = txClbk
-        self.vehListCallback = vehListClk
-        self.vehObj = vehObjClk
-        self.printer = prntr
+        BaseModule.__init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI)
 
         self.shortName = "mode"
         self.commandDict = {"do": self.modeDo,
@@ -96,6 +94,3 @@ class Module():
         """
         if name in self.lastMode.keys():
             del self.lastMode[name]
-
-    async def closeModule(self):
-        pass

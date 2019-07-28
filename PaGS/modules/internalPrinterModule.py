@@ -20,21 +20,19 @@ along with this program. If not, see <https://www.gnu.org/licenses/>.
 """
 This is for testing only - it stores any printed-to-console text internally
 """
+from PaGS.modulesupport.module import BaseModule
 
 
-class Module():
+class Module(BaseModule):
     """
     small test module for the manager tests
     """
     def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI):
-        self.txCallback = txClbk
-        self.vehListCallback = vehListClk
-        self.vehObjCallback = vehObjClk
+        BaseModule.__init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI)
 
         self.printedout = {}
 
         self.shortName = "intprint"
-        self.commandDict = {}
 
     def printVeh(self, text: str, name: str):
         """
@@ -45,11 +43,5 @@ class Module():
     def addVehicle(self, name: str):
         self.printedout[name] = []
 
-    def incomingPacket(self, vehname: str, pkt):
-        pass
-
     def removeVehicle(self, name: str):
         del self.printedout[name]
-
-    async def closeModule(self):
-        pass

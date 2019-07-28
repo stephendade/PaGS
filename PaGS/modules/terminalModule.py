@@ -39,6 +39,7 @@ from prompt_toolkit.styles import Style
 from prompt_toolkit.layout.processors import BeforeInput
 
 from PaGS.mavlink.pymavutil import mode_toString
+from PaGS.modulesupport.module import BaseModule
 
 # Key bindings.
 KB = KeyBindings()
@@ -84,26 +85,17 @@ class VehicleTab():
         self.prompt = BeforeInput(prompt + ">")
 
 
-class Module():
+class Module(BaseModule):
     """
     The terminal UI, based on prompt-toolkit
     """
 
-    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, cmdPrint, settingsDir, isGUI):
+    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI):
+        BaseModule.__init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI)
         self.tabs = []  # all the vehicles, one in each tab
-
-        self.loop = loop
-
-        # Event actions
-        self.txCallback = txClbk
-        self.vehListCallback = vehListClk
-        self.vehObjCallback = vehObjClk
-        self.commandProcessor = cmdProcessClk
-        self.printer = cmdPrint
 
         # commands
         self.shortName = "terminal"
-        self.commandDict = {}
 
         # Tell prompt_toolkit to use asyncio.
         terminal_use_async()
@@ -149,9 +141,6 @@ class Module():
         self.hscreen[4].content = BufferControl(focusable=True)
 
         self.runUI()
-
-    async def closeModule(self):
-        pass
 
     def runUI(self):
         self.application.run_async()
