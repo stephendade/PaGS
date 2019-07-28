@@ -338,7 +338,7 @@ class ModuleManagerTest(asynctest.TestCase):
         os.remove("temploadbad2.parm")
         os.remove("temploadbad3.parm")
 
-    def test_guiStart(self):
+    async def test_guiStart(self):
         """Simple test of the GUI startup"""
 
         # need to reset for handling gui
@@ -350,6 +350,16 @@ class ModuleManagerTest(asynctest.TestCase):
         self.manager.addModule("PaGS.modules.internalPrinterModule")
 
         self.manager.addModule("PaGS.modules.paramModule")
+
+        # now all params downloaded
+        self.VehA.paramstatus = True
+        self.VehA.params = {"RC1_MIN": 1000, "RC2_MAX": 2000}
+        self.VehA.params_type = {
+            "RC1_MIN": self.mod.MAV_PARAM_TYPE_UINT16,
+            "RC2_MAX": self.mod.MAV_PARAM_TYPE_UINT16}
+
+        # Wait for param gui to load
+        await asyncio.sleep(0.3)
 
         # TODO: some GUI tests?
 

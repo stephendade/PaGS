@@ -168,7 +168,21 @@ class ModeModuleTest(asynctest.TestCase):
 
     def test_incoming(self):
         """Test incoming packets"""
-        pass
+        self.manager.addModule("PaGS.modules.modeModule")
+
+        # change mode
+        pkt = self.mod.MAVLink_heartbeat_message(
+            self.mod.MAV_TYPE_QUADROTOR, self.mod.MAV_AUTOPILOT_ARDUPILOTMEGA, 0, 0, 4, int(self.version))
+        self.manager.incomingPacket("VehA", pkt, "Constr")
+
+        # assert
+        assert self.getOutText("VehA", 0) == "Mode changed to: STABILIZE"
+
+        # Don't change mode
+        self.manager.incomingPacket("VehA", pkt, "Constr")
+
+        # assert no extra text
+        assert len(self.manager.multiModules['PaGS.modules.internalPrinterModule'].printedout["VehA"]) == 1
 
 
 if __name__ == '__main__':
