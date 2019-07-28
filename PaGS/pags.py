@@ -137,12 +137,12 @@ class pags():
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description="MAVLink ground station")
-    parser.add_argument("--source",
-                        nargs="*",
+    parser.add_argument("--source", action='append',
+                        metavar="CONTYPE:CONSTR:SYSID:COMPID",
                         help="Connection in format connectiontype:connectionstr:sys:comp",
                         default=[])
-    parser.add_argument("--sitl",
-                        nargs="*",
+    parser.add_argument("--sitl", action='append',
+                        metavar="ID",
                         help="SITL Instance to connect to, ie --sitl=0, --sitl=1",
                         default=[])
     parser.add_argument(
