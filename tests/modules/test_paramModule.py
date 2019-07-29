@@ -67,7 +67,7 @@ class ModuleManagerTest(asynctest.TestCase):
         self.manager.onVehGetAttach(self.getVehicleCallback)
         self.manager.onPktTxAttach(self.txcallback)
 
-        self.manager.addModule("PaGS.modules.internalPrinterModule")
+        self.manager.addModule("internalPrinterModule")
 
     async def tearDown(self):
         """Close down the test"""
@@ -347,7 +347,7 @@ class ModuleManagerTest(asynctest.TestCase):
         self.manager.onVehGetAttach(self.getVehicleCallback)
         self.manager.onPktTxAttach(self.txcallback)
 
-        self.manager.addModule("PaGS.modules.internalPrinterModule")
+        self.manager.addModule("internalPrinterModule")
 
         self.manager.addModule("PaGS.modules.paramModule")
 
@@ -365,7 +365,7 @@ class ModuleManagerTest(asynctest.TestCase):
 
     def getOutText(self, Veh: str, line: int):
         """Helper function for getting output text from internalPrinterModule"""
-        return self.manager.multiModules['PaGS.modules.internalPrinterModule'].printedout[Veh][line]
+        return self.manager.multiModules['internalPrinterModule'].printedout[Veh][line]
 
     def test_incoming(self):
         """Test incoming packets"""

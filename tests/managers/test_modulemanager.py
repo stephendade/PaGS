@@ -122,17 +122,17 @@ class ModuleManagerTest(asynctest.TestCase):
         self.manager.onVehListAttach(self.getVehListCallback)
         self.manager.onVehGetAttach(self.getVehicleCallback)
 
-        self.manager.addModule("PaGS.modules.templateModule")
+        self.manager.addModule("templateModule")
 
         assert len(self.manager.multiModules) == 1
         assert "template" in self.manager.commands
         assert len(self.manager.commands["template"]) == 2
 
-        await self.manager.removeModule("PaGS.modules.templateModule")
+        await self.manager.removeModule("templateModule")
 
         assert len(self.manager.multiModules) == 0
         assert "template" not in self.manager.commands
-        assert "PaGS.modules.templateModule" not in self.manager.printers
+        assert "templateModule" not in self.manager.printers
 
     def test_inoutPacket(self):
         """Test packets going in and out"""
@@ -140,7 +140,7 @@ class ModuleManagerTest(asynctest.TestCase):
         self.manager.onVehListAttach(self.getVehListCallback)
         self.manager.onVehGetAttach(self.getVehicleCallback)
 
-        self.manager.addModule("PaGS.modules.templateModule")
+        self.manager.addModule("templateModule")
 
         # And create the callback for packet tx/rx between vehicle and modules
         self.manager.onPktTxAttach(self.txcallback)
@@ -151,7 +151,7 @@ class ModuleManagerTest(asynctest.TestCase):
             5, 4, 0, 0, 0, int(self.version))
         self.manager.incomingPacket("VehA", pkt, "link1")
 
-        assert self.manager.multiModules["PaGS.modules.templateModule"].pkts == 1
+        assert self.manager.multiModules["templateModule"].pkts == 1
         print(self.txPackets)
         assert self.txPackets["VehA"] == 0  # the packet type
 
@@ -161,19 +161,19 @@ class ModuleManagerTest(asynctest.TestCase):
         self.manager.onVehListAttach(self.getVehListCallback)
         self.manager.onVehGetAttach(self.getVehicleCallback)
 
-        self.manager.addModule("PaGS.modules.templateModule")
+        self.manager.addModule("templateModule")
 
         # simulate some vehicles being added
         self.manager.addVehicle("VehB")
         self.manager.addVehicle("VehC")
 
-        assert self.manager.multiModules['PaGS.modules.templateModule'].theVeh == [
+        assert self.manager.multiModules['templateModule'].theVeh == [
             "VehA", "VehB", "VehC"]
 
         # and being removed
         self.manager.removeVehicle("VehB")
 
-        assert self.manager.multiModules['PaGS.modules.templateModule'].theVeh == [
+        assert self.manager.multiModules['templateModule'].theVeh == [
             "VehA", "VehC"]
 
     def test_addRemoveVehicleAfterModule(self):
@@ -190,9 +190,9 @@ class ModuleManagerTest(asynctest.TestCase):
         self.manager.removeVehicle("VehB")
 
         # load module
-        self.manager.addModule("PaGS.modules.templateModule")
+        self.manager.addModule("templateModule")
 
-        assert self.manager.multiModules['PaGS.modules.templateModule'].theVeh == [
+        assert self.manager.multiModules['templateModule'].theVeh == [
             "VehA", "VehC"]
 
     def test_printer(self):
@@ -205,14 +205,14 @@ class ModuleManagerTest(asynctest.TestCase):
         self.manager.addVehicle("VehC")
 
         # load module
-        self.manager.addModule("PaGS.modules.templateModule")
+        self.manager.addModule("templateModule")
 
         # print some text
         self.manager.printVeh("VehB", "test text")
         self.manager.printVeh("VehC", "test text2")
 
-        assert self.manager.multiModules['PaGS.modules.templateModule'].printedout["VehB"] == "test text"
-        assert self.manager.multiModules['PaGS.modules.templateModule'].printedout["VehC"] == "test text2"
+        assert self.manager.multiModules['templateModule'].printedout["VehB"] == "test text"
+        assert self.manager.multiModules['templateModule'].printedout["VehC"] == "test text2"
 
     def test_command(self):
         """Test the loading and execution of user commands
@@ -225,7 +225,7 @@ class ModuleManagerTest(asynctest.TestCase):
         self.manager.addVehicle("VehC")
 
         # load module
-        self.manager.addModule("PaGS.modules.templateModule")
+        self.manager.addModule("templateModule")
 
         # execute a command
         self.manager.onModuleCommandCallback(
@@ -239,14 +239,14 @@ class ModuleManagerTest(asynctest.TestCase):
             "VehC", "template do_stuff 1 \"the rest\"")
 
         # and assert
-        assert self.manager.multiModules['PaGS.modules.templateModule'].printedout[
+        assert self.manager.multiModules['templateModule'].printedout[
             "VehB"] == "Command not found: template do_nothing"
-        assert self.manager.multiModules['PaGS.modules.templateModule'].calledStuff["VehB"] == "1,the rest"
+        assert self.manager.multiModules['templateModule'].calledStuff["VehB"] == "1,the rest"
 
         # VehC was not initialised, so the command should not be passed
-        assert self.manager.multiModules['PaGS.modules.templateModule'].printedout[
+        assert self.manager.multiModules['templateModule'].printedout[
             "VehC"] == "Cannot send command to vehicle - no packets received on link"
-        assert "VehC" not in self.manager.multiModules['PaGS.modules.templateModule'].calledStuff
+        assert "VehC" not in self.manager.multiModules['templateModule'].calledStuff
 
     def test_moreCommand(self):
         """Test the stability of the command handler with all
@@ -259,7 +259,7 @@ class ModuleManagerTest(asynctest.TestCase):
         self.manager.addVehicle("VehC")
 
         # load module
-        self.manager.addModule("PaGS.modules.templateModule")
+        self.manager.addModule("templateModule")
 
         # test the mangled inputs
         self.manager.onModuleCommandCallback("VehB", "")
