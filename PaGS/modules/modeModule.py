@@ -41,15 +41,16 @@ class Module(BaseModule):
             # Already in this mode
             return
 
-        self.txCallback(vehname, self.vehObj(vehname).mod.MAVLINK_MSG_ID_SET_MODE, base_mode=self.vehObj(
-            vehname).mod.MAV_MODE_FLAG_CUSTOM_MODE_ENABLED, custom_mode=intMode)
+        self.txCallback(vehname, self.getMav(vehname).MAVLINK_MSG_ID_SET_MODE,
+                        base_mode=self.getMav(vehname).MAV_MODE_FLAG_CUSTOM_MODE_ENABLED,
+                        custom_mode=intMode)
 
     def arm(self, vehname: str):
         """
         Arm the vehicle MAV_CMD_COMPONENT_ARM_DISARM
         """
-        self.txCallback(vehname, self.vehObj(vehname).mod.MAVLINK_MSG_ID_COMMAND_LONG,
-                        command=self.vehObj(vehname).mod.MAV_CMD_COMPONENT_ARM_DISARM,
+        self.txCallback(vehname, self.getMav(vehname).MAVLINK_MSG_ID_COMMAND_LONG,
+                        command=self.getMav(vehname).MAV_CMD_COMPONENT_ARM_DISARM,
                         confirmation=0, param1=1, param2=0, param3=0, param4=0,
                         param5=0, param6=0, param7=0)
 
@@ -57,8 +58,8 @@ class Module(BaseModule):
         """
         Disarm the vehicle
         """
-        self.txCallback(vehname, self.vehObj(vehname).mod.MAVLINK_MSG_ID_COMMAND_LONG,
-                        command=self.vehObj(vehname).mod.MAV_CMD_COMPONENT_ARM_DISARM,
+        self.txCallback(vehname, self.getMav(vehname).MAVLINK_MSG_ID_COMMAND_LONG,
+                        command=self.getMav(vehname).MAV_CMD_COMPONENT_ARM_DISARM,
                         confirmation=0, param1=0, param2=0, param3=0, param4=0,
                         param5=0, param6=0, param7=0)
 
@@ -67,7 +68,7 @@ class Module(BaseModule):
         Print all valid modes for the vehicle
         """
         allmodes = allModes(self.vehObj(vehname).vehType, self.vehObj(
-            vehname).fcName, self.vehObj(vehname).mod)
+            vehname).fcName, self.getMav(vehname))
         self.printer(vehname, "Valid modes are: " + str(allmodes))
 
     def addVehicle(self, name: str):
@@ -85,7 +86,7 @@ class Module(BaseModule):
             # if mode changed, tell user
             if pkt.custom_mode != self.lastMode[vehname]:
                 self.printer(vehname, "Mode changed to: " +
-                             str(mode_toString(pkt, self.vehObj(vehname).mod)))
+                             str(mode_toString(pkt, self.getMav(vehname))))
                 self.lastMode[vehname] = pkt.custom_mode
 
     def removeVehicle(self, name: str):
