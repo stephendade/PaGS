@@ -68,7 +68,7 @@ class ModeModuleTest(asynctest.TestCase):
         self.manager.onVehGetAttach(self.getVehicleCallback)
         self.manager.onPktTxAttach(self.txcallback)
 
-        self.manager.addModule("PaGS.modules.internalPrinterModule")
+        self.manager.addModule("internalPrinterModule")
 
     async def tearDown(self):
         """Close down the test"""
@@ -98,7 +98,7 @@ class ModeModuleTest(asynctest.TestCase):
 
     def getOutText(self, Veh: str, line: int):
         """Helper function for getting output text from internalPrinterModule"""
-        return self.manager.multiModules['PaGS.modules.internalPrinterModule'].printedout[Veh][line]
+        return self.manager.multiModules['internalPrinterModule'].printedout[Veh][line]
 
     async def test_loadModule(self):
         """Test adding and removal of module"""
@@ -182,7 +182,7 @@ class ModeModuleTest(asynctest.TestCase):
         self.manager.incomingPacket("VehA", pkt, "Constr")
 
         # assert no extra text
-        assert len(self.manager.multiModules['PaGS.modules.internalPrinterModule'].printedout["VehA"]) == 1
+        assert len(self.manager.multiModules['internalPrinterModule'].printedout["VehA"]) == 1
 
 
 if __name__ == '__main__':

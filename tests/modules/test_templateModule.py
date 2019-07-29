@@ -83,14 +83,14 @@ class ModuleManagerTest(asynctest.TestCase):
 
     async def test_loadModule(self):
         """Test adding and removal of module"""
-        self.manager.addModule("PaGS.modules.templateModule")
+        self.manager.addModule("templateModule")
 
         # is the module loaded?
         assert len(self.manager.multiModules) == 1
         assert "template" in self.manager.commands
         assert len(self.manager.commands["template"]) == 2
 
-        await self.manager.removeModule("PaGS.modules.templateModule")
+        await self.manager.removeModule("templateModule")
 
         # is the module unloaded?
         assert len(self.manager.multiModules) == 0
@@ -98,14 +98,14 @@ class ModuleManagerTest(asynctest.TestCase):
 
     def test_cmd_do_stuff(self):
         """Test the do_stuff() command"""
-        self.manager.addModule("PaGS.modules.templateModule")
+        self.manager.addModule("templateModule")
 
         # execute a command
         self.manager.onModuleCommandCallback(
             "VehA", "template do_stuff 1 \"the rest\"")
 
         # and assert
-        assert self.manager.multiModules['PaGS.modules.templateModule'].calledStuff["VehA"] == "1,the rest"
+        assert self.manager.multiModules['templateModule'].calledStuff["VehA"] == "1,the rest"
 
     def test_incoming(self):
         """Test incoming packets"""
