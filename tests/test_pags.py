@@ -69,7 +69,7 @@ class IntegratedTest(asynctest.TestCase):
 
         await self.pagsInstance.addVehicles(self.source)
 
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(0.5)
 
         # assert links, vehicles and modules
         assert len(self.pagsInstance.allvehicles.veh_list) == 2
