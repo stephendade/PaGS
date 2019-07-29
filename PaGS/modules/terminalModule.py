@@ -178,10 +178,10 @@ class Module(BaseModule):
             self.printVeh(pkt.text, vehname)
         # Mode change - update prompt (mode and arm status)
         if pkt.get_type() == "HEARTBEAT":
-            if pkt.base_mode & self.vehObjCallback(vehname).mod.MAV_MODE_FLAG_SAFETY_ARMED:
-                self.changePrompt(vehname, "A|" + mode_toString(pkt, self.vehObjCallback(vehname).mod))
+            if pkt.base_mode & self.vehObj(vehname).mod.MAV_MODE_FLAG_SAFETY_ARMED:
+                self.changePrompt(vehname, "A|" + mode_toString(pkt, self.vehObj(vehname).mod))
             else:
-                self.changePrompt(vehname, "D|" + mode_toString(pkt, self.vehObjCallback(vehname).mod))
+                self.changePrompt(vehname, "D|" + mode_toString(pkt, self.vehObj(vehname).mod))
             self.application._redraw()
 
     def removeVehicleTab(self, name: str):
