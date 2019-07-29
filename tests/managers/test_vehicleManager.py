@@ -196,7 +196,7 @@ class VehicleManagerTest(asynctest.TestCase):
         self.manager.onPacketRecieved("VehA", pkt, 'tcpclient:127.0.0.1:15001')
 
         assert len(self.manager.get_vehicle("VehA").latestPacketDict) == 1
-        assert self.manager.get_vehicle("VehA").latestPacketDict[0] == pkt
+        assert self.manager.get_vehicle("VehA").latestPacketDict['HEARTBEAT'] == pkt
 
         assert len(self.manager.get_vehicle("VehB").latestPacketDict) == 0
 

@@ -109,15 +109,15 @@ class pags():
             sys.stdout = RedirPrint(self.modules.multiModules.get('modules.terminalModule').print)
 
     async def addVehicles(self, source):
-            # Create vehicles and links
-            # Each sysID is assumed to be a different vehicle
-            # Multiple links with the same sysid will create a multilink vehicle
-            for connection in source:
-                Vehname = "Veh_" + str(connection)
-                cn = connection.split(':')[0] + ":" + connection.split(':')[1] + ":" + connection.split(':')[2]
-                asyncio.ensure_future(self.allvehicles.add_vehicle(Vehname, self.source_system, self.source_component,
-                                      connection.split(':')[3], connection.split(':')[4],
-                                      self.dialect, self.mav, cn))
+        # Create vehicles and links
+        # Each sysID is assumed to be a different vehicle
+        # Multiple links with the same sysid will create a multilink vehicle
+        for connection in source:
+            Vehname = "Veh_" + str(connection)
+            cn = connection.split(':')[0] + ":" + connection.split(':')[1] + ":" + connection.split(':')[2]
+            asyncio.ensure_future(self.allvehicles.add_vehicle(Vehname, self.source_system, self.source_component,
+                                  connection.split(':')[3], connection.split(':')[4],
+                                  self.dialect, self.mav, cn))
 
     def close(self):
         """
@@ -165,7 +165,7 @@ if __name__ == '__main__':
     loop.set_default_executor(ThreadPoolExecutor(1000))
 
     # Any modules to load on startup
-    initialModules = ["modules.terminalModule", "modules.paramModule", "modules.modeModule"]
+    initialModules = ["modules.terminalModule", "modules.paramModule", "modules.modeModule", 'modules.statusModule']
 
     # Add SITL instances, if any
     for inst in args.sitl:
