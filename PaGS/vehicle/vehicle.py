@@ -117,13 +117,13 @@ class Vehicle():
         """
         self.txcallback = func
 
-    def getPacket(self, pktId: int):
+    def getPacket(self, pktName: str):
         """
-        Get the latest packet of the type ID.
-        If the pktId doesn't exist, return None
+        Get the latest packet of the named type.
+        If the pktName doesn't exist, return None
         """
-        if pktId in self.latestPacketDict:
-            return self.latestPacketDict[pktId]
+        if pktName in self.latestPacketDict:
+            return self.latestPacketDict[pktName.upper()]
         else:
             return None
 
@@ -131,7 +131,7 @@ class Vehicle():
         """
         Called whenever a new unique packet is recived from any current link
         """
-        self.latestPacketDict[pkt.id] = pkt
+        self.latestPacketDict[pkt.name] = pkt
         # print("{0} has packet {1} types".format(self.name, len(self.latestPacketDict)))
         logging.debug("GCS " + self.name + " got " + pkt.get_type())
 

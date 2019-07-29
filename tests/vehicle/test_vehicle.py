@@ -150,7 +150,7 @@ class VehicleTest(asynctest.TestCase):
         await asyncio.sleep(0.01)
 
         assert len(self.veh.latestPacketDict) == 1
-        assert self.veh.getPacket(self.mod.MAVLINK_MSG_ID_HEARTBEAT) == pkt
+        assert self.veh.getPacket('HEARTBEAT') == pkt
         assert self.veh.getPacket(
             self.mod.MAVLINK_MSG_ID_ESC_TELEMETRY_9_TO_12) is None
 
