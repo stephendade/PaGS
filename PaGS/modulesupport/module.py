@@ -21,6 +21,12 @@ class BaseModule():
         self.shortName = None
         self.commandDict = {}
 
+    def getMav(self, name: str):
+        """
+        Get the mavlink ref from a vehicle
+        """
+        return self.vehObj(name).mod
+
     def addVehicle(self, name: str):
         """
         New vehicle added
