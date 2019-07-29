@@ -54,10 +54,15 @@ class pags():
     """
     A single PaGS instance
     """
-    def __init__(self, dialect, mav, source_system, source_component, nogui, multi, source, loop, initialModules):
+    def __init__(self, dialect, mav, source_system, source_component, nogui, multi, loop, initialModules):
         """
         Start up PaGS
         """
+
+        self.source_system = source_system
+        self.source_component = source_component
+        self.dialect = dialect
+        self.mav = mav
 
         # The PaGS settings dir
         self.settingsdir = os.path.join(str(Path.home()), ".PaGS")
@@ -103,20 +108,16 @@ class pags():
         if self.modules.multiModules.get('modules.terminalModule'):
             sys.stdout = RedirPrint(self.modules.multiModules.get('modules.terminalModule').print)
 
-        # Single or multi-vehicle?
-        if multi != "":
-            # TODO: figure out multivehicle parsing file
-            pass
-        else:
+    async def addVehicles(self, source):
             # Create vehicles and links
             # Each sysID is assumed to be a different vehicle
             # Multiple links with the same sysid will create a multilink vehicle
             for connection in source:
                 Vehname = "Veh_" + str(connection)
                 cn = connection.split(':')[0] + ":" + connection.split(':')[1] + ":" + connection.split(':')[2]
-                asyncio.ensure_future(self.allvehicles.add_vehicle(Vehname, source_system, source_component,
+                asyncio.ensure_future(self.allvehicles.add_vehicle(Vehname, self.source_system, self.source_component,
                                       connection.split(':')[3], connection.split(':')[4],
-                                      dialect, mav, cn))
+                                      self.dialect, self.mav, cn))
 
     def close(self):
         """
@@ -183,7 +184,9 @@ if __name__ == '__main__':
     if len(args.source) == 0:
         args.source.append("udpserver:127.0.0.1:14550:1:0")
 
-    main = pags(args.dialect, args.mav, args.source_system, args.source_component, args.nogui, args.multi, args.source, loop, initialModules)
+    main = pags(args.dialect, args.mav, args.source_system, args.source_component, args.nogui, args.multi, loop, initialModules)
+
+    asyncio.ensure_future(main.addVehicles(args.source))
 
     # Enter the asyncio event loop and wait for a
     # ctrl+c to exit

@@ -47,7 +47,7 @@ class IntegratedTest(asynctest.TestCase):
         self.source_component = 0
         self.nogui = True
         self.multi = None
-        self.source = ['tcpclient:127.0.0.1:15000']
+        self.source = ['tcpclient:127.0.0.1:15000:1:0', 'udpclient:127.0.0.1:15001:1:0']
 
     def tearDown(self):
         self.pagsInstance.close()
@@ -64,11 +64,17 @@ class IntegratedTest(asynctest.TestCase):
             self.source_component,
             self.nogui,
             self.multi,
-            self.source,
             self.loop,
             initModules)
 
-        await asyncio.sleep(0.5)
+        await self.pagsInstance.addVehicles(self.source)
+
+        await asyncio.sleep(0.1)
+
+        # assert links, vehicles and modules
+        assert len(self.pagsInstance.allvehicles.veh_list) == 2
+        assert len(self.pagsInstance.connmtrx.linkdict) == 2
+        assert len(self.pagsInstance.modules.multiModules) == 0
 
 
 if __name__ == '__main__':
