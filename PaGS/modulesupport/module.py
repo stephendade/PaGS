@@ -9,14 +9,15 @@ class BaseModule():
     Module
     """
 
-    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI):
+    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI, loadGUI):
         self.txCallback = txClbk
         self.vehListCallback = vehListClk
         self.commandProcessor = cmdProcessClk
         self.vehObj = vehObjClk
         self.printer = prntr
-        self.isGUI = isGUI
         self.settingsDir = settingsDir
+        self.isGUI = isGUI
+        self.loadGUI = loadGUI
 
         self.shortName = None
         self.commandDict = {}

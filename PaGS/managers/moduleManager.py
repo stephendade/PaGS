@@ -29,7 +29,9 @@ Hold list of module commands for UI
 import logging
 import shlex
 import traceback
+import asyncio
 from importlib import import_module
+from contextlib import suppress
 
 
 class moduleManager():
@@ -65,6 +67,10 @@ class moduleManager():
 
         # Dict of modules that print text
         self.printers = {}
+
+        # WxAsync (if we're using a GUI)
+        self.wxApp = None
+        self.wxGUITask = None
 
     def printVeh(self, vehname: str, text: str):
         """
@@ -121,6 +127,15 @@ class moduleManager():
         except Exception:
             self.printVeh(vehname, traceback.format_exc())
 
+    def loadGUI(self):
+        """
+        Load WxPython (async)
+        """
+        if self.useGUI and not self.wxApp:
+            from wxasync import WxAsyncApp
+            self.wxApp = WxAsyncApp()
+            self.wxGUITask = asyncio.ensure_future(self.wxApp.MainLoop())
+
     def addModule(self, name: str):
         """
         Initialise a module
@@ -137,7 +152,7 @@ class moduleManager():
         self.multiModules[name] = mod.Module(
             self.loop, self.outgoingPacket, self.vehListCallback,
             self.getVehCallback, self.onModuleCommandCallback,
-            self.printVeh, self.settingsDir, self.useGUI)
+            self.printVeh, self.settingsDir, self.useGUI, self.loadGUI)
         # and add any vehicles from beforehand
         for vehname in self.vehListCallback():
             self.multiModules[name].addVehicle(vehname)
@@ -175,6 +190,12 @@ class moduleManager():
         """
         for modulename in self.multiModules:
             await self.multiModules[modulename].closeModule()
+
+        # Close the wxAsync GUI if required
+        if self.wxGUITask:
+            self.wxGUITask.cancel()
+            with suppress(asyncio.CancelledError):
+                await self.wxGUITask  # await for task cancellation
 
     def addVehicle(self, vehName):
         """

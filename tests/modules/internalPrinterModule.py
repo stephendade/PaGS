@@ -27,8 +27,8 @@ class Module(BaseModule):
     """
     small test module for the manager tests
     """
-    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI):
-        BaseModule.__init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI)
+    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI, loadGUI):
+        BaseModule.__init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI, loadGUI)
 
         self.printedout = {}
 

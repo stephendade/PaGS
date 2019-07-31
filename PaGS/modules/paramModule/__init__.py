@@ -39,8 +39,8 @@ class Module(BaseModule):
     Module for reading and writing parameters
     """
 
-    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI):
-        BaseModule.__init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI)
+    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI, loadGUI):
+        BaseModule.__init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI, loadGUI)
 
         self.GUITasks = []
 
@@ -53,14 +53,11 @@ class Module(BaseModule):
                             'load': self.load}
 
         if self.isGUI:
-            from PaGS.modules.paramModule.paramModule_gui import ParamGUIFrame, start_gui
-
-            app = start_gui()
+            from PaGS.modules.paramModule.paramModule_gui import ParamGUIFrame
+            self.loadGUI()
             self.vehTabs = {}
             self.paramframe = ParamGUIFrame(self.settingsDir)
             self.paramframe.Show()
-            app.SetTopWindow(self.paramframe)
-            self.GUITasks.append(asyncio.ensure_future(app.MainLoop()))
 
     def show(self, veh: str, parmname: str):
         """Show a parameter value"""
@@ -156,7 +153,7 @@ class Module(BaseModule):
             self.paramframe.nb.AddPage(self.vehTabs[vehname], vehname)
 
             # add task to load GUI when full param set available
-            self.GUITasks.append(asyncio.ensure_future(self.loadGUI(vehname)))
+            self.GUITasks.append(asyncio.ensure_future(self.loadFrame(vehname)))
 
     def incomingPacket(self, vehname: str, pkt):
         if pkt.get_type() == "PARAM_VALUE" and self.isGUI:
@@ -179,7 +176,7 @@ class Module(BaseModule):
             with suppress(asyncio.CancelledError):
                 await task  # await for task cancellation
 
-    async def loadGUI(self, vehname: str):
+    async def loadFrame(self, vehname: str):
         """This function waits for all the params to be downloaded
         and then loads them into the GUI"""
         while True:

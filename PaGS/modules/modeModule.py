@@ -15,8 +15,8 @@ class Module(BaseModule):
     Set the vehicle's flight mode
     """
 
-    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI):
-        BaseModule.__init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI)
+    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI, loadGUI):
+        BaseModule.__init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI, loadGUI)
 
         self.shortName = "mode"
         self.commandDict = {"do": self.modeDo,
