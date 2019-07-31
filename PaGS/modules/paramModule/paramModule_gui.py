@@ -35,13 +35,6 @@ import wx.grid
 import wx.lib.agw.persist as PM
 import wx.lib.mixins.listctrl as listmix
 
-from wxasync import WxAsyncApp
-
-
-def start_gui():
-    """start the GUI"""
-    return WxAsyncApp()
-
 
 class EditableListCtrl(wx.ListCtrl, listmix.TextEditMixin):
     ''' TextEditMixin allows any column to be edited. '''
