@@ -71,5 +71,9 @@ class Module(BaseModule):
                         system_status=0,
                         mavlink_version=int(self.vehObj(vehname).mavversion))
 
+        # cause an exception:
+        if pkt.base_mode == 1:
+            self.crash()
+
     def removeVehicle(self, name: str):
         self.theVeh.remove(name)
