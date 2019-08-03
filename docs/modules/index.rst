@@ -7,3 +7,4 @@ Modules
     terminal
     mode
     parameter
+    status
