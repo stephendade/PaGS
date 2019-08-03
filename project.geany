@@ -28,21 +28,21 @@ long_line_behaviour=1
 long_line_column=80
 
 [files]
-current_page=1
-FILE_NAME_0=11419;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2FPaGS%2Fvehicle%2Fvehicle.py;0;4
-FILE_NAME_1=6562;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2FPaGS%2Fpags.py;0;4
-FILE_NAME_2=913;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2FPaGS%2Fmodules%2FinternalPrinterModule.py;0;4
-FILE_NAME_3=3260;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2FPaGS%2Fmanagers%2FmoduleManager.py;0;4
-FILE_NAME_4=315;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2FPaGS%2Fmodules%2FmodeModule.py;0;4
-FILE_NAME_5=3504;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2FPaGS%2Fmodules%2FterminalModule.py;0;4
-FILE_NAME_6=1687;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2Ftests%2Fmodules%2Ftest_modeModule.py;0;4
+current_page=6
+FILE_NAME_0=5786;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2FPaGS%2Fmanagers%2FmoduleManager.py;0;4
+FILE_NAME_1=1983;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2FPaGS%2Fmodules%2FparamModule%2F__init__.py;0;4
+FILE_NAME_2=6735;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2FPaGS%2Fpags.py;0;4
+FILE_NAME_3=6260;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2FPaGS%2Fmodules%2FparamModule%2FparamModule_gui.py;0;4
+FILE_NAME_4=486;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2FPaGS%2Fmodulesupport%2Fmodule.py;0;4
+FILE_NAME_5=2869;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2FPaGS%2Fmodules%2FstatusModule%2F__init__.py;0;4
+FILE_NAME_6=2026;Python;0;EUTF-8;0;1;0;%2Fhome%2Fstephen%2FDocuments%2FPaGS%2FPaGS%2Fmodules%2FstatusModule%2FstatusModule_gui.py;0;4
 
 [build-menu]
 EX_00_LB=_Execute
-EX_00_CM=cd "%p/PaGS"; python3 pags.py --sitl=1
+EX_00_CM=cd "%p/PaGS"; python3 pags.py --sitl=0
 EX_00_WD=
-PythonFT_01_LB=Pylint
-PythonFT_01_CM=pylint3 "%f"
+PythonFT_01_LB=Build
+PythonFT_01_CM=cd "%p"; python3 setup.py build install --user
 PythonFT_01_WD=
 filetypes=Python;
 NF_00_LB=_Make
