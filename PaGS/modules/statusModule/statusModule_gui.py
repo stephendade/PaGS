@@ -93,7 +93,7 @@ class StatusGUIFrame(wx.Frame):
                     self.vehStats[vehname][key].Disable()
                 elif ((enabled & key) != key):
                     # Present, not enabled
-                    self.vehStats[vehname][key].Enable()
+                    self.vehStats[vehname][key].Enable
                     self.vehStats[vehname][key].SetForegroundColour((0, 0, 0))
                 elif ((health & key) != key):
                     # Present, Enabled, not healthy

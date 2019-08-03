@@ -218,7 +218,11 @@ class moduleManager():
         for modulename in self.multiModules:
             logging.debug("Packet from " + vehname +
                           " going to module " + modulename)
-            self.multiModules[modulename].incomingPacket(vehname, pkt)
+            try:
+                # then send it onwards, with handled exceptions
+                self.multiModules[modulename].incomingPacket(vehname, pkt)
+            except Exception:
+                self.printVeh(vehname, traceback.format_exc())
 
     def outgoingPacket(self, vehname: str, pktType, **kwargs):
         """

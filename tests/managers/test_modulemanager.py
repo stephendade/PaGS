@@ -152,8 +152,15 @@ class ModuleManagerTest(asynctest.TestCase):
         self.manager.incomingPacket("VehA", pkt, "link1")
 
         assert self.manager.multiModules["templateModule"].pkts == 1
-        print(self.txPackets)
         assert self.txPackets["VehA"] == 0  # the packet type
+
+        # send an incoming packet that causes an exception
+        pkt = self.mod.MAVLink_heartbeat_message(
+            5, 4, 1, 0, 0, int(self.version))
+        self.manager.incomingPacket("VehA", pkt, "link1")
+
+        # if we've not crashed at this point, the above exception
+        # was handled
 
     def test_addRemoveVehicle(self):
         """Test adding and removing a vehicle"""
