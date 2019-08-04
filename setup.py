@@ -22,7 +22,7 @@ import setuptools
 
 setuptools.setup(
     name="PaGS",
-    version="0.0.1",
+    version="version='0.1.0'",
     author="Stephen Dade",
     author_email="stephen_dade@hotmail.com",
     description="Python-async Ground Station. A mavlink based multivehicle ground station",
