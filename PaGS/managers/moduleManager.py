@@ -65,6 +65,9 @@ class moduleManager():
         # Dict of current terminal commands?
         self.commands = {}
 
+        # add in module managment commands
+        self.commands['module'] = {'load': self.load, 'list': self.list}
+
         # Dict of modules that print text
         self.printers = {}
 
@@ -97,6 +100,30 @@ class moduleManager():
         """
         self.getVehCallback = func
 
+    def load(self, vehname: str, module: str):
+        """
+        Command handler for "module load xxx" command
+        """
+        if module in self.multiModules or "PaGS." + module in self.multiModules:
+            self.printVeh(vehname, "Module already loaded")
+        else:
+            try:
+                self.addModule(module)
+                if module in self.multiModules or "PaGS." + module in self.multiModules:
+                    self.printVeh(vehname, "Loaded module " + module)
+                else:
+                    self.printVeh(vehname, "Cannot load module " + module)
+            except ValueError:
+                self.printVeh(vehname, "Cannot find module")
+
+    def list(self, vehname: str):
+        """
+        Command handler for "module list" command
+        """
+        self.printVeh(vehname, "Loaded Modules: ")
+        for key in self.multiModules:
+            self.printVeh(vehname, key)
+
     def onModuleCommandCallback(self, vehname, cmd):
         """
         Process a user command from vehicle
@@ -120,6 +147,7 @@ class moduleManager():
             return
         try:
             # then send it onwards, with handled exceptions
+            # also await if it's an async function
             if len(args) > 2:
                 self.commands[args[0]][args[1]](vehname, *args[2:])
             else:
@@ -146,6 +174,7 @@ class moduleManager():
         except ImportError:
             try:
                 mod = import_module("PaGS." + name)
+                name = "PaGS." + name
             except ImportError:
                 raise ValueError('No module with that name')
 
@@ -175,6 +204,7 @@ class moduleManager():
         """
         if name not in self.multiModules:
             raise ValueError('No module with that name')
+            return
         else:
             if name in self.printers.keys():
                 del self.printers[name]
@@ -183,6 +213,7 @@ class moduleManager():
             await self.multiModules[name].closeModule()
 
             del self.multiModules[name]
+            return
 
     async def closeAllModules(self):
         """
