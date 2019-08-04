@@ -28,15 +28,15 @@ environment:
 
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1604
       PYTHON_VERSION: "3.5"
-      PYTHONPATH: "$HOME/.local/lib/python3.5/site-packages/"
+      PYTHONPATH: "/home/appveyor/.local/lib/python3.5/site-packages/"
 
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1604
       PYTHON_VERSION: "3.6"
-      PYTHONPATH: "$HOME/.local/lib/python3.6/site-packages/"
+      PYTHONPATH: "/home/appveyor/.local/lib/python3.6/site-packages/"
 
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1604
       PYTHON_VERSION: "3.7"
-      PYTHONPATH: "$HOME/.local/lib/python3.7/site-packages/"
+      PYTHONPATH: "/home/appveyor/.local/lib/python3.7/site-packages/"
 
 stack: python %PYTHON_VERSION%
 
