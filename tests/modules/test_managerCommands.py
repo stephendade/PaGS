@@ -135,9 +135,11 @@ class ModuleManagerTest(asynctest.TestCase):
         self.manager.onModuleCommandCallback(
             "VehA", "module list")
 
+        # The loaded module listing order is not important
         assert self.getOutText("VehA", 6) == "Loaded Modules: "
-        assert self.getOutText("VehA", 7) == "internalPrinterModule"
-        assert self.getOutText("VehA", 8) == "PaGS.modules.modeModule"
+        assert self.getOutText("VehA", 7) == "internalPrinterModule" or "PaGS.modules.modeModule"
+        assert self.getOutText("VehA", 8) == "internalPrinterModule" or "PaGS.modules.modeModule"
+        assert self.getOutText("VehA", 7) != self.getOutText("VehA", 8)
 
 
 if __name__ == '__main__':
