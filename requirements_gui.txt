@@ -1,2 +1,2 @@
-wxPython==4.0.6
+wxPython==4.0.7
 wxasync == 0.4
