@@ -68,7 +68,8 @@ def findserial():
         '*Holybro_*',
         '*mRo*',
         '*FMU*',
-        '*Kakute*']
+        '*Kakute*',
+        '*Pixhawk*']
 
     ports = list(serial.tools.list_ports.comports())
     for port, description, hwid in ports:
