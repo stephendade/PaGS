@@ -22,7 +22,8 @@ class Module(BaseModule):
         self.commandDict = {"do": self.modeDo,
                             "list": self.listModes,
                             "arm": self.arm,
-                            "disarm": self.disarm}
+                            "disarm": self.disarm,
+                            "reboot": self.reboot}
 
         # for detecting mode change
         self.lastMode = {}
@@ -51,6 +52,15 @@ class Module(BaseModule):
         """
         self.txCallback(vehname, self.getMav(vehname).MAVLINK_MSG_ID_COMMAND_LONG,
                         command=self.getMav(vehname).MAV_CMD_COMPONENT_ARM_DISARM,
+                        confirmation=0, param1=1, param2=0, param3=0, param4=0,
+                        param5=0, param6=0, param7=0)
+
+    def reboot (self, vehname: str):
+        """
+        Reboot the vehicle MAV_CMD_COMPONENT_ARM_DISARM
+        """
+        self.txCallback(vehname, self.getMav(vehname).MAVLINK_MSG_ID_COMMAND_LONG,
+                        command=self.getMav(vehname).MAV_CMD_PREFLIGHT_REBOOT_SHUTDOWN,
                         confirmation=0, param1=1, param2=0, param3=0, param4=0,
                         param5=0, param6=0, param7=0)
 

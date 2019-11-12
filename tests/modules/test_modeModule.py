@@ -107,7 +107,7 @@ class ModeModuleTest(asynctest.TestCase):
         # is the module loaded?
         assert len(self.manager.multiModules) == 2
         assert "mode" in self.manager.commands
-        assert len(self.manager.commands["mode"]) == 4
+        assert len(self.manager.commands["mode"]) == 5
 
         await self.manager.removeModule("PaGS.modules.modeModule")
 
@@ -165,6 +165,17 @@ class ModeModuleTest(asynctest.TestCase):
         # assert
         assert len(self.txPackets["VehA"]) == 2
         assert len(self.txPackets) == 1
+
+    async def test_cmd_reboot(self):
+        """Test the reboot command"""
+        self.manager.addModule("PaGS.modules.modeModule")
+
+        # execute an arm
+        self.manager.onModuleCommandCallback(
+            "VehA", "mode reboot")
+
+        # assert
+        assert len(self.txPackets["VehA"]) == 1
 
     def test_incoming(self):
         """Test incoming packets"""

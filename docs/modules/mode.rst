@@ -22,3 +22,5 @@ Commands
 
 ``mode disarm``. Send a disarm command to the vehicle.
 
+``mode reboot``. Reboot the Flight Controller.
+
