@@ -1,2 +1,2 @@
-wxPython==4.0.7.post1
+wxPython==4.0.7.post2
 wxasync == 0.4
