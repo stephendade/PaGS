@@ -55,7 +55,7 @@ class Module(BaseModule):
                         confirmation=0, param1=1, param2=0, param3=0, param4=0,
                         param5=0, param6=0, param7=0)
 
-    def reboot (self, vehname: str):
+    def reboot(self, vehname: str):
         """
         Reboot the vehicle MAV_CMD_COMPONENT_ARM_DISARM
         """
