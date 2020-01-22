@@ -10,6 +10,10 @@ At the command line::
     cd ./PaGS
     pip install -U -r requirements.txt -r requirements_gui.txt
     python setup.py build install --user
+    
+Under Linux, libSDL may also need to be installed::
+
+    sudo apt-get install git libsdl2-2.0-0
 
 If using a headless (no screen) system, omit the ``-r requirements_gui.txt`` section in the above.
 
