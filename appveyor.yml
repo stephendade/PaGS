@@ -89,7 +89,7 @@ install:
         .\tests\support\setup_com0com_W7_x64_signed.exe /S
         sleep 10
       }
-  - sh: sudo apt install socat
+  - sh: sudo apt install socat libsdl2-2.0-0
   
   #Using pip install wxpython on Linux takes waaay too long, so downloading precompiled version instead
   - sh: pip install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04 wxPython
