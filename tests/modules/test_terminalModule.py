@@ -25,7 +25,6 @@ Testing of the "terminal" module
 
 import asynctest
 import pytest
-import platform
 import os
 import shutil
 
@@ -92,7 +91,7 @@ class TerminalModuleTest(asynctest.TestCase):
 
         # Appveyor doesn't have a console to display on
         if excinfo:
-                assert "No module with that name" in str(excinfo.value)
+            assert "No module with that name" in str(excinfo.value)
 
     def test_incoming(self):
         """Test incoming packets"""
