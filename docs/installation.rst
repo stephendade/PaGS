@@ -8,8 +8,8 @@ At the command line::
 
     git clone https://github.com/stephendade/PaGS.git
     cd ./PaGS
-    pip install -U -r requirements.txt -r requirements_gui.txt
-    python setup.py build install --user
+    pip3 install -U -r requirements.txt -r requirements_gui.txt
+    python3 setup.py build install --user
     
 Under Linux, libSDL may also need to be installed::
 
@@ -19,4 +19,4 @@ If using a headless (no screen) system, omit the ``-r requirements_gui.txt`` sec
 
 If installing for development, the test dependencies can be installed by::
 
-    pip install -U -r ./tests/requirements_test.txt
+    pip3 install -U -r ./tests/requirements_test.txt

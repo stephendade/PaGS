@@ -18,7 +18,7 @@ Linux users will need socat installed via `sudo apt install socat``
 
 Tests can be run via::
 
-    python setup.py build install --user
+    python3 setup.py build install --user
     py.test --log-level DEBUG
 
 The CI uses `Appveyor <https://ci.appveyor.com/project/stephendade/PaGS>`_ to run a build matrix of Windows/Linux and Python 3.5/3.6/3.7. So 6 runs total.
