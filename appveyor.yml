@@ -22,13 +22,13 @@ environment:
       PYTHON_ARCH: 32
 
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-      PYTHON: C:\Python35
-      PYTHON_VERSION: 3.5
+      PYTHON: C:\Python38
+      PYTHON_VERSION: 3.8
       PYTHON_ARCH: 32
 
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1604
-      PYTHON_VERSION: "3.5"
-      PYTHONPATH: "/home/appveyor/.local/lib/python3.5/site-packages/"
+      PYTHON_VERSION: "3.8"
+      PYTHONPATH: "/home/appveyor/.local/lib/python3.8/site-packages/"
 
     - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1604
       PYTHON_VERSION: "3.6"

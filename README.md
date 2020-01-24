@@ -2,10 +2,10 @@
 
 ## Build Status
 
-OS | Python 3.5 | Python 3.6 | Python 3.7 |
+OS | Python 3.6 | Python 3.7 | Python 3.8 | 
 |-------------------|-------------------|-------------------|-------------------|
-Windows | [![build3][]][build-link] | [![build2][]][build-link] | [![build1][]][build-link] |
-Linux | [![build4][]][build-link] | [![build5][]][build-link] | [![build6][]][build-link] |
+Windows | [![build2][]][build-link] | [![build1][]][build-link] | [![build3][]][build-link] |
+Linux | [![build5][]][build-link] | [![build6][]][build-link] | [![build4][]][build-link] |
 
 [build1]: https://appveyor-matrix-badges.herokuapp.com/repos/stephendade/PaGS/branch/master/1
 [build2]: https://appveyor-matrix-badges.herokuapp.com/repos/stephendade/PaGS/branch/master/2
