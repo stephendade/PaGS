@@ -92,10 +92,7 @@ class TerminalModuleTest(asynctest.TestCase):
 
         # Appveyor doesn't have a console to display on
         if excinfo:
-            if platform.system() == "Linux":
-                assert "Stdin is not a terminal" in str(excinfo.value)
-            elif platform.system() == "Windows":
-                assert "No Windows console found" in str(excinfo.value)
+                assert "No module with that name" in str(excinfo.value)
 
     def test_incoming(self):
         """Test incoming packets"""
