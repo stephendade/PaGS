@@ -11,30 +11,30 @@ environment:
   COVERALLS_REPO_TOKEN:
     secure: nawPdszJTzIQ4ZSOlJIUcg8VdWOT+da4eB/VKuF6eUTK502B6dNIw+R2DA4OJxWc
   matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: C:\Python37
       PYTHON_VERSION: 3.7
       PYTHON_ARCH: 32
 
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: C:\Python36
       PYTHON_VERSION: 3.6
       PYTHON_ARCH: 32
 
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: C:\Python38
       PYTHON_VERSION: 3.8
       PYTHON_ARCH: 32
 
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1604
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
       PYTHON_VERSION: "3.8"
       PYTHONPATH: "/home/appveyor/.local/lib/python3.8/site-packages/"
 
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1604
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
       PYTHON_VERSION: "3.6"
       PYTHONPATH: "/home/appveyor/.local/lib/python3.6/site-packages/"
 
-    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1604
+    - APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
       PYTHON_VERSION: "3.7"
       PYTHONPATH: "/home/appveyor/.local/lib/python3.7/site-packages/"
 
@@ -70,7 +70,7 @@ install:
   - cmd: SET PATH=%PYTHON%;%PYTHON%\Scripts;%PATH%
 
   # Configure headless CI for Linux. From https://electronjs.org/docs/tutorial/testing-on-headless-ci
-  - sh: sudo apt-get install xvfb
+  - sh: sudo apt-get install -y xvfb
   - sh: export DISPLAY=':99.0'
   - sh: Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
   
@@ -83,16 +83,16 @@ install:
       if ($isLinux) {
         Write-Host "This is Linux!"
       } else {
-        C:\"Program Files (x86)"\"Windows Kits"\10\bin\x64\certmgr.exe /add .\tests\support\com0com.cer /s /r localMachine root
-        C:\"Program Files (x86)"\"Windows Kits"\10\bin\x64\certmgr.exe /add .\tests\support\com0com.cer /s /r localMachine trustedpublisher
+        C:\"Program Files (x86)"\"Windows Kits"\10\bin\10.0.19041.0\x64\certmgr.exe /add .\tests\support\com0com.cer /s /r localMachine root
+        C:\"Program Files (x86)"\"Windows Kits"\10\bin\10.0.19041.0\x64\certmgr.exe /add .\tests\support\com0com.cer /s /r localMachine trustedpublisher
         $env:CNC_INSTALL_CNCA0_CNCB0_PORTS="YES"
         .\tests\support\setup_com0com_W7_x64_signed.exe /S
         sleep 10
       }
-  - sh: sudo apt install socat libsdl2-2.0-0
+  - sh: sudo apt install -y socat libsdl2-2.0-0
   
   #Using pip install wxpython on Linux takes waaay too long, so downloading precompiled version instead
-  - sh: pip install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-16.04 wxPython
+  - sh: pip install -U -f https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-18.04 wxPython
 
   # Check that we have the expected version and architecture for Python
   - python --version
