@@ -71,7 +71,9 @@ class SerialLinkTest(asynctest.TestCase):
             self.serialServer = subprocess.Popen(
                 [
                     'socat',
-                    '-Dxs',
+                    '-D',
+                    '-x',
+                    '-s',
                     'pty,link=/tmp/virtualcom0,ispeed=115200,ospeed=115200,raw,waitslave',
                     'tcp:127.0.0.1:15001'],
                 stdout=subprocess.PIPE)
