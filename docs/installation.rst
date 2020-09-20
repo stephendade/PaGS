@@ -2,8 +2,11 @@
 Installation
 ============
 
-PaGS is compatible with Python 3.6 - 3.7 on both Linux or Windows.
+PaGS is compatible with Python 3.6 - 3.8 on Linux or 3.6 - 3.7 on Windows.
 
+.. note::
+   Python 3.8+ is not supported on Windows at this time.
+   
 At the command line::
 
     git clone https://github.com/stephendade/PaGS.git
