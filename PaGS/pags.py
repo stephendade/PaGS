@@ -24,8 +24,14 @@ import asyncio
 import argparse
 import sys
 import os
+import platform
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
+
+# Python 3.8 defaults to Proactor for asyncio, which doesn't work for PaGS
+# So we force to Selector instead.
+if platform.system() == 'Windows' and sys.version_info >= (3, 8):
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 from PaGS.managers.connectionManager import ConnectionManager
 from PaGS.managers.vehicleManager import VehicleManager
