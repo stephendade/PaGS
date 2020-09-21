@@ -28,6 +28,13 @@ If a link fails (disconnected) the link should not crash.
 
 import asyncio
 import asynctest
+import platform
+import sys
+
+# Python 3.8 defaults to Proactor for asyncio, which doesn't work for PaGS
+# So we force to Selector instead.
+if platform.system() == 'Windows' and sys.version_info >= (3, 8):
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 from PaGS.connection.tcplink import TCPConnection
 from PaGS.mavlink.pymavutil import getpymavlinkpackage
