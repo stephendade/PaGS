@@ -28,13 +28,14 @@ It:
 -command completion
 -Able to switch between tabs DONE
 """
+import asyncio
+
 from prompt_toolkit.application import Application
 from prompt_toolkit.buffer import Buffer
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.layout.containers import HSplit, Window, WindowAlign
 from prompt_toolkit.layout.controls import BufferControl, FormattedTextControl
 from prompt_toolkit.layout.layout import Layout
-from prompt_toolkit.eventloop import use_asyncio_event_loop
 from prompt_toolkit.styles import Style
 from prompt_toolkit.layout.processors import BeforeInput
 
@@ -43,13 +44,6 @@ from PaGS.modulesupport.module import BaseModule
 
 # Key bindings.
 KB = KeyBindings()
-
-
-def terminal_use_async():
-    """
-    Tell prompt_toolkit to use asyncio
-    """
-    use_asyncio_event_loop()
 
 
 class VehicleTab():
@@ -97,9 +91,6 @@ class Module(BaseModule):
         # commands
         self.shortName = "terminal"
 
-        # Tell prompt_toolkit to use asyncio.
-        terminal_use_async()
-
         self.tabbar = []
 
         self.style_extensions = {
@@ -140,10 +131,10 @@ class Module(BaseModule):
         self.hscreen[2].content = BufferControl(focusable=False)
         self.hscreen[4].content = BufferControl(focusable=True)
 
-        self.runUI()
+        asyncio.ensure_future(self.runUI())
 
-    def runUI(self):
-        self.application.run_async()
+    async def runUI(self):
+        await self.application.run_async()
 
     def changePrompt(self, vehname: str, prompt: str):
         """

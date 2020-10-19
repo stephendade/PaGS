@@ -89,9 +89,9 @@ class TerminalModuleTest(asynctest.TestCase):
         with pytest.raises(Exception) as excinfo:
             self.manager.addModule("PaGS.modules.terminalModule")
 
-        # Appveyor doesn't have a console to display on
-        if excinfo:
-            assert "No module with that name" in str(excinfo.value)
+            # Appveyor doesn't have a console to display on
+            if excinfo:
+                assert "No module with that name" in str(excinfo.value)
 
     def test_incoming(self):
         """Test incoming packets"""
