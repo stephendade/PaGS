@@ -30,6 +30,7 @@ import logging
 import shlex
 import traceback
 import asyncio
+import os
 from importlib import import_module
 from contextlib import suppress
 
@@ -74,6 +75,10 @@ class moduleManager():
         # WxAsync (if we're using a GUI)
         self.wxApp = None
         self.wxGUITask = None
+        self.wxAppPersistMgr = None
+
+        if self.useGUI:
+            self.loadGUI()
 
     def printVeh(self, vehname: str, text: str):
         """
@@ -159,10 +164,16 @@ class moduleManager():
         """
         Load WxPython (async)
         """
-        if self.useGUI and not self.wxApp:
-            from wxasync import WxAsyncApp
-            self.wxApp = WxAsyncApp()
-            self.wxGUITask = asyncio.ensure_future(self.wxApp.MainLoop())
+        from wxasync import WxAsyncApp
+        import wx.lib.agw.persist as PM
+
+        self.wxApp = WxAsyncApp()
+        self.wxGUITask = asyncio.ensure_future(self.wxApp.MainLoop())
+
+        self.wxAppPersistMgr = PM.PersistenceManager.Get()
+        _configFile = os.path.join(
+            self.settingsDir, "persistGUI.cfg")
+        self.wxAppPersistMgr.SetPersistenceFile(_configFile)
 
     def addModule(self, name: str):
         """
@@ -181,7 +192,7 @@ class moduleManager():
         self.multiModules[name] = mod.Module(
             self.loop, self.outgoingPacket, self.vehListCallback,
             self.getVehCallback, self.onModuleCommandCallback,
-            self.printVeh, self.settingsDir, self.useGUI, self.loadGUI)
+            self.printVeh, self.settingsDir, self.useGUI, self.wxAppPersistMgr)
         # and add any vehicles from beforehand
         for vehname in self.vehListCallback():
             self.multiModules[name].addVehicle(vehname)

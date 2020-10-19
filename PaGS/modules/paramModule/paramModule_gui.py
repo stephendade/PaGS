@@ -28,11 +28,9 @@ You can:
 """
 
 import fnmatch
-import os
 
 import wx
 import wx.grid
-import wx.lib.agw.persist as PM
 import wx.lib.mixins.listctrl as listmix
 
 
@@ -240,7 +238,7 @@ class VehParamTab(wx.Panel):
 
 
 class ParamGUIFrame(wx.Frame):
-    def __init__(self, settingsDir):
+    def __init__(self, settingsDir, wxAppPersistMgr):
         wx.Frame.__init__(self, None, title="Parameters", name="ParamGUI")
         # self.grid = wx.grid.Grid(self, -1)
 
@@ -249,11 +247,8 @@ class ParamGUIFrame(wx.Frame):
         self.nb = wx.Notebook(self.p)
 
         # restore size/position
-        self._persistMgr = PM.PersistenceManager.Get()
-        _configFile = os.path.join(
-            settingsDir, "persistGUI.cfg")    # getname()
-        self._persistMgr.SetPersistenceFile(_configFile)
-        self._persistMgr.RegisterAndRestoreAll(self)
+        self._persistMgr = wxAppPersistMgr
+        self._persistMgr.RegisterAndRestore(self)
 
         # Set noteboook in a sizer to create the layout
         self.sizer = wx.BoxSizer()
@@ -262,4 +257,4 @@ class ParamGUIFrame(wx.Frame):
 
     def SavePos(self):
         """Event for when the window is closed"""
-        self._persistMgr.SaveAndUnregister()
+        self._persistMgr.SaveAndUnregister(self)

@@ -23,8 +23,8 @@ class Module(BaseModule):
     """
     GUI and Text interface showing the system status of each vehicle
     """
-    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI, loadGUI):
-        BaseModule.__init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI, loadGUI)
+    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI, wxAppPersistMgr):
+        BaseModule.__init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI, wxAppPersistMgr)
 
         # The short name of the module.
         self.shortName = "status"
@@ -34,8 +34,8 @@ class Module(BaseModule):
 
         if self.isGUI:
             from PaGS.modules.statusModule.statusModule_gui import StatusGUIFrame
-            self.loadGUI()
-            self.statusframe = StatusGUIFrame(self.settingsDir)
+            self.wxAppPersistMgr = wxAppPersistMgr
+            self.statusframe = StatusGUIFrame(self.settingsDir, self.wxAppPersistMgr)
             self.statusframe.Show()
 
     def status(self, vehname: str):
