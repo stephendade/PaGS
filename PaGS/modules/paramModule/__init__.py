@@ -39,8 +39,8 @@ class Module(BaseModule):
     Module for reading and writing parameters
     """
 
-    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI, loadGUI):
-        BaseModule.__init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI, loadGUI)
+    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI, wxAppPersistMgr):
+        BaseModule.__init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI, wxAppPersistMgr)
 
         self.GUITasks = []
 
@@ -54,9 +54,9 @@ class Module(BaseModule):
 
         if self.isGUI:
             from PaGS.modules.paramModule.paramModule_gui import ParamGUIFrame
-            self.loadGUI()
             self.vehTabs = {}
-            self.paramframe = ParamGUIFrame(self.settingsDir)
+            self.wxAppPersistMgr = wxAppPersistMgr
+            self.paramframe = ParamGUIFrame(self.settingsDir, wxAppPersistMgr)
             self.paramframe.Show()
 
     def show(self, veh: str, parmname: str):

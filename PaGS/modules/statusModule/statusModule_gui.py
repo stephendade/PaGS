@@ -16,26 +16,21 @@ GNU Lesser General Public License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this program. If not, see <https://www.gnu.org/licenses/>.
 """
-import os
 
 import wx
 import wx.grid
-import wx.lib.agw.persist as PM
 
 
 class StatusGUIFrame(wx.Frame):
-    def __init__(self, settingsDir):
+    def __init__(self, settingsDir, wxAppPersistMgr):
         wx.Frame.__init__(self, None, title="Status", name="StatusGUI")
 
         # Create a panel
         self.p = wx.Panel(self)
 
         # restore size/position
-        self._persistMgr = PM.PersistenceManager.Get()
-        _configFile = os.path.join(
-            settingsDir, "persistGUI.cfg")
-        self._persistMgr.SetPersistenceFile(_configFile)
-        self._persistMgr.RegisterAndRestoreAll(self)
+        self._persistMgr = wxAppPersistMgr
+        self._persistMgr.RegisterAndRestore(self)
 
         # create a sizer for vehicles. 1 row per veh
         self.vehSizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -49,7 +44,7 @@ class StatusGUIFrame(wx.Frame):
 
     def SavePos(self):
         """Event for when the window is closed"""
-        self._persistMgr.SaveAndUnregister()
+        self._persistMgr.SaveAndUnregister(self)
 
     def addVehicle(self, name: str, enums):
         """

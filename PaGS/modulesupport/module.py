@@ -9,7 +9,7 @@ class BaseModule():
     Module
     """
 
-    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI, loadGUI):
+    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI, wxAppPersistMgr):
         self.txCallback = txClbk
         self.vehListCallback = vehListClk
         self.commandProcessor = cmdProcessClk
@@ -17,7 +17,6 @@ class BaseModule():
         self.printer = prntr
         self.settingsDir = settingsDir
         self.isGUI = isGUI
-        self.loadGUI = loadGUI
 
         self.shortName = None
         self.commandDict = {}

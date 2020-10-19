@@ -8,11 +8,11 @@ class Module(BaseModule):
     """
     <Module Description>
     """
-    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, wxapp):
+    def __init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI, wxAppPersistMgr):
         """
         Called by PaGS when a module is loaded 'module load xxx'
         """
-        BaseModule.__init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, wxapp)
+        BaseModule.__init__(self, loop, txClbk, vehListClk, vehObjClk, cmdProcessClk, prntr, settingsDir, isGUI, wxAppPersistMgr)
 
         # The short name of the module.
         self.shortName = ""
